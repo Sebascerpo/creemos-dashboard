@@ -89,8 +89,10 @@ def cargar_candidatos(path: str) -> dict[str, dict]:
 @st.cache_data(show_spinner=False)
 def cargar_divipol(path: str) -> dict[str, dict]:
     """
-    Retorna {depto_muni: {nombre_depto, nombre_municipio, potencial_total, num_mesas}}
-    También retorna índice por depto para drill-down.
+    Retorna:
+      - por_muni   {depto_muni: {nombre_depto, nombre_municipio, potencial_total, num_mesas}}
+      - por_depto  {depto: nombre_depto}
+      - por_puesto {depto_muni_zona_puesto: {nombre_puesto, ...}}
     """
     puestos = {}
     por_muni = (
@@ -106,8 +108,12 @@ def cargar_divipol(path: str) -> dict[str, dict]:
                     continue
                 cod_depto = linea[0:2].strip()
                 cod_muni = linea[2:5].strip()
+                cod_zona = linea[5:7].strip()
+                cod_puesto = linea[7:9].strip()
                 nom_depto = linea[9:21].strip()
                 nom_muni = linea[21:51].strip()
+                # Campo fijo de 41 chars; el último char suele ser clasificador.
+                nom_puesto = linea[51:91].strip()
                 pot_h = linea[92:100].strip()
                 pot_m = linea[100:108].strip()
                 num_mesas = linea[108:114].strip()
@@ -133,10 +139,22 @@ def cargar_divipol(path: str) -> dict[str, dict]:
                 if cod_depto not in por_depto:
                     por_depto[cod_depto] = nom_depto
 
+                puesto_key = f"{cod_depto}_{cod_muni}_{cod_zona}_{cod_puesto}"
+                if puesto_key not in puestos:
+                    puestos[puesto_key] = {
+                        "cod_depto": cod_depto,
+                        "cod_municipio": cod_muni,
+                        "cod_zona": cod_zona,
+                        "cod_puesto": cod_puesto,
+                        "nombre_depto": nom_depto,
+                        "nombre_municipio": nom_muni,
+                        "nombre_puesto": nom_puesto,
+                    }
+
     except Exception:
         pass
 
-    return {"por_muni": por_muni, "por_depto": por_depto}
+    return {"por_muni": por_muni, "por_depto": por_depto, "por_puesto": puestos}
 
 
 @st.cache_data(show_spinner=False)

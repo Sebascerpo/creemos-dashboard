@@ -133,10 +133,15 @@ def _render_drilldown_partido(
         key=lambda x: x[1],
         reverse=True,
     )
-    puestos_opc = {
-        f"Z{k.split('_')[2]}-P{k.split('_')[3]} ({fmt(v)} vts)": k
-        for k, v in puestos_disp
-    }
+    puestos_opc = {}
+    for k, v in puestos_disp:
+        p_info = divipol.get("por_puesto", {}).get(k, {})
+        p_name = str(p_info.get("nombre_puesto", "")).strip()
+        if p_name:
+            label = f"{p_name} ({fmt(v)} vts)"
+        else:
+            label = f"Puesto {k.split('_')[2]}-{k.split('_')[3]} ({fmt(v)} vts)"
+        puestos_opc[label] = k
 
     with col_puesto:
         if puestos_opc:

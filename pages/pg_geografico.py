@@ -193,21 +193,20 @@ def render(datos: dict):
 
     df = pd.DataFrame(rows)
 
-    section("RESUMEN POR DEPARTAMENTO", "map")
-    st.dataframe(df, use_container_width=True, height=400)
+    if filtro_corp == "Senado":
+        section("RESUMEN POR DEPARTAMENTO", "map")
+        st.dataframe(df, use_container_width=True, height=400)
 
-    if df.empty:
-        return
-
-    # ── Gráfico departamento ──
-    fig2 = px.bar(
-        df.head(20), x="Departamento", y="Votos objetivo (candidato/partido)",
-        color="Votos objetivo (candidato/partido)", color_continuous_scale=["#1C2537", "#2196F3"],
-        hover_data=["Cód", "% participación objetivo"],
-        title=f"Votos objetivo por departamento ({objetivo_label})",
-    )
-    fig2.update_layout(coloraxis_showscale=False, height=350, xaxis_tickangle=-35)
-    st.plotly_chart(plotly_defaults(fig2), use_container_width=True)
+        # ── Gráfico departamento ──
+        if not df.empty:
+            fig2 = px.bar(
+                df.head(20), x="Departamento", y="Votos objetivo (candidato/partido)",
+                color="Votos objetivo (candidato/partido)", color_continuous_scale=["#1C2537", "#2196F3"],
+                hover_data=["Cód", "% participación objetivo"],
+                title=f"Votos objetivo por departamento ({objetivo_label})",
+            )
+            fig2.update_layout(coloraxis_showscale=False, height=350, xaxis_tickangle=-35)
+            st.plotly_chart(plotly_defaults(fig2), use_container_width=True)
 
     # ── Drill-down municipios ──
     section("DRILL-DOWN POR MUNICIPIO", "travel_explore")

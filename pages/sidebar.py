@@ -15,6 +15,7 @@ from pages.shared import DATA_DIR, MMV_CANDIDATE_FILES, resolver_mmv_path
 NAV_ITEMS = [
     ("Overview",       "bar_chart",        "dashboard"),
     ("Curules Senado", "gavel",            "curules_senado"),
+    ("Curules Camara Antioquia", "gavel",  "curules_camara_antioquia"),
     ("Candidatos",     "groups",           "candidatos"),
     ("German Dario",   "person",           "german"),
     ("Juliana",        "person",           "juliana"),

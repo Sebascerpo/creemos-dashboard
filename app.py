@@ -34,6 +34,7 @@ from pages.shared import inject_styles, cargar_todo, DATA_DIR, resolver_mmv_path
 from pages.sidebar import render_sidebar
 import pages.pg_dashboard as pg_dashboard
 import pages.pg_curules_senado as pg_curules_senado
+import pages.pg_curules_camara_antioquia as pg_curules_camara_antioquia
 import pages.pg_candidatos_general as pg_candidatos
 import pages.pg_candidato as pg_candidato
 import pages.pg_partidos as pg_partidos
@@ -88,6 +89,9 @@ def main():
 
     elif page == "curules_senado":
         pg_curules_senado.render(datos)
+
+    elif page == "curules_camara_antioquia":
+        pg_curules_camara_antioquia.render(datos)
 
     elif page == "candidatos":
         pg_candidatos.render(datos)

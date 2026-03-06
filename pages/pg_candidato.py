@@ -144,20 +144,34 @@ def render(
     } for i, (k, v) in enumerate(top30)])
     st.dataframe(df_top30, use_container_width=True, height=400)
 
-    col_l, col_r = st.columns(2)
-    with col_l:
-        section("VOTOS POR DEPARTAMENTO", "location_city")
-        df_dep = pd.DataFrame([{
-            "Departamento": nombre_depto(d, divipol), "Cod": d, "Votos": v,
-        } for d, v in sorted(deptos_data.items(), key=lambda x: x[1], reverse=True)])
-        if not df_dep.empty:
-            fig = px.bar(df_dep, x="Departamento", y="Votos",
-                         color="Votos", color_continuous_scale=["#1C2537", color],
-                         hover_data=["Cod"])
-            fig.update_layout(coloraxis_showscale=False, height=320, xaxis_tickangle=-35)
-            st.plotly_chart(plotly_defaults(fig), use_container_width=True)
+    if not solo_antioquia:
+        col_l, col_r = st.columns(2)
+        with col_l:
+            section("VOTOS POR DEPARTAMENTO", "location_city")
+            df_dep = pd.DataFrame([{
+                "Departamento": nombre_depto(d, divipol), "Cod": d, "Votos": v,
+            } for d, v in sorted(deptos_data.items(), key=lambda x: x[1], reverse=True)])
+            if not df_dep.empty:
+                fig = px.bar(df_dep, x="Departamento", y="Votos",
+                             color="Votos", color_continuous_scale=["#1C2537", color],
+                             hover_data=["Cod"])
+                fig.update_layout(coloraxis_showscale=False, height=320, xaxis_tickangle=-35)
+                st.plotly_chart(plotly_defaults(fig), use_container_width=True)
 
-    with col_r:
+        with col_r:
+            section("TOP 20 MUNICIPIOS", "location_on")
+            top20 = sorted(por_muni.items(), key=lambda x: x[1], reverse=True)[:20]
+            df_mun = pd.DataFrame([{
+                "Municipio": nombre_municipio_str(k, divipol), "Clave": k, "Votos": v,
+            } for k, v in top20])
+            if not df_mun.empty:
+                fig2 = px.bar(df_mun, x="Votos", y="Municipio", orientation="h",
+                              color="Votos", color_continuous_scale=["#1C2537", color],
+                              hover_data=["Clave"])
+                fig2.update_layout(yaxis={"categoryorder": "total ascending"},
+                                    coloraxis_showscale=False, height=320)
+                st.plotly_chart(plotly_defaults(fig2), use_container_width=True)
+    else:
         section("TOP 20 MUNICIPIOS", "location_on")
         top20 = sorted(por_muni.items(), key=lambda x: x[1], reverse=True)[:20]
         df_mun = pd.DataFrame([{
@@ -224,10 +238,15 @@ def render(
         {k: v for k, v in por_puesto.items() if k.startswith(sel_muni + "_")}.items(),
         key=lambda x: x[1], reverse=True,
     )
-    puestos_opc = {
-        f"Z{k.split('_')[2]}-P{k.split('_')[3]} ({v} vts)": k
-        for k, v in puestos_disp
-    }
+    puestos_opc = {}
+    for k, v in puestos_disp:
+        p_info = divipol.get("por_puesto", {}).get(k, {})
+        p_name = str(p_info.get("nombre_puesto", "")).strip()
+        if p_name:
+            label = f"{p_name} ({fmt(v)} vts)"
+        else:
+            label = f"Puesto {k.split('_')[2]}-{k.split('_')[3]} ({fmt(v)} vts)"
+        puestos_opc[label] = k
 
     with col_puesto:
         if puestos_opc:

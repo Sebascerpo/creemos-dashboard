@@ -113,9 +113,24 @@ def render(datos: dict):
         label = f"{nombre_candidato(k, candidatos)} - {fmt(votos_dep)} votos"
         opciones[label] = k
 
+    filtro_txt = st.text_input(
+        "Escribe para buscar candidato",
+        value="",
+        key=f"cand_gen_filtro_{corp_obj}_{circ_obj}_{sel_dep}",
+        placeholder="Ej: JULIANA / GERMAN / apellido...",
+    ).strip().casefold()
+    if filtro_txt:
+        labels_disp = [lbl for lbl in opciones.keys() if filtro_txt in lbl.casefold()]
+    else:
+        labels_disp = list(opciones.keys())
+
+    if not labels_disp:
+        st.info("No hay candidatos que coincidan con la búsqueda.")
+        return
+
     sel_label = st.selectbox(
         f"Buscar candidato ({filtro_tipo} · {sel_dep_label})",
-        list(opciones.keys()),
+        labels_disp,
         key=f"cand_gen_sel_{corp_obj}_{circ_obj}_{sel_dep}",
     )
     sel_key   = opciones[sel_label]
@@ -231,10 +246,14 @@ def render(datos: dict):
                 {k: v for k, v in por_puesto_dep.items() if k.startswith(sel_muni + "_")}.items(),
                 key=lambda x: x[1], reverse=True,
             )
-            puestos_opc = {
-                f"Z{k.split('_')[2]}-P{k.split('_')[3]} ({v} vts)": k
-                for k, v in puestos_disp
-            }
+            for k, v in puestos_disp:
+                p_info = divipol.get("por_puesto", {}).get(k, {})
+                p_name = str(p_info.get("nombre_puesto", "")).strip()
+                if p_name:
+                    label = f"{p_name} ({fmt(v)} vts)"
+                else:
+                    label = f"Puesto {k.split('_')[2]}-{k.split('_')[3]} ({fmt(v)} vts)"
+                puestos_opc[label] = k
 
         with col_puesto:
             if puestos_opc:
