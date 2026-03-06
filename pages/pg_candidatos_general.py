@@ -10,7 +10,12 @@ import plotly.express as px
 import streamlit as st
 import pandas as pd
 
-from core.parser import cargar_mesa_candidato, cargar_mesa_totales_circ
+from core.parser import (
+    cargar_geo_candidato,
+    cargar_mesa_candidato,
+    cargar_geo_totales_circ,
+    cargar_mesa_totales_circ,
+)
 from pages.shared import (
     fmt,
     pct,
@@ -71,7 +76,7 @@ def render(datos: dict):
         )
         return
 
-    # 1) Elegir departamento primero
+    # 1) Elegir departamento — uses por_depto which is in memory
     deptos_disp = sorted(
         {
             dep
@@ -105,10 +110,6 @@ def render(datos: dict):
     st.caption(
         "Los valores mostrados son votos individuales por candidato "
         "(excluye voto de lista 000, blanco 996, nulo 997 y no marcado 998)."
-    )
-
-    total_votos_filtro = sum(
-        v["por_depto"].get(sel_dep, 0) for v in candidatos_dep.values()
     )
 
     # Drill-down por candidato
@@ -151,16 +152,24 @@ def render(datos: dict):
     sel_key = opciones[sel_label]
     cd = candidatos_dep[sel_key]
     votos_cand_dep = cd["por_depto"].get(sel_dep, 0)
+
+    # ── LAZY LOAD: geographic data for this candidate ──
+    mmv_path_str = str(resolver_mmv_path())
+    geo = cargar_geo_candidato(mmv_path_str, sel_key)
     por_muni_dep = {
-        k: v for k, v in cd["por_municipio"].items() if k.startswith(sel_dep + "_")
+        k: v for k, v in geo["por_municipio"].items() if k.startswith(sel_dep + "_")
     }
     por_puesto_dep = {
-        k: v for k, v in cd["por_puesto"].items() if k.startswith(sel_dep + "_")
+        k: v for k, v in geo["por_puesto"].items() if k.startswith(sel_dep + "_")
     }
+
     deptos_data = {sel_dep: votos_cand_dep}
-    totales_circ = mmv.get("totales_validos_por_circ", {}).get(circ_obj, {})
-    totales_muni = totales_circ.get("por_municipio", {})
-    totales_puesto = totales_circ.get("por_puesto", {})
+
+    # ── LAZY LOAD: totals for the circunscripcion ──
+    totales_circ_geo = cargar_geo_totales_circ(mmv_path_str, circ_obj)
+    totales_muni = totales_circ_geo.get("por_municipio", {})
+    totales_puesto = totales_circ_geo.get("por_puesto", {})
+
     total_validos_depto = sum(
         v for k, v in totales_muni.items() if k.startswith(sel_dep + "_")
     )
@@ -325,8 +334,7 @@ def render(datos: dict):
             else:
                 st.info("Sin puestos")
 
-        # ── LAZY LOAD: cargar por_mesa solo cuando hay puesto seleccionado ──
-        mmv_path_str = str(resolver_mmv_path())
+        # ── LAZY LOAD: mesa data only when puesto selected ──
         por_mesa_dep = {}
         totales_mesa = {}
         mesas_opc = {}

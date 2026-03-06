@@ -14,7 +14,9 @@ import pandas as pd
 
 from core.parser import (
     COD_ANTIOQUIA,
+    cargar_geo_partido_circ,
     cargar_mesa_partido_circ,
+    cargar_geo_totales_circ,
     cargar_mesa_totales_circ,
 )
 from pages.shared import (
@@ -34,12 +36,11 @@ def _filter_prefix(src: dict, prefix: str) -> dict:
     return {k: v for k, v in src.items() if k.startswith(prefix)}
 
 
-def _build_partidos_agg(mmv: dict) -> tuple[dict, dict]:
+def _build_partidos_agg(mmv: dict, mmv_path_str: str) -> tuple[dict, dict]:
     """
-    Totales por partido desde MMV ya consolidados por circunscripción:
-    - Senado: circ 0 (nacional), votos válidos = lista + candidatos.
-    - Cámara: circ 1, sólo Antioquia, votos válidos = lista + candidatos.
-    SIN por_mesa (se carga bajo demanda).
+    Totales por partido — LAZY LOAD de datos geográficos.
+    Solo carga votos_total y por_depto en esta función.
+    por_municipio/por_puesto se cargan bajo demanda por partido seleccionado.
     """
     partidos_por_circ = mmv.get("partidos_por_circ", {})
     part_senado = {}
@@ -52,11 +53,6 @@ def _build_partidos_agg(mmv: dict) -> tuple[dict, dict]:
         part_senado[cod] = {
             "votos_total": votos,
             "por_depto": dict(d.get("por_depto_validos_total", {})),
-            "por_municipio": dict(d.get("por_municipio_validos_total", {})),
-            "por_puesto": dict(d.get("por_puesto_validos_total", {})),
-            # por_mesa NO se carga: usar cargar_mesa_partido_circ()
-            "_circ": "0",
-            "_cod_partido": cod,
         }
 
     pref = COD_ANTIOQUIA + "_"
@@ -67,28 +63,18 @@ def _build_partidos_agg(mmv: dict) -> tuple[dict, dict]:
         part_camara[cod] = {
             "votos_total": v_ant,
             "por_depto": {COD_ANTIOQUIA: v_ant},
-            "por_municipio": _filter_prefix(
-                d.get("por_municipio_validos_total", {}), pref
-            ),
-            "por_puesto": _filter_prefix(d.get("por_puesto_validos_total", {}), pref),
-            # por_mesa NO se carga: usar cargar_mesa_partido_circ()
-            "_circ": "1",
-            "_cod_partido": cod,
         }
 
     return part_senado, part_camara
 
 
 def _render_drilldown_partido(
-    data: dict,
+    cod_partido: str,
+    circ: str,
     color: str,
     key_prefix: str,
     divipol: dict,
-    totales_muni: dict,
-    totales_puesto: dict,
     mmv_path_str: str,
-    circ: str,
-    cod_partido: str,
     fixed_dep: str | None = None,
 ):
     section("DRILL-DOWN HASTA MESA", "travel_explore")
@@ -98,8 +84,19 @@ def _render_drilldown_partido(
         unsafe_allow_html=True,
     )
 
-    por_muni = data["por_municipio"]
-    por_puesto = data["por_puesto"]
+    # ── LAZY LOAD: geo data for this partido/circ ──
+    geo = cargar_geo_partido_circ(mmv_path_str, circ, cod_partido)
+    if fixed_dep:
+        por_muni = _filter_prefix(geo["por_municipio"], fixed_dep + "_")
+        por_puesto = _filter_prefix(geo["por_puesto"], fixed_dep + "_")
+    else:
+        por_muni = geo["por_municipio"]
+        por_puesto = geo["por_puesto"]
+
+    totales_geo = cargar_geo_totales_circ(mmv_path_str, circ)
+    totales_muni = totales_geo.get("por_municipio", {})
+    totales_puesto = totales_geo.get("por_puesto", {})
+
     if not por_muni:
         st.info("Sin datos de municipios disponibles.")
         return
@@ -180,7 +177,7 @@ def _render_drilldown_partido(
         else:
             st.info("Sin puestos")
 
-    # ── LAZY LOAD: cargar por_mesa solo cuando hay puesto seleccionado ──
+    # ── LAZY LOAD: mesa data only when puesto selected ──
     por_mesa = {}
     totales_mesa = {}
     mesas_opc = {}
@@ -258,16 +255,10 @@ def render(datos: dict):
         st.warning("No hay datos MMV cargados.")
         return
 
-    part_senado, part_camara = _build_partidos_agg(mmv)
+    mmv_path_str = str(resolver_mmv_path())
+    part_senado, part_camara = _build_partidos_agg(mmv, mmv_path_str)
     total_sen = sum(d["votos_total"] for d in part_senado.values())
     total_cam = sum(d["votos_total"] for d in part_camara.values())
-    totales_circ = mmv.get("totales_validos_por_circ", {})
-    sen_totales_muni = totales_circ.get("0", {}).get("por_municipio", {})
-    sen_totales_puesto = totales_circ.get("0", {}).get("por_puesto", {})
-    cam_totales_muni = totales_circ.get("1", {}).get("por_municipio", {})
-    cam_totales_puesto = totales_circ.get("1", {}).get("por_puesto", {})
-
-    mmv_path_str = str(resolver_mmv_path())
 
     st.caption(
         "Total partido = votos de lista (000) + votos de candidatos "
@@ -291,7 +282,6 @@ def render(datos: dict):
                     "Votos": d["votos_total"],
                     "% sobre Senado": pct(d["votos_total"], total_sen),
                     "Deptos": len(d["por_depto"]),
-                    "Municipios": len(d["por_municipio"]),
                 }
                 for cod, d in sorted(
                     part_senado.items(), key=lambda x: x[1]["votos_total"], reverse=True
@@ -327,7 +317,11 @@ def render(datos: dict):
                 )
             }
             sel_s = st.selectbox("Partido", list(opc_s.keys()), key="sel_sen")
-            pd_s = part_senado[opc_s[sel_s]]
+            sel_s_cod = opc_s[sel_s]
+            pd_s = part_senado[sel_s_cod]
+
+            # ── LAZY LOAD geo for selected partido ──
+            geo_s = cargar_geo_partido_circ(mmv_path_str, "0", sel_s_cod)
 
             c1, c2 = st.columns(2)
             with c1:
@@ -358,7 +352,7 @@ def render(datos: dict):
                     st.plotly_chart(plotly_defaults(fig_ds), use_container_width=True)
             with c2:
                 top_ms = sorted(
-                    pd_s["por_municipio"].items(), key=lambda x: x[1], reverse=True
+                    geo_s["por_municipio"].items(), key=lambda x: x[1], reverse=True
                 )[:20]
                 df_ms = pd.DataFrame(
                     [
@@ -388,15 +382,12 @@ def render(datos: dict):
                     st.plotly_chart(plotly_defaults(fig_ms), use_container_width=True)
 
             _render_drilldown_partido(
-                pd_s,
-                color="#E63946",
-                key_prefix=f"sen_{opc_s[sel_s]}",
-                divipol=divipol,
-                totales_muni=sen_totales_muni,
-                totales_puesto=sen_totales_puesto,
-                mmv_path_str=mmv_path_str,
+                cod_partido=sel_s_cod,
                 circ="0",
-                cod_partido=opc_s[sel_s],
+                color="#E63946",
+                key_prefix=f"sen_{sel_s_cod}",
+                divipol=divipol,
+                mmv_path_str=mmv_path_str,
             )
 
     with tab_cam:
@@ -412,7 +403,6 @@ def render(datos: dict):
                     "Partido": nombre_partido(cod, partidos),
                     "Votos": d["votos_total"],
                     "% sobre Camara Ant.": pct(d["votos_total"], total_cam),
-                    "Municipios": len(d["por_municipio"]),
                 }
                 for cod, d in sorted(
                     part_camara.items(), key=lambda x: x[1]["votos_total"], reverse=True
@@ -431,7 +421,7 @@ def render(datos: dict):
                     orientation="h",
                     color="Votos",
                     color_continuous_scale=["#1C2537", "#2196F3"],
-                    hover_data=["% sobre Camara Ant.", "Municipios"],
+                    hover_data=["% sobre Camara Ant."],
                 )
                 fig_c.update_layout(
                     yaxis={"categoryorder": "total ascending"},
@@ -448,11 +438,13 @@ def render(datos: dict):
                 )
             }
             sel_c = st.selectbox("Partido", list(opc_c.keys()), key="sel_cam")
-            pd_c = part_camara[opc_c[sel_c]]
+            sel_c_cod = opc_c[sel_c]
 
-            top_mc = sorted(
-                pd_c["por_municipio"].items(), key=lambda x: x[1], reverse=True
-            )[:20]
+            # ── LAZY LOAD geo for selected partido ──
+            geo_c = cargar_geo_partido_circ(mmv_path_str, "1", sel_c_cod)
+            por_muni_ant = _filter_prefix(geo_c["por_municipio"], COD_ANTIOQUIA + "_")
+
+            top_mc = sorted(por_muni_ant.items(), key=lambda x: x[1], reverse=True)[:20]
             df_mc = pd.DataFrame(
                 [
                     {
@@ -481,14 +473,11 @@ def render(datos: dict):
                 st.plotly_chart(plotly_defaults(fig_mc), use_container_width=True)
 
             _render_drilldown_partido(
-                pd_c,
-                color="#2196F3",
-                key_prefix=f"cam_{opc_c[sel_c]}",
-                divipol=divipol,
-                totales_muni=cam_totales_muni,
-                totales_puesto=cam_totales_puesto,
-                mmv_path_str=mmv_path_str,
+                cod_partido=sel_c_cod,
                 circ="1",
-                cod_partido=opc_c[sel_c],
+                color="#2196F3",
+                key_prefix=f"cam_{sel_c_cod}",
+                divipol=divipol,
+                mmv_path_str=mmv_path_str,
                 fixed_dep=COD_ANTIOQUIA,
             )

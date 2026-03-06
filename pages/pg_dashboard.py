@@ -4,6 +4,7 @@ pages/pg_dashboard.py
 Página: Overview — resumen general, candidatos CREEMOS
 y distribución por partido (dos tortas).
 """
+
 from __future__ import annotations
 
 import math
@@ -15,16 +16,22 @@ import pandas as pd
 from core.parser import COD_ANTIOQUIA
 from pages.shared import (
     CANDIDATOS_PRINCIPALES,
-    fmt, pct, kpi, section, plotly_defaults,
-    nombre_partido, nombre_candidato, resolver_mmv_path,
+    fmt,
+    pct,
+    kpi,
+    section,
+    plotly_defaults,
+    nombre_partido,
+    nombre_candidato,
+    resolver_mmv_path,
 )
 
 
 def render(datos: dict):
-    mmv        = datos["mmv"]
-    partidos   = datos["partidos"]
+    mmv = datos["mmv"]
+    partidos = datos["partidos"]
     candidatos = datos["candidatos"]
-    divipol    = datos["divipol"]
+    divipol = datos["divipol"]
 
     if not mmv:
         st.warning(
@@ -33,13 +40,15 @@ def render(datos: dict):
         )
         return
 
-    total_validos       = sum(d["votos_validos"]    for d in mmv["municipios"].values())
-    total_lista         = sum(d["votos_total"]      for d in mmv["partidos"].values())
-    total_blancos       = sum(d["votos_blanco"]     for d in mmv["municipios"].values())
-    total_nulos         = sum(d["votos_nulo"]       for d in mmv["municipios"].values())
-    total_no_marcados   = sum(d["votos_no_marcado"] for d in mmv["municipios"].values())
-    total_votos         = total_validos + total_lista + total_blancos + total_nulos + total_no_marcados
-    total_mesas_divipol = sum(v["num_mesas"]     for v in divipol["por_muni"].values())
+    total_validos = sum(d["votos_validos"] for d in mmv["municipios"].values())
+    total_lista = sum(d["votos_total"] for d in mmv["partidos"].values())
+    total_blancos = sum(d["votos_blanco"] for d in mmv["municipios"].values())
+    total_nulos = sum(d["votos_nulo"] for d in mmv["municipios"].values())
+    total_no_marcados = sum(d["votos_no_marcado"] for d in mmv["municipios"].values())
+    total_votos = (
+        total_validos + total_lista + total_blancos + total_nulos + total_no_marcados
+    )
+    total_mesas_divipol = sum(v["num_mesas"] for v in divipol["por_muni"].values())
     stats_circ = mmv.get("stats_por_circ", {})
     total_validos_senado = stats_circ.get("0", {}).get("votos_validos_total", 0)
     total_validos_camara = stats_circ.get("1", {}).get("votos_validos_total", 0)
@@ -48,32 +57,56 @@ def render(datos: dict):
     section("RESUMEN GENERAL", "public")
     c1, c2, c3, c4, c5, c6 = st.columns(6)
     with c1:
-        kpi("Votos totales (todos)", fmt(total_votos), "todas las circunscripciones MMV", "#E63946")
+        kpi(
+            "Votos totales (todos)",
+            fmt(total_votos),
+            "todas las circunscripciones MMV",
+            "#E63946",
+        )
     with c2:
-        kpi("Votos válidos Senado", fmt(total_validos_senado),
-            f"{pct(total_validos_senado, total_votos)} del total global", "#2196F3")
+        kpi(
+            "Votos válidos Senado",
+            fmt(total_validos_senado),
+            f"{pct(total_validos_senado, total_votos)} del total global",
+            "#2196F3",
+        )
     with c3:
-        kpi("Votos válidos Cámara", fmt(total_validos_camara),
-            f"{pct(total_validos_camara, total_votos)} del total global", "#10B981")
+        kpi(
+            "Votos válidos Cámara",
+            fmt(total_validos_camara),
+            f"{pct(total_validos_camara, total_votos)} del total global",
+            "#10B981",
+        )
     with c4:
-        kpi("Mesas reportadas", fmt(mmv["mesas_count"]),
+        kpi(
+            "Mesas reportadas",
+            fmt(mmv["mesas_count"]),
             f"de {fmt(total_mesas_divipol)} totales · {pct(mmv['mesas_count'], total_mesas_divipol)}",
-            "#10B981")
+            "#10B981",
+        )
     with c5:
-        kpi("Blancos", fmt(total_blancos),
-            f"{pct(total_blancos, total_votos)} del escrutinio", "#F59E0B")
+        kpi(
+            "Blancos",
+            fmt(total_blancos),
+            f"{pct(total_blancos, total_votos)} del escrutinio",
+            "#F59E0B",
+        )
     with c6:
-        kpi("Nulos", fmt(total_nulos),
-            f"{pct(total_nulos, total_votos)} del escrutinio · No marcados: {fmt(total_no_marcados)}", "#94A3B8")
+        kpi(
+            "Nulos",
+            fmt(total_nulos),
+            f"{pct(total_nulos, total_votos)} del escrutinio · No marcados: {fmt(total_no_marcados)}",
+            "#94A3B8",
+        )
 
     # ── Candidatos CREEMOS ──
     section("CANDIDATOS CREEMOS", "groups")
     cols = st.columns(len(CANDIDATOS_PRINCIPALES))
     for col, (key, meta) in zip(cols, CANDIDATOS_PRINCIPALES.items()):
-        cd    = mmv["candidatos"].get(key)
-        votos = cd["votos_total"]        if cd else 0
-        dep   = len(cd["por_depto"])     if cd else 0
-        mun   = len(cd["por_municipio"]) if cd else 0
+        cd = mmv["candidatos"].get(key)
+        votos = cd["votos_total"] if cd else 0
+        dep = len(cd["por_depto"]) if cd else 0
+        mun = cd.get("n_municipios", 0) if cd else 0
         cargo_l = meta["cargo"].lower()
         if "senado" in cargo_l:
             den = total_validos_senado
@@ -135,9 +168,7 @@ def render(datos: dict):
     top_sen_rows = sorted(top_sen_rows, key=lambda x: x["Votos"], reverse=True)[:20]
     top_cam_rows = sorted(top_cam_rows, key=lambda x: x["Votos"], reverse=True)[:20]
 
-    tab_sen_cand, tab_cam_cand = st.tabs(
-        ["Senado · Nacional", "Cámara · Antioquia"]
-    )
+    tab_sen_cand, tab_cam_cand = st.tabs(["Senado · Nacional", "Cámara · Antioquia"])
 
     with tab_sen_cand:
         if not top_sen_rows:
@@ -162,7 +193,9 @@ def render(datos: dict):
 
     with tab_cam_cand:
         if not top_cam_rows:
-            st.info("No se encontraron candidatos de Cámara Antioquia con votos en este corte.")
+            st.info(
+                "No se encontraron candidatos de Cámara Antioquia con votos en este corte."
+            )
         else:
             df_cam = pd.DataFrame(top_cam_rows)
             fig_cam = px.bar(
@@ -200,20 +233,30 @@ def render(datos: dict):
             part_camara_ant[cod] = v_ant
 
     total_sen = sum(part_senado.values())  # lista + candidatos válidos (circ 0)
-    total_cam = sum(part_camara_ant.values())  # lista + candidatos válidos (circ 1, Antioquia)
+    total_cam = sum(
+        part_camara_ant.values()
+    )  # lista + candidatos válidos (circ 1, Antioquia)
 
     # ── Umbral Senado CREEMOS ──
     section("SE SUPERA EL UMBRAL?", "rule")
 
     cand_sen_key = next(
-        (k for k, m in CANDIDATOS_PRINCIPALES.items() if m.get("cargo", "").lower() == "senado"),
+        (
+            k
+            for k, m in CANDIDATOS_PRINCIPALES.items()
+            if m.get("cargo", "").lower() == "senado"
+        ),
         "01070_001",
     )
     party_creemos_sen = cand_sen_key.split("_")[0]
     votos_creemos_sen = part_senado.get(party_creemos_sen, 0)
     umbral_pct = 3.0
     base_umbral_senado = total_validos_senado
-    umbral_votos = math.ceil(base_umbral_senado * (umbral_pct / 100)) if base_umbral_senado > 0 else 0
+    umbral_votos = (
+        math.ceil(base_umbral_senado * (umbral_pct / 100))
+        if base_umbral_senado > 0
+        else 0
+    )
     supera_umbral = base_umbral_senado > 0 and votos_creemos_sen >= umbral_votos
 
     u1, u2, u3 = st.columns(3)
@@ -233,7 +276,12 @@ def render(datos: dict):
         )
     with u3:
         if base_umbral_senado == 0:
-            kpi("Resultado", "Sin datos", "No hay votos válidos de Senado (circ 0) en MMV", "#94A3B8")
+            kpi(
+                "Resultado",
+                "Sin datos",
+                "No hay votos válidos de Senado (circ 0) en MMV",
+                "#94A3B8",
+            )
         else:
             estado = "Sí, supera" if supera_umbral else "No supera"
             detalle = (
@@ -249,51 +297,71 @@ def render(datos: dict):
         if total_sen == 0:
             st.info("No se encontraron votos para Senado en este corte.")
         else:
-            top_s    = sorted(part_senado.items(),
-                              key=lambda x: x[1], reverse=True)[:20]
+            top_s = sorted(part_senado.items(), key=lambda x: x[1], reverse=True)[:20]
             labels_s = [nombre_partido(c, partidos)[:24] for c, _ in top_s]
             values_s = [v for _, v in top_s]
-            otros_s  = total_sen - sum(values_s)
+            otros_s = total_sen - sum(values_s)
             if otros_s > 0:
                 labels_s.append("Otros")
                 values_s.append(otros_s)
-            fig_s = go.Figure(go.Pie(
-                labels=labels_s, values=values_s, hole=0.55,
-                textinfo="percent",
-                hovertemplate="%{label}<br>%{value:,} votos · %{percent}<extra></extra>",
-            ))
+            fig_s = go.Figure(
+                go.Pie(
+                    labels=labels_s,
+                    values=values_s,
+                    hole=0.55,
+                    textinfo="percent",
+                    hovertemplate="%{label}<br>%{value:,} votos · %{percent}<extra></extra>",
+                )
+            )
             fig_s.update_layout(
                 height=310,
-                annotations=[dict(text=f"<b>{fmt(total_sen)}</b>",
-                                  x=0.5, y=0.5, font_size=13,
-                                  showarrow=False, font_color="#F1F5F9")],
+                annotations=[
+                    dict(
+                        text=f"<b>{fmt(total_sen)}</b>",
+                        x=0.5,
+                        y=0.5,
+                        font_size=13,
+                        showarrow=False,
+                        font_color="#F1F5F9",
+                    )
+                ],
             )
             st.plotly_chart(plotly_defaults(fig_s), use_container_width=True)
 
     with tab_cam:
         if total_cam == 0:
-            st.info(
-                "No se encontraron votos para Cámara Antioquia "
-                "en este corte."
-            )
+            st.info("No se encontraron votos para Cámara Antioquia " "en este corte.")
         else:
-            top_c    = sorted(part_camara_ant.items(), key=lambda x: x[1], reverse=True)[:20]
+            top_c = sorted(part_camara_ant.items(), key=lambda x: x[1], reverse=True)[
+                :20
+            ]
             labels_c = [nombre_partido(c, partidos)[:24] for c, _ in top_c]
             values_c = [v for _, v in top_c]
-            otros_c  = total_cam - sum(values_c)
+            otros_c = total_cam - sum(values_c)
             if otros_c > 0:
                 labels_c.append("Otros")
                 values_c.append(otros_c)
-            fig_c = go.Figure(go.Pie(
-                labels=labels_c, values=values_c, hole=0.55,
-                textinfo="percent",
-                hovertemplate="%{label}<br>%{value:,} votos · %{percent}<extra></extra>",
-                marker_colors=px.colors.qualitative.Set2,
-            ))
+            fig_c = go.Figure(
+                go.Pie(
+                    labels=labels_c,
+                    values=values_c,
+                    hole=0.55,
+                    textinfo="percent",
+                    hovertemplate="%{label}<br>%{value:,} votos · %{percent}<extra></extra>",
+                    marker_colors=px.colors.qualitative.Set2,
+                )
+            )
             fig_c.update_layout(
                 height=310,
-                annotations=[dict(text=f"<b>{fmt(total_cam)}</b>",
-                                  x=0.5, y=0.5, font_size=13,
-                                  showarrow=False, font_color="#F1F5F9")],
+                annotations=[
+                    dict(
+                        text=f"<b>{fmt(total_cam)}</b>",
+                        x=0.5,
+                        y=0.5,
+                        font_size=13,
+                        showarrow=False,
+                        font_color="#F1F5F9",
+                    )
+                ],
             )
             st.plotly_chart(plotly_defaults(fig_c), use_container_width=True)

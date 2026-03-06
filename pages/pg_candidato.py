@@ -11,7 +11,13 @@ import plotly.express as px
 import streamlit as st
 import pandas as pd
 
-from core.parser import COD_ANTIOQUIA, cargar_mesa_candidato, cargar_mesa_totales_circ
+from core.parser import (
+    COD_ANTIOQUIA,
+    cargar_geo_candidato,
+    cargar_mesa_candidato,
+    cargar_geo_totales_circ,
+    cargar_mesa_totales_circ,
+)
 from pages.shared import (
     fmt,
     pct,
@@ -90,16 +96,20 @@ def render(
         "(excluye voto de lista 000, blanco 996, nulo 997 y no marcado 998)."
     )
 
+    # ── LAZY LOAD: geographic data for this candidate ──
+    mmv_path_str = str(resolver_mmv_path())
+    geo = cargar_geo_candidato(mmv_path_str, cand_key)
+    por_muni_full = geo["por_municipio"]
+    por_puesto_full = geo["por_puesto"]
+
     if solo_antioquia:
         votos_total = cd["por_depto"].get(COD_ANTIOQUIA, 0)
         por_muni = {
-            k: v
-            for k, v in cd["por_municipio"].items()
-            if k.startswith(COD_ANTIOQUIA + "_")
+            k: v for k, v in por_muni_full.items() if k.startswith(COD_ANTIOQUIA + "_")
         }
         por_puesto = {
             k: v
-            for k, v in cd["por_puesto"].items()
+            for k, v in por_puesto_full.items()
             if k.startswith(COD_ANTIOQUIA + "_")
         }
         deptos_data = {COD_ANTIOQUIA: cd["por_depto"].get(COD_ANTIOQUIA, 0)}
@@ -111,20 +121,21 @@ def render(
             )
     else:
         votos_total = cd["votos_total"]
-        por_muni = dict(cd["por_municipio"])
-        por_puesto = dict(cd["por_puesto"])
+        por_muni = dict(por_muni_full)
+        por_puesto = dict(por_puesto_full)
         deptos_data = dict(cd["por_depto"])
 
-    # Denominadores reales del territorio para el drill-down:
-    # votos válidos (lista + candidatos) por circunscripción.
     circ_ref = (
         expected_circ
         or cd.get("circunscripcion")
         or (meta or {}).get("circunscripcion", "")
     ).strip()
-    totales_circ = mmv.get("totales_validos_por_circ", {}).get(circ_ref, {})
-    totales_muni = totales_circ.get("por_municipio", {})
-    totales_puesto = totales_circ.get("por_puesto", {})
+
+    # ── LAZY LOAD: totals for the circunscripcion ──
+    totales_circ_geo = cargar_geo_totales_circ(mmv_path_str, circ_ref)
+    totales_muni = totales_circ_geo.get("por_municipio", {})
+    totales_puesto = totales_circ_geo.get("por_puesto", {})
+
     stats_circ = mmv.get("stats_por_circ", {}).get(circ_ref, {})
     if solo_antioquia:
         total_ref = sum(
@@ -343,8 +354,7 @@ def render(
         else:
             st.info("Sin puestos")
 
-    # ── LAZY LOAD: cargar por_mesa solo cuando hay puesto seleccionado ──
-    mmv_path_str = str(resolver_mmv_path())
+    # ── LAZY LOAD: mesa data only when puesto selected ──
     por_mesa = {}
     totales_mesa = {}
     mesas_opc = {}
