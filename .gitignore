@@ -1,0 +1,79 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+*.egg
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environment that might live in the repo
+venv/
+ENV/
+env/
+.venv/
+.env/
+.env
+.env.*
+
+# Streamlit config/secrets
+.streamlit/
+.streamlit/secrets.toml
+
+# Testing and coverage artifacts
+.pytest_cache/
+htmlcov/
+coverage.xml
+.coverage
+.coverage.*
+
+# IDE/editor/share files
+.vscode/
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
+*.sw?
+
+# Node/npm artifacts (if submodules or frontend added later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+npm-shrinkwrap.json
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+*.tsbuildinfo
+
+# macOS/Windows metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs, sqlite, binaries
+*.log
+*.sqlite3
+*.db
+*.sqlite
+*.bak
+*.tmp
+
+# Credentials, keys, service accounts
+serviceAccount.json
+serviceAccountKey.json
+
+# Misc
+*.pyo
+*.pyd
+
