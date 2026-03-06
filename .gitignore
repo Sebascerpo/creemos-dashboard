@@ -26,8 +26,7 @@ env/
 .env
 .env.*
 
-# Streamlit config/secrets
-.streamlit/
+# Streamlit
 .streamlit/secrets.toml
 
 # Testing and coverage artifacts
@@ -76,4 +75,3 @@ serviceAccountKey.json
 # Misc
 *.pyo
 *.pyd
-

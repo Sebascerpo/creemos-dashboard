@@ -1,0 +1,3 @@
+[client]
+# Usa solo la navegación custom de pages/sidebar.py
+showSidebarNavigation = false
