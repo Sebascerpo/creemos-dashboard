@@ -4,16 +4,21 @@ pages/pg_geografico.py
 Página: Geográfico
 Filtros: Corporación / Ámbito / Candidato
 """
+
 from __future__ import annotations
 
 import plotly.express as px
 import streamlit as st
 import pandas as pd
 
-from core.parser import COD_ANTIOQUIA
+from core.parser import COD_ANTIOQUIA, cargar_geo_candidato, cargar_geo_partido_circ
 from pages.shared import (
     CANDIDATOS_PRINCIPALES,
-    pct, section, plotly_defaults, nombre_depto,
+    pct,
+    section,
+    plotly_defaults,
+    nombre_depto,
+    resolver_mmv_path,
 )
 
 
@@ -26,15 +31,17 @@ def _aggregate_partido(
     mmv: dict,
     party_code: str,
     circ: str,
+    mmv_path_str: str,
 ) -> dict:
     """
     Agrega votos válidos de un partido en una corporación/circunscripción:
     lista (000) + candidatos, desde agregados MMV por circ+partido.
     """
-    pd = mmv.get("partidos_por_circ", {}).get(circ, {}).get(party_code, {})
+    pd_data = mmv.get("partidos_por_circ", {}).get(circ, {}).get(party_code, {})
+    geo = cargar_geo_partido_circ(mmv_path_str, circ, party_code)
     return {
-        "por_depto": dict(pd.get("por_depto_validos_total", {})),
-        "por_municipio": dict(pd.get("por_municipio_validos_total", {})),
+        "por_depto": dict(pd_data.get("por_depto_validos_total", {})),
+        "por_municipio": dict(geo.get("por_municipio", {})),
     }
 
 
@@ -53,21 +60,33 @@ def render(datos: dict):
     f1, f2, f3 = st.columns(3)
     with f1:
         filtro_corp = st.radio(
-            "Corporación", ["Senado", "Cámara"],
-            horizontal=True, key="geo_corp",
+            "Corporación",
+            ["Senado", "Cámara"],
+            horizontal=True,
+            key="geo_corp",
         )
     with f2:
         filtro_scope = st.radio(
-            "Ámbito", ["Nacional", "Solo Antioquia"],
-            horizontal=True, key="geo_scope",
+            "Ámbito",
+            ["Nacional", "Solo Antioquia"],
+            horizontal=True,
+            key="geo_scope",
         )
     # CREEMOS por corporación desde configuración principal
     cand_sen = next(
-        (k for k, m in CANDIDATOS_PRINCIPALES.items() if m.get("cargo", "").lower() == "senado"),
+        (
+            k
+            for k, m in CANDIDATOS_PRINCIPALES.items()
+            if m.get("cargo", "").lower() == "senado"
+        ),
         "01070_001",
     )
     cand_cam = next(
-        (k for k, m in CANDIDATOS_PRINCIPALES.items() if "camara" in m.get("cargo", "").lower()),
+        (
+            k
+            for k, m in CANDIDATOS_PRINCIPALES.items()
+            if "camara" in m.get("cargo", "").lower()
+        ),
         "01067_117",
     )
 
@@ -75,11 +94,16 @@ def render(datos: dict):
         # Candidato opcional; si no se selecciona, usar partido CREEMOS de la corporación.
         cands_opc = {"Sin candidato (Partido CREEMOS)": None}
         if filtro_corp == "Senado":
-            cands_opc[CANDIDATOS_PRINCIPALES.get(cand_sen, {}).get("nombre", "Juliana")] = cand_sen
+            cands_opc[
+                CANDIDATOS_PRINCIPALES.get(cand_sen, {}).get("nombre", "Juliana")
+            ] = cand_sen
         else:
-            cands_opc[CANDIDATOS_PRINCIPALES.get(cand_cam, {}).get("nombre", "German")] = cand_cam
+            cands_opc[
+                CANDIDATOS_PRINCIPALES.get(cand_cam, {}).get("nombre", "German")
+            ] = cand_cam
         filtro_cand_label = st.selectbox(
-            "Candidato", list(cands_opc.keys()), key="geo_cand")
+            "Candidato", list(cands_opc.keys()), key="geo_cand"
+        )
         filtro_cand_key = cands_opc[filtro_cand_label]
 
     if filtro_corp == "Senado":
@@ -116,18 +140,23 @@ def render(datos: dict):
             st.warning("El candidato no coincide con la circunscripción activa en MMV.")
             return
 
+        mmv_path_str = str(resolver_mmv_path())
+        geo = cargar_geo_candidato(mmv_path_str, filtro_cand_key)
         objetivo = {
             "por_depto": dict(cand_data["por_depto"]),
-            "por_municipio": dict(cand_data["por_municipio"]),
+            "por_municipio": dict(geo.get("por_municipio", {})),
         }
         objetivo_label = cand_meta.get("nombre_completo", filtro_cand_key)
     else:
-        objetivo = _aggregate_partido(mmv, party_creemos, circ_obj)
+        mmv_path_str = str(resolver_mmv_path())
+        objetivo = _aggregate_partido(mmv, party_creemos, circ_obj, mmv_path_str)
         objetivo_label = f"Partido CREEMOS [{party_creemos}]"
 
     if filtro_scope == "Solo Antioquia":
         objetivo = {
-            "por_depto": {k: v for k, v in objetivo["por_depto"].items() if k == COD_ANTIOQUIA},
+            "por_depto": {
+                k: v for k, v in objetivo["por_depto"].items() if k == COD_ANTIOQUIA
+            },
             "por_municipio": _pref_filter(objetivo["por_municipio"], COD_ANTIOQUIA),
         }
 
@@ -170,23 +199,25 @@ def render(datos: dict):
         data_dep_global = mmv["deptos"].get(cod, {})
 
         total_mesas_div = sum(
-            v["num_mesas"] for k, v in divipol["por_muni"].items()
+            v["num_mesas"]
+            for k, v in divipol["por_muni"].items()
             if k.startswith(cod + "_")
         )
         pot = sum(
-            v["potencial_total"] for k, v in divipol["por_muni"].items()
+            v["potencial_total"]
+            for k, v in divipol["por_muni"].items()
             if k.startswith(cod + "_")
         )
         votos_obj = objetivo["por_depto"].get(cod, 0)
 
         row = {
-            "Cód":                cod,
-            "Departamento":       nombre_depto(cod, divipol),
-            "Mesas reportadas":   len(data_dep_global.get("mesas", [])),
-            "Total mesas":        total_mesas_div,
-            "% mesas":            pct(len(data_dep_global.get("mesas", [])), total_mesas_div),
-            "Potencial":          pot,
-            "Votos objetivo (candidato/partido)":    votos_obj,
+            "Cód": cod,
+            "Departamento": nombre_depto(cod, divipol),
+            "Mesas reportadas": len(data_dep_global.get("mesas", [])),
+            "Total mesas": total_mesas_div,
+            "% mesas": pct(len(data_dep_global.get("mesas", [])), total_mesas_div),
+            "Potencial": pot,
+            "Votos objetivo (candidato/partido)": votos_obj,
             "% participación objetivo": pct(votos_obj, pot),
         }
         rows.append(row)
@@ -200,12 +231,17 @@ def render(datos: dict):
         # ── Gráfico departamento ──
         if not df.empty:
             fig2 = px.bar(
-                df.head(20), x="Departamento", y="Votos objetivo (candidato/partido)",
-                color="Votos objetivo (candidato/partido)", color_continuous_scale=["#1C2537", "#2196F3"],
+                df.head(20),
+                x="Departamento",
+                y="Votos objetivo (candidato/partido)",
+                color="Votos objetivo (candidato/partido)",
+                color_continuous_scale=["#1C2537", "#2196F3"],
                 hover_data=["Cód", "% participación objetivo"],
                 title=f"Votos objetivo por departamento ({objetivo_label})",
             )
-            fig2.update_layout(coloraxis_showscale=False, height=350, xaxis_tickangle=-35)
+            fig2.update_layout(
+                coloraxis_showscale=False, height=350, xaxis_tickangle=-35
+            )
             st.plotly_chart(plotly_defaults(fig2), use_container_width=True)
 
     # ── Drill-down municipios ──
@@ -216,7 +252,8 @@ def render(datos: dict):
         return
 
     sel_dep_label = st.selectbox(
-        "Seleccionar departamento", list(deptos_disp.keys()), key="geo_dep")
+        "Seleccionar departamento", list(deptos_disp.keys()), key="geo_dep"
+    )
     sel_dep = deptos_disp[sel_dep_label]
 
     obj_muni_sel_dep = _pref_filter(objetivo["por_municipio"], sel_dep)
@@ -228,7 +265,8 @@ def render(datos: dict):
     )
 
     munis_del_depto = {
-        k: v for k, v in mmv["municipios"].items()
+        k: v
+        for k, v in mmv["municipios"].items()
         if v["cod_depto"] == sel_dep and k in set(muni_keys)
     }
 
@@ -240,11 +278,11 @@ def render(datos: dict):
         votos_obj = obj_muni_sel_dep.get(muni_key, 0)
 
         row = {
-            "Municipio":         div_info.get("nombre_municipio", muni_key),
-            "Clave":             muni_key,
-            "Mesas":             len(data.get("mesas", [])),
-            "Potencial":         pot,
-            "Votos objetivo (candidato/partido)":   votos_obj,
+            "Municipio": div_info.get("nombre_municipio", muni_key),
+            "Clave": muni_key,
+            "Mesas": len(data.get("mesas", [])),
+            "Potencial": pot,
+            "Votos objetivo (candidato/partido)": votos_obj,
             "% participación objetivo": pct(votos_obj, pot),
         }
         rows_m.append(row)
