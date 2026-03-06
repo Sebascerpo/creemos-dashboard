@@ -1,7 +1,7 @@
 # Dashboard Electoral — CREEMOS
 
 Dashboard de monitoreo de votos en tiempo real para las elecciones.
-Lee archivos TXT directamente — sin base de datos.
+Lee archivos TXT directamente y genera caché Parquet de agregados para acelerar carga.
 
 ## Estructura
 
@@ -10,6 +10,7 @@ electoral-dashboard/
   ├── app.py                    ← App principal Streamlit
   ├── core/
   │   ├── parser.py             ← Parseo y agregación del MMV
+  │   └── (cache Parquet)       ← data/cache_parquet/<archivo_mmv>/
   │   └── catalogos.py          ← Carga PARTIDOS, CANDIDATOS, DIVIPOL
   ├── data/
   │   ├── PPP_MMV_DD_9999.txt   ← ⭐ REEMPLAZAR con cada nuevo boletín
@@ -25,6 +26,22 @@ electoral-dashboard/
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
+```
+
+## Carga rápida con Parquet (recomendado)
+
+- En el primer arranque, `core/parser.py` parsea el TXT y guarda caché Parquet.
+- En siguientes arranques, carga directo desde Parquet si el TXT no cambió (`size + mtime`).
+- Ubicaciones usadas:
+  - `data/cache_parquet/<nombre_archivo_mmv>/`
+  - fallback: `/tmp/electoral-dashboard-cache/<nombre_archivo_mmv>/`
+
+Si actualizas `PPP_MMV_DD_9999.txt`, el caché se invalida automáticamente y se reconstruye.
+
+Para precalentar caché antes de subir/deploy:
+
+```bash
+python scripts/prewarm_parquet_cache.py --mmv data/PPP_MMV_DD_9999.txt
 ```
 
 ## Deploy en Streamlit Cloud

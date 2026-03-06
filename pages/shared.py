@@ -292,7 +292,7 @@ def cargar_todo(cache_key: str = "") -> dict:
     datos["mmv"]           = procesar_mmv(str(mmv_path))         if mmv_path.exists()  else None
     datos["partidos"]      = cargar_partidos(str(part_path))      if part_path.exists() else {}
     datos["candidatos"]    = cargar_candidatos(str(cand_path))    if cand_path.exists() else {}
-    datos["divipol"]       = cargar_divipol(str(div_path))        if div_path.exists()  else {"por_muni": {}, "por_depto": {}}
+    datos["divipol"]       = cargar_divipol(str(div_path))        if div_path.exists()  else {"por_muni": {}, "por_depto": {}, "por_puesto": {}}
     datos["corporaciones"] = cargar_corporaciones(str(corp_path)) if corp_path.exists() else {}
     return datos
 
