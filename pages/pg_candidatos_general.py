@@ -3,24 +3,33 @@ pages/pg_candidatos_general.py
 Pagina: Candidatos - explorador general de todos los candidatos.
 Filtro por corporación/circunscripción y detalle por candidato.
 """
+
 from __future__ import annotations
 
 import plotly.express as px
 import streamlit as st
 import pandas as pd
 
+from core.parser import cargar_mesa_candidato, cargar_mesa_totales_circ
 from pages.shared import (
-    fmt, pct, kpi, section, plotly_defaults,
-    nombre_partido, nombre_candidato, nombre_depto,
+    fmt,
+    pct,
+    kpi,
+    section,
+    plotly_defaults,
+    nombre_partido,
+    nombre_candidato,
+    nombre_depto,
     nombre_municipio_str,
+    resolver_mmv_path,
 )
 
 
 def render(datos: dict):
-    mmv        = datos["mmv"]
-    partidos   = datos["partidos"]
+    mmv = datos["mmv"]
+    partidos = datos["partidos"]
     candidatos = datos["candidatos"]
-    divipol    = datos["divipol"]
+    divipol = datos["divipol"]
 
     if not mmv:
         st.warning("No hay datos MMV cargados.")
@@ -98,7 +107,9 @@ def render(datos: dict):
         "(excluye voto de lista 000, blanco 996, nulo 997 y no marcado 998)."
     )
 
-    total_votos_filtro = sum(v["por_depto"].get(sel_dep, 0) for v in candidatos_dep.values())
+    total_votos_filtro = sum(
+        v["por_depto"].get(sel_dep, 0) for v in candidatos_dep.values()
+    )
 
     # Drill-down por candidato
     section("DETALLE POR CANDIDATO", "person_search")
@@ -113,12 +124,16 @@ def render(datos: dict):
         label = f"{nombre_candidato(k, candidatos)} - {fmt(votos_dep)} votos"
         opciones[label] = k
 
-    filtro_txt = st.text_input(
-        "Escribe para buscar candidato",
-        value="",
-        key=f"cand_gen_filtro_{corp_obj}_{circ_obj}_{sel_dep}",
-        placeholder="Ej: JULIANA / GERMAN / apellido...",
-    ).strip().casefold()
+    filtro_txt = (
+        st.text_input(
+            "Escribe para buscar candidato",
+            value="",
+            key=f"cand_gen_filtro_{corp_obj}_{circ_obj}_{sel_dep}",
+            placeholder="Ej: JULIANA / GERMAN / apellido...",
+        )
+        .strip()
+        .casefold()
+    )
     if filtro_txt:
         labels_disp = [lbl for lbl in opciones.keys() if filtro_txt in lbl.casefold()]
     else:
@@ -133,8 +148,8 @@ def render(datos: dict):
         labels_disp,
         key=f"cand_gen_sel_{corp_obj}_{circ_obj}_{sel_dep}",
     )
-    sel_key   = opciones[sel_label]
-    cd        = candidatos_dep[sel_key]
+    sel_key = opciones[sel_label]
+    cd = candidatos_dep[sel_key]
     votos_cand_dep = cd["por_depto"].get(sel_dep, 0)
     por_muni_dep = {
         k: v for k, v in cd["por_municipio"].items() if k.startswith(sel_dep + "_")
@@ -142,72 +157,108 @@ def render(datos: dict):
     por_puesto_dep = {
         k: v for k, v in cd["por_puesto"].items() if k.startswith(sel_dep + "_")
     }
-    por_mesa_dep = {
-        k: v for k, v in cd["por_mesa"].items() if k.startswith(sel_dep + "_")
-    }
     deptos_data = {sel_dep: votos_cand_dep}
     totales_circ = mmv.get("totales_validos_por_circ", {}).get(circ_obj, {})
     totales_muni = totales_circ.get("por_municipio", {})
     totales_puesto = totales_circ.get("por_puesto", {})
-    totales_mesa = totales_circ.get("por_mesa", {})
-    total_validos_depto = sum(v for k, v in totales_muni.items() if k.startswith(sel_dep + "_"))
+    total_validos_depto = sum(
+        v for k, v in totales_muni.items() if k.startswith(sel_dep + "_")
+    )
     if total_validos_depto <= 0:
         total_validos_depto = 1
         label_base_depto = "sin base válida disponible"
     else:
-        label_base_depto = (
-            f"del total válido de {filtro_tipo.lower()} en el depto ({fmt(total_validos_depto)})"
-        )
+        label_base_depto = f"del total válido de {filtro_tipo.lower()} en el depto ({fmt(total_validos_depto)})"
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        kpi("Votos del candidato", fmt(votos_cand_dep),
-            nombre_partido(cd["cod_partido"], partidos)[:38], color)
+        kpi(
+            "Votos del candidato",
+            fmt(votos_cand_dep),
+            nombre_partido(cd["cod_partido"], partidos)[:38],
+            color,
+        )
     with c2:
-        kpi("% sobre total", pct(votos_cand_dep, total_validos_depto),
-            label_base_depto, color)
+        kpi(
+            "% sobre total",
+            pct(votos_cand_dep, total_validos_depto),
+            label_base_depto,
+            color,
+        )
     with c3:
         kpi("Departamento", sel_dep, nombre_depto(sel_dep, divipol), "#2196F3")
     with c4:
-        kpi("Municipios", str(len(por_muni_dep)),
-            "con al menos 1 voto en el depto", "#10B981")
+        kpi(
+            "Municipios",
+            str(len(por_muni_dep)),
+            "con al menos 1 voto en el depto",
+            "#10B981",
+        )
 
     col_a, col_b = st.columns(2)
 
     with col_a:
         section("VOTOS EN DEPARTAMENTO", "location_city")
-        df_dep = pd.DataFrame([{
-            "Departamento": nombre_depto(d, divipol),
-            "Cod": d,
-            "Votos": v,
-        } for d, v in sorted(deptos_data.items(), key=lambda x: x[1], reverse=True)])
+        df_dep = pd.DataFrame(
+            [
+                {
+                    "Departamento": nombre_depto(d, divipol),
+                    "Cod": d,
+                    "Votos": v,
+                }
+                for d, v in sorted(
+                    deptos_data.items(), key=lambda x: x[1], reverse=True
+                )
+            ]
+        )
         if not df_dep.empty:
-            fig_d = px.bar(df_dep, x="Departamento", y="Votos",
-                           color="Votos", color_continuous_scale=["#1C2537", color],
-                           hover_data=["Cod"])
-            fig_d.update_layout(coloraxis_showscale=False, height=320, xaxis_tickangle=-35)
+            fig_d = px.bar(
+                df_dep,
+                x="Departamento",
+                y="Votos",
+                color="Votos",
+                color_continuous_scale=["#1C2537", color],
+                hover_data=["Cod"],
+            )
+            fig_d.update_layout(
+                coloraxis_showscale=False, height=320, xaxis_tickangle=-35
+            )
             st.plotly_chart(plotly_defaults(fig_d), use_container_width=True)
 
     with col_b:
         section("TOP 20 MUNICIPIOS", "location_on")
         top_m = sorted(por_muni_dep.items(), key=lambda x: x[1], reverse=True)[:20]
-        df_m  = pd.DataFrame([{
-            "Municipio": nombre_municipio_str(k, divipol),
-            "Clave": k,
-            "Votos": v,
-        } for k, v in top_m])
+        df_m = pd.DataFrame(
+            [
+                {
+                    "Municipio": nombre_municipio_str(k, divipol),
+                    "Clave": k,
+                    "Votos": v,
+                }
+                for k, v in top_m
+            ]
+        )
         if not df_m.empty:
-            fig_m = px.bar(df_m, x="Votos", y="Municipio", orientation="h",
-                           color="Votos", color_continuous_scale=["#1C2537", color],
-                           hover_data=["Clave"])
-            fig_m.update_layout(yaxis={"categoryorder": "total ascending"},
-                                 coloraxis_showscale=False, height=320)
+            fig_m = px.bar(
+                df_m,
+                x="Votos",
+                y="Municipio",
+                orientation="h",
+                color="Votos",
+                color_continuous_scale=["#1C2537", color],
+                hover_data=["Clave"],
+            )
+            fig_m.update_layout(
+                yaxis={"categoryorder": "total ascending"},
+                coloraxis_showscale=False,
+                height=320,
+            )
             st.plotly_chart(plotly_defaults(fig_m), use_container_width=True)
 
     section("DRILL-DOWN HASTA MESA", "travel_explore")
     st.markdown(
         '<p style="color:#94A3B8;font-size:13px;margin-top:-8px;margin-bottom:16px;">'
-        'Selecciona para ver el detalle hasta nivel de mesa individual.</p>',
+        "Selecciona para ver el detalle hasta nivel de mesa individual.</p>",
         unsafe_allow_html=True,
     )
 
@@ -215,7 +266,7 @@ def render(datos: dict):
         dep_nom = nombre_depto(sel_dep, divipol)
         st.markdown(
             f'<p style="color:#F59E0B;font-size:13px;font-weight:600;">'
-            f'Departamento: {dep_nom} [{sel_dep}]</p>',
+            f"Departamento: {dep_nom} [{sel_dep}]</p>",
             unsafe_allow_html=True,
         )
 
@@ -232,19 +283,26 @@ def render(datos: dict):
 
         with col_muni:
             if munis_opc:
-                sel_muni = munis_opc[st.selectbox(
-                    "Municipio",
-                    list(munis_opc.keys()),
-                    key=f"cand_dd_muni_{sel_key}_{sel_dep}",
-                )]
+                sel_muni = munis_opc[
+                    st.selectbox(
+                        "Municipio",
+                        list(munis_opc.keys()),
+                        key=f"cand_dd_muni_{sel_key}_{sel_dep}",
+                    )
+                ]
             else:
                 st.info("Sin municipios")
 
         puestos_opc = {}
         if sel_muni:
             puestos_disp = sorted(
-                {k: v for k, v in por_puesto_dep.items() if k.startswith(sel_muni + "_")}.items(),
-                key=lambda x: x[1], reverse=True,
+                {
+                    k: v
+                    for k, v in por_puesto_dep.items()
+                    if k.startswith(sel_muni + "_")
+                }.items(),
+                key=lambda x: x[1],
+                reverse=True,
             )
             for k, v in puestos_disp:
                 p_info = divipol.get("por_puesto", {}).get(k, {})
@@ -257,29 +315,45 @@ def render(datos: dict):
 
         with col_puesto:
             if puestos_opc:
-                sel_puesto = puestos_opc[st.selectbox(
-                    "Puesto de votación",
-                    list(puestos_opc.keys()),
-                    key=f"cand_dd_puesto_{sel_key}_{sel_dep}",
-                )]
+                sel_puesto = puestos_opc[
+                    st.selectbox(
+                        "Puesto de votación",
+                        list(puestos_opc.keys()),
+                        key=f"cand_dd_puesto_{sel_key}_{sel_dep}",
+                    )
+                ]
             else:
                 st.info("Sin puestos")
 
+        # ── LAZY LOAD: cargar por_mesa solo cuando hay puesto seleccionado ──
+        mmv_path_str = str(resolver_mmv_path())
+        por_mesa_dep = {}
+        totales_mesa = {}
         mesas_opc = {}
         if sel_puesto:
+            por_mesa_full = cargar_mesa_candidato(mmv_path_str, sel_key)
+            por_mesa_dep = {
+                k: v for k, v in por_mesa_full.items() if k.startswith(sel_dep + "_")
+            }
+            totales_mesa = cargar_mesa_totales_circ(mmv_path_str, circ_obj)
             mesas_disp = sorted(
-                {k: v for k, v in por_mesa_dep.items() if k.startswith(sel_puesto)}.items(),
-                key=lambda x: x[1], reverse=True,
+                {
+                    k: v for k, v in por_mesa_dep.items() if k.startswith(sel_puesto)
+                }.items(),
+                key=lambda x: x[1],
+                reverse=True,
             )
             mesas_opc = {f"Mesa {k.split('_')[4]} ({v} vts)": k for k, v in mesas_disp}
 
         with col_mesa:
             if mesas_opc:
-                sel_mesa = mesas_opc[st.selectbox(
-                    "Mesa",
-                    list(mesas_opc.keys()),
-                    key=f"cand_dd_mesa_{sel_key}_{sel_dep}",
-                )]
+                sel_mesa = mesas_opc[
+                    st.selectbox(
+                        "Mesa",
+                        list(mesas_opc.keys()),
+                        key=f"cand_dd_mesa_{sel_key}_{sel_dep}",
+                    )
+                ]
             else:
                 st.info("Sin mesas")
 
@@ -293,7 +367,11 @@ def render(datos: dict):
         total_mesa = totales_mesa.get(sel_mesa, 0) if sel_mesa else 0
 
         with r1:
-            muni_nom = divipol["por_muni"].get(sel_muni, {}).get("nombre_municipio", sel_muni or "")
+            muni_nom = (
+                divipol["por_muni"]
+                .get(sel_muni, {})
+                .get("nombre_municipio", sel_muni or "")
+            )
             kpi(
                 "Votos en municipio",
                 fmt(votos_muni),
@@ -316,13 +394,20 @@ def render(datos: dict):
                 color,
             )
     else:
-        st.info("Sin datos de municipios disponibles para este candidato en el departamento.")
+        st.info(
+            "Sin datos de municipios disponibles para este candidato en el departamento."
+        )
 
     section("DETALLE POR MUNICIPIO", "table_chart")
-    df_muni_full = pd.DataFrame([{
-        "Municipio":   nombre_municipio_str(k, divipol),
-        "Votos":       v,
-        "% candidato": pct(v, max(votos_cand_dep, 1)),
-        "% municipio": pct(v, totales_muni.get(k, 0)),
-    } for k, v in sorted(por_muni_dep.items(), key=lambda x: x[1], reverse=True)])
+    df_muni_full = pd.DataFrame(
+        [
+            {
+                "Municipio": nombre_municipio_str(k, divipol),
+                "Votos": v,
+                "% candidato": pct(v, max(votos_cand_dep, 1)),
+                "% municipio": pct(v, totales_muni.get(k, 0)),
+            }
+            for k, v in sorted(por_muni_dep.items(), key=lambda x: x[1], reverse=True)
+        ]
+    )
     st.dataframe(df_muni_full, use_container_width=True, height=320)
