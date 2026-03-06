@@ -1,3 +1,9 @@
 [client]
 # Usa solo la navegación custom de pages/sidebar.py
 showSidebarNavigation = false
+
+[server]
+maxUploadSize = 1000
+
+[runner]
+fastReruns = true

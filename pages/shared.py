@@ -280,7 +280,7 @@ html, body, .stApp {
 # CARGA DE DATOS
 # ──────────────────────────────────────────────
 
-@st.cache_data(show_spinner=False)
+@st.cache_resource(show_spinner=False)
 def cargar_todo(cache_key: str = "") -> dict:
     mmv_path  = resolver_mmv_path()
     cand_path = DATA_DIR / "CANDIDATOS.txt"
@@ -289,7 +289,7 @@ def cargar_todo(cache_key: str = "") -> dict:
     corp_path = DATA_DIR / "CORPORACION.txt"
 
     datos = {}
-    datos["mmv"]           = procesar_mmv(str(mmv_path))         if mmv_path.exists()  else None
+    datos["mmv"]           = procesar_mmv(str(mmv_path), cache_key=cache_key) if mmv_path.exists() else None
     datos["partidos"]      = cargar_partidos(str(part_path))      if part_path.exists() else {}
     datos["candidatos"]    = cargar_candidatos(str(cand_path))    if cand_path.exists() else {}
     datos["divipol"]       = cargar_divipol(str(div_path))        if div_path.exists()  else {"por_muni": {}, "por_depto": {}, "por_puesto": {}}

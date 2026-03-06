@@ -76,6 +76,7 @@ def render_sidebar(datos: dict) -> str:
         if st.button("Recargar datos", use_container_width=True,
                      icon=":material/refresh:"):
             st.cache_data.clear()
+            st.cache_resource.clear()
             st.rerun()
 
     return keys_map[sel]

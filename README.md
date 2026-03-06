@@ -44,6 +44,10 @@ Para precalentar caché antes de subir/deploy:
 python scripts/prewarm_parquet_cache.py --mmv data/PPP_MMV_DD_9999.txt
 ```
 
+Importante para Streamlit Cloud:
+- Si no existe `data/cache_parquet/...` en el repo, el primer arranque intentará parsear el TXT completo y puede caerse por memoria/tiempo.
+- Recomendado: generar caché local con el script, confirmar carpeta `data/cache_parquet/PPP_MMV_DD_9999/` y subirla a GitHub junto con el código.
+
 ## Deploy en Streamlit Cloud
 
 1. Sube este repo a GitHub

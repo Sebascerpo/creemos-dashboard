@@ -32,7 +32,7 @@ COD_NULO = "997"
 COD_NO_MARC = "998"
 
 COD_ANTIOQUIA = "01"
-CACHE_VERSION = 1
+CACHE_VERSION = 2
 
 _CACHE_FILES = {
     "meta": "meta.parquet",
@@ -293,7 +293,11 @@ def _guardar_cache_parquet(mmv: dict, mmv_path: Path) -> None:
         return
 
     def _write_rows(rows: list[dict], columns: list[str], out_path: Path) -> None:
-        pd.DataFrame(rows, columns=columns).to_parquet(out_path, index=False)
+        pd.DataFrame(rows, columns=columns).to_parquet(
+            out_path,
+            index=False,
+            compression="zstd",
+        )
 
     try:
         c_rows = []
@@ -492,7 +496,11 @@ def _guardar_cache_parquet(mmv: dict, mmv_path: Path) -> None:
             "mesas_count": int(mmv.get("mesas_count", 0)),
             "total_lineas": int(mmv.get("total_lineas", 0)),
         }
-        pd.DataFrame([meta]).to_parquet(target_dir / _CACHE_FILES["meta"], index=False)
+        pd.DataFrame([meta]).to_parquet(
+            target_dir / _CACHE_FILES["meta"],
+            index=False,
+            compression="zstd",
+        )
     except Exception:
         return
 
@@ -707,8 +715,8 @@ def _procesar_mmv_txt(path: str) -> dict:
     }
 
 
-@st.cache_data(show_spinner=False)
-def procesar_mmv(path: str) -> dict:
+@st.cache_resource(show_spinner=False)
+def procesar_mmv(path: str, cache_key: str = "") -> dict:
     """
     Lee MMV y retorna agregados en memoria.
     Flujo:
@@ -716,11 +724,14 @@ def procesar_mmv(path: str) -> dict:
       2) Si no existe o cambió el TXT, parsea línea por línea.
       3) Persiste el agregado a Parquet para próximos arranques.
     """
+    _ = cache_key
     mmv_path = Path(path)
     from_cache = _cargar_desde_cache_parquet(mmv_path)
     if from_cache is not None:
+        from_cache["cache_meta"] = {"load_source": "parquet", "cache_key": cache_key}
         return from_cache
 
     mmv = _procesar_mmv_txt(path)
     _guardar_cache_parquet(mmv, mmv_path)
+    mmv["cache_meta"] = {"load_source": "txt", "cache_key": cache_key}
     return mmv

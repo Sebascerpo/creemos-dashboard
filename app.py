@@ -73,7 +73,13 @@ def main():
             # Evita que el indicador desaparezca demasiado rápido al primer arranque.
             time.sleep(0.25)
         if datos.get("mmv"):
-            load_box.success("Datos cargados.")
+            src = datos["mmv"].get("cache_meta", {}).get("load_source", "")
+            if src == "parquet":
+                load_box.success("Datos cargados (caché Parquet).")
+            elif src == "txt":
+                load_box.success("Datos cargados (parseo TXT).")
+            else:
+                load_box.success("Datos cargados.")
         else:
             load_box.warning(
                 f"Datos parciales: no se encontró MMV en {mmv_path}."
