@@ -1,0 +1,80 @@
+<section class="space-y-4">
+    <header>
+        <h2 class="mb-1 text-2xl font-semibold">Seguimiento de Mesas</h2>
+        <p class="text-sm text-slate-500">Estado de reporte en tiempo real por municipio de Antioquia.</p>
+    </header>
+
+    <section class="grid gap-3 md:grid-cols-4">
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Total mesas Antioquia</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ totalMesasAntioquia() | number: '1.0-0' }}</h3>
+        </article>
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Mesas reportadas</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ mesasReportadas() | number: '1.0-0' }}</h3>
+        </article>
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">% avance</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ avancePct() | number: '1.2-2' }}%</h3>
+        </article>
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Ultimas 24h</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ reportadas24h() | number: '1.0-0' }}</h3>
+        </article>
+    </section>
+
+    <section class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+        <table class="w-full text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-900/60">
+                <tr>
+                    <th class="px-3 py-2 text-left">Municipio</th>
+                    <th class="px-3 py-2 text-right">Mesas totales</th>
+                    <th class="px-3 py-2 text-right">Mesas reportadas</th>
+                    <th class="px-3 py-2 text-right">% avance</th>
+                    <th class="px-3 py-2 text-right">Ultimas 24h</th>
+                    <th class="px-3 py-2"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let r of rows()">
+                    <tr class="border-t border-slate-100 dark:border-slate-800">
+                        <td class="px-3 py-2">{{ r.nomMuni }}</td>
+                        <td class="px-3 py-2 text-right">{{ r.totalMesas | number: '1.0-0' }}</td>
+                        <td class="px-3 py-2 text-right">{{ r.mesasReportadas | number: '1.0-0' }}</td>
+                        <td class="px-3 py-2 text-right">{{ r.avancePct | number: '1.2-2' }}%</td>
+                        <td class="px-3 py-2 text-right">{{ r.ultimas24h | number: '1.0-0' }}</td>
+                        <td class="px-3 py-2 text-right">
+                            <button type="button" class="rounded border px-2 py-1 text-xs" (click)="toggleExpand(r.codMuni)">
+                                {{ expandedMuni() === r.codMuni ? 'Ocultar' : 'Detalle' }}
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="expandedMuni() === r.codMuni" class="bg-slate-50 dark:bg-slate-900/30">
+                        <td colspan="6" class="px-3 py-3">
+                            <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                                <table class="w-full text-xs">
+                                    <thead class="bg-slate-100 dark:bg-slate-800/80">
+                                        <tr>
+                                            <th class="px-2 py-1 text-left">Puesto</th>
+                                            <th class="px-2 py-1 text-left">Mesa</th>
+                                            <th class="px-2 py-1 text-left">Estado</th>
+                                            <th class="px-2 py-1 text-left">Timestamp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let d of rowsDetalle()" class="border-t border-slate-200 dark:border-slate-700">
+                                            <td class="px-2 py-1">{{ d.nom_puesto }}</td>
+                                            <td class="px-2 py-1">{{ d.num_mesa }}</td>
+                                            <td class="px-2 py-1">Reportada</td>
+                                            <td class="px-2 py-1">{{ d.timestampText }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </section>
+</section>

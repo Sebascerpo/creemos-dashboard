@@ -51,9 +51,14 @@ yarn-debug.log*
 yarn-error.log*
 npm-shrinkwrap.json
 yarn.lock
-package-lock.json
 pnpm-lock.yaml
 *.tsbuildinfo
+
+# Angular/Firebase local artifacts (creemos-dashboard)
+creemos-dashboard/.angular/
+creemos-dashboard/.firebase/
+creemos-dashboard/dist/
+creemos-dashboard/node_modules/
 
 # macOS/Windows metadata
 .DS_Store

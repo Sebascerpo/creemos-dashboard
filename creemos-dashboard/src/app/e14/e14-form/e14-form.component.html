@@ -1,0 +1,139 @@
+<section class="space-y-4">
+    <p-confirmdialog />
+
+    <header>
+        <h2 class="mb-1 text-2xl font-semibold">Reporte E-14</h2>
+        <p class="text-sm text-slate-500">Formulario de carga por mesa en formato MMV.</p>
+    </header>
+
+    <section class="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
+        <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Corporacion</p>
+            <p-selectbutton
+                [options]="corpOptions"
+                optionLabel="label"
+                optionValue="value"
+                [allowEmpty]="false"
+                [ngModel]="corporacion()"
+                (ngModelChange)="onCorporacionChange($event)"
+            />
+        </div>
+
+        <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Municipio</p>
+            <p-select
+                [options]="municipiosOptions()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Selecciona municipio"
+                [filter]="true"
+                [showClear]="true"
+                styleClass="e14-select"
+                panelStyleClass="e14-select-panel"
+                [ngModel]="municipio()?.cod ?? null"
+                (ngModelChange)="onMunicipioChange($event)"
+            />
+        </div>
+
+        <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Puesto</p>
+            <p-select
+                [options]="puestosOptions()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Selecciona puesto"
+                [filter]="true"
+                [showClear]="true"
+                [disabled]="!municipio()"
+                styleClass="e14-select"
+                panelStyleClass="e14-select-panel"
+                [ngModel]="puesto() ? (puesto()!.zona + '|' + puesto()!.cod_puesto) : null"
+                (ngModelChange)="onPuestoChange($event)"
+            />
+        </div>
+
+        <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Mesa</p>
+            <p-select
+                [options]="mesasOptions()"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Selecciona mesa"
+                [showClear]="true"
+                [disabled]="!puesto()"
+                styleClass="e14-select"
+                panelStyleClass="e14-select-panel"
+                [ngModel]="mesa()"
+                (ngModelChange)="onMesaChange($event)"
+            />
+        </div>
+    </section>
+
+    <p-message
+        *ngIf="mesa() && (mesaEstado().senado || mesaEstado().camara)"
+        severity="info"
+        [text]="estadoMesaTexto()"
+    />
+    <p-message
+        *ngIf="mesa() && corporacionActualYaReportada()"
+        severity="warn"
+        [text]="'Ya existe reporte para ' + corporacionActualLabel() + ' en esta mesa. Si la vuelves a enviar, se sobrescribira la informacion anterior de ' + corporacionActualLabel() + '.'"
+    />
+    <p-message *ngIf="mensajeError()" severity="error" [text]="mensajeError()" />
+    <p-message *ngIf="mensajeOk()" severity="success" [text]="mensajeOk()" />
+    <p-message *ngIf="mensajeOk()" severity="info" text="Puedes validar el documento guardado en Firebase desde el modulo Exportar TXT." />
+
+    <section *ngIf="municipio() && puesto() && mesa()" class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+        <div class="mb-3 flex items-center justify-between">
+            <h3 class="text-base font-semibold">Votos por candidato</h3>
+            <div class="text-sm text-slate-500">
+                Total: <strong>{{ totalVotos() | number: '1.0-0' }}</strong>
+            </div>
+        </div>
+
+        <p-table [value]="candidatos()" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Numero</th>
+                    <th class="text-right">Votos</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-c>
+                <tr>
+                    <td>{{ getNumeroCandidato(c.cod_candidato, c.es_lista) }}</td>
+                    <td class="text-right">
+                        <p-inputnumber
+                            [ngModel]="getVoto(c.cod_candidato)"
+                            (ngModelChange)="onVotoChange(c.cod_candidato, $event)"
+                            [min]="0"
+                            [max]="99999999"
+                            [useGrouping]="false"
+                            [showButtons]="false"
+                            inputStyleClass="w-28 text-right"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </section>
+
+    <div class="flex justify-end">
+        <button pButton type="button" [label]="enviando() ? 'Enviando...' : 'Enviar Mesa'" [disabled]="!canSubmit()" (click)="enviarMesa()"></button>
+    </div>
+
+    <section *ngIf="ultimoPayload()" class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+        <h3 class="mb-2 text-base font-semibold">Ultimo payload enviado a Firebase</h3>
+        <div class="grid gap-3 text-sm md:grid-cols-2">
+            <div><strong>Mesa key:</strong> {{ ultimoPayload()!.mesa_key }}</div>
+            <div><strong>Corporacion:</strong> {{ ultimoPayload()!.corporacion_nombre }}</div>
+            <div><strong>Municipio:</strong> {{ ultimoPayload()!.nom_muni }}</div>
+            <div><strong>Puesto:</strong> {{ ultimoPayload()!.nom_puesto }}</div>
+            <div><strong>Mesa:</strong> {{ ultimoPayload()!.num_mesa }}</div>
+            <div><strong>Total votos:</strong> {{ ultimoPayload()!.total_votos | number: '1.0-0' }}</div>
+        </div>
+        <div class="mt-3">
+            <p class="mb-1 text-sm font-semibold">Registros MMV generados</p>
+            <pre class="max-h-56 overflow-auto rounded bg-slate-50 p-2 text-xs dark:bg-slate-900/60">{{ ultimoPayload()!.registros_mmv.join('\n') }}</pre>
+        </div>
+    </section>
+</section>

@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'admin@gmail.com';
+    }
+
+    function isTestigo() {
+      return isSignedIn() && request.auth.token.email == 'testigos@gmail.com';
+    }
+
+    function isAllowedReporter() {
+      return isAdmin() || isTestigo();
+    }
+
+    match /mesas_reportadas/{mesaKey} {
+      // get/list: requerido para validar estado de mesa y detectar sobreescritura
+      allow get, list: if isAllowedReporter();
+      // create: solo usuarios permitidos y con uid/email consistentes
+      allow create: if isAllowedReporter()
+        && request.resource.data.testigo_uid == request.auth.uid
+        && request.resource.data.testigo_email == request.auth.token.email
+        && request.resource.data.estado == 'enviado'
+        && request.resource.data.corporacion in ['001', '002'];
+      // update: permite sobreescribir el reporte de la misma mesa/corporacion
+      allow update: if isAllowedReporter()
+        && request.resource.data.testigo_uid == request.auth.uid
+        && request.resource.data.testigo_email == request.auth.token.email
+        && request.resource.data.estado == 'enviado'
+        && request.resource.data.corporacion in ['001', '002']
+        && request.resource.data.mesa_key == resource.data.mesa_key;
+      allow delete: if false;
+    }
+
+    match /resumen_municipios/{municipio} {
+      allow get, list: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+  }
+}

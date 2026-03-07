@@ -1,0 +1,83 @@
+<section class="space-y-4">
+    <header>
+        <h2 class="mb-1 text-2xl font-semibold">Exportar resultados MMV</h2>
+        <p class="text-sm text-slate-500">Vista en tiempo real de lo guardado en Firebase y descarga de TXT en formato oficial (38 caracteres por linea).</p>
+    </header>
+
+    <section class="grid gap-3 md:grid-cols-4">
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Documentos Firebase</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ docsFiltrados().length | number: '1.0-0' }}</h3>
+        </article>
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Registros MMV validos</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ registros().validos.length | number: '1.0-0' }}</h3>
+        </article>
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Registros invalidos</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ registros().invalidos | number: '1.0-0' }}</h3>
+        </article>
+        <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Votos reportados</p>
+            <h3 class="mt-1 text-2xl font-semibold">{{ totalVotos() | number: '1.0-0' }}</h3>
+        </article>
+    </section>
+
+    <section class="grid gap-3 rounded-xl border border-slate-200 p-3 dark:border-slate-700 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Filtrar corporacion</p>
+            <p-selectbutton
+                [options]="opcionesCorporacion"
+                optionLabel="label"
+                optionValue="value"
+                [allowEmpty]="false"
+                [ngModel]="filtroCorporacion()"
+                (ngModelChange)="filtroCorporacion.set($event)"
+            />
+        </div>
+        <div class="flex justify-end">
+            <button pButton type="button" label="Descargar TXT" icon="pi pi-download" (click)="descargarTxt()"></button>
+        </div>
+    </section>
+
+    <p-message *ngIf="mensaje()" severity="success" [text]="mensaje()" />
+    <p-message *ngIf="error()" severity="error" [text]="error()" />
+
+    <section class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+        <table class="w-full text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-900/60">
+                <tr>
+                    <th class="px-3 py-2 text-left">Timestamp</th>
+                    <th class="px-3 py-2 text-left">Corporacion</th>
+                    <th class="px-3 py-2 text-left">Municipio</th>
+                    <th class="px-3 py-2 text-left">Puesto</th>
+                    <th class="px-3 py-2 text-right">Mesa</th>
+                    <th class="px-3 py-2 text-right">Registros MMV</th>
+                    <th class="px-3 py-2 text-right">Total votos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let d of docsFiltrados()" class="border-t border-slate-100 dark:border-slate-800">
+                    <td class="px-3 py-2">{{ formatTimestamp(d.timestamp) }}</td>
+                    <td class="px-3 py-2">{{ d.corporacion_nombre }}</td>
+                    <td class="px-3 py-2">{{ d.nom_muni }}</td>
+                    <td class="px-3 py-2">{{ d.nom_puesto }}</td>
+                    <td class="px-3 py-2 text-right">{{ d.num_mesa }}</td>
+                    <td class="px-3 py-2 text-right">{{ d.registros_mmv.length | number: '1.0-0' }}</td>
+                    <td class="px-3 py-2 text-right">{{ d.total_votos | number: '1.0-0' }}</td>
+                </tr>
+                <tr *ngIf="!docsFiltrados().length">
+                    <td colspan="7" class="px-3 py-4 text-center text-slate-500">No hay documentos en Firebase para el filtro seleccionado.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+        <div class="mb-2 flex items-center justify-between">
+            <h3 class="text-base font-semibold">Preview TXT (primeras 120 lineas)</h3>
+            <span class="text-xs text-slate-500">Actualizado: {{ timestampActualizacion }}</span>
+        </div>
+        <pre class="max-h-80 overflow-auto rounded bg-slate-50 p-3 text-xs dark:bg-slate-900/60">{{ preview().join('\n') }}</pre>
+    </section>
+</section>
