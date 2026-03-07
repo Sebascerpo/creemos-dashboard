@@ -1,0 +1,43 @@
+<div class="login-shell flex items-center justify-center px-4 py-8">
+    <div class="login-card w-full max-w-md rounded-3xl border border-white/80 bg-white/90 p-6 sm:p-8">
+        <div class="mb-7">
+            <div class="mb-4 flex items-center justify-center">
+                <div class="rounded-2xl border border-surface-200 bg-white px-4 py-3 shadow-sm">
+                    <img src="assets/CreemosColombiaRec_320.png" alt="Creemos" width="320" height="106" class="h-9 w-auto" />
+                </div>
+            </div>
+            <h1 class="login-title text-center font-semibold tracking-tight text-surface-900">Acceso Plataforma E-14</h1>
+            <p class="mt-2 text-center text-sm text-surface-600">Inicia sesión para registrar y monitorear mesas.</p>
+        </div>
+
+        <form class="space-y-5" (ngSubmit)="onLogin()" novalidate>
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-surface-800">Email</label>
+                <div class="input-with-icon">
+                    <i class="pi pi-envelope input-icon"></i>
+                    <input pInputText id="email" name="email" type="email" class="w-full" placeholder="usuario@correo.com" [(ngModel)]="email" />
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-surface-800">Password</label>
+                <div class="input-with-icon">
+                    <i class="pi pi-lock input-icon"></i>
+                    <p-password
+                        id="password"
+                        name="password"
+                        [(ngModel)]="password"
+                        [toggleMask]="true"
+                        [feedback]="false"
+                        [fluid]="true"
+                        [inputStyleClass]="'w-full'"
+                    />
+                </div>
+            </div>
+
+            <p-message *ngIf="error()" severity="error" [text]="error()" />
+
+            <button pButton type="submit" class="w-full" [label]="loading() ? 'Ingresando...' : 'Ingresar'" [disabled]="loading()"></button>
+        </form>
+    </div>
+</div>

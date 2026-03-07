@@ -1,0 +1,43 @@
+.login-shell {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(5, 150, 105, 0.12), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(2, 132, 199, 0.12), transparent 40%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.login-card {
+    backdrop-filter: blur(4px);
+    box-shadow:
+        0 20px 50px rgba(15, 23, 42, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.75) inset;
+}
+
+.login-title {
+    font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+    line-height: 1.15;
+    white-space: nowrap;
+}
+
+.input-with-icon {
+    position: relative;
+
+    .input-icon {
+        position: absolute;
+        top: 50%;
+        left: 0.85rem;
+        z-index: 2;
+        transform: translateY(-50%);
+        color: var(--p-text-muted-color, #64748b);
+        pointer-events: none;
+    }
+}
+
+:host ::ng-deep .input-with-icon .p-password {
+    width: 100%;
+}
+
+:host ::ng-deep .input-with-icon input.p-inputtext,
+:host ::ng-deep .input-with-icon .p-password input {
+    padding-left: 2.5rem !important;
+}

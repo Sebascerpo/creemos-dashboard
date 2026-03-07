@@ -59,6 +59,8 @@ creemos-dashboard/.angular/
 creemos-dashboard/.firebase/
 creemos-dashboard/dist/
 creemos-dashboard/node_modules/
+creemos-dashboard/src/environments/environment.ts
+creemos-dashboard/src/environments/environment.development.ts
 
 # macOS/Windows metadata
 .DS_Store
