@@ -119,21 +119,21 @@ def render(datos: dict):
             "Total votos validos Senado",
             fmt(total_validos_senado),
             "Lista + candidatos",
-            "#E63946",
+            "#DC2626",
         )
     with c2:
         kpi(
             "Umbral calculado (3%)",
             fmt(umbral_votos),
             f"Sobre {fmt(total_validos_senado)} votos validos",
-            "#2196F3",
+            "#2563EB",
         )
     with c3:
         kpi(
             "Partidos que superan umbral",
             fmt(len(partidos_habilitados)),
             f"Excluidos: {fmt(len(partidos_excluidos))}",
-            "#10B981",
+            "#059669",
         )
     with c4:
         if ultimo_cociente:
@@ -141,14 +141,14 @@ def render(datos: dict):
                 "Ultimo cociente con curul (100)",
                 f"{ultimo_cociente['cociente']:.2f}",
                 f"{nombre_partido(ultimo_cociente['partido'], partidos)} [{ultimo_cociente['partido']}]",
-                "#F59E0B",
+                "#D97706",
             )
         else:
             kpi(
                 "Ultimo cociente con curul (100)",
                 "Sin datos",
                 "Ningun partido supero el umbral",
-                "#94A3B8",
+                "#6B7280",
             )
 
     section("RESULTADO DE ASIGNACION", "how_to_vote")
@@ -184,7 +184,7 @@ def render(datos: dict):
             y="Partido",
             orientation="h",
             color="Curules",
-            color_continuous_scale=["#1C2537", "#E63946"],
+            color_continuous_scale=["#F3F4F6", "#DC2626"],
             hover_data=["Codigo", "Votos validos", "% votos"],
             title=f"Curules asignadas (total = {CURULES_SENADO})",
         )

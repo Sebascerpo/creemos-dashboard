@@ -57,10 +57,9 @@ def render(
 
     cargo_b = badge("camara" if cargo == "Camara" or cargo == "Cámara" else "senado")
     scope_b = badge("antioquia" if solo_antioquia else "nacional")
+    st.markdown(f"#### :material/person: {nombre}")
     st.markdown(
-        f'<div class="section-title">'
-        f'<span style="font-size:20px">&#xe7fd;</span>'
-        f"<span>{nombre}</span>{cargo_b}{scope_b}</div>",
+        f"{cargo_b}{scope_b}",
         unsafe_allow_html=True,
     )
 
@@ -160,9 +159,9 @@ def render(
     with c2:
         kpi("% sobre total", pct(votos_total, total_ref), total_ref_label, color)
     with c3:
-        kpi("Departamentos", str(len(deptos_data)), "con al menos 1 voto", "#2196F3")
+        kpi("Departamentos", str(len(deptos_data)), "con al menos 1 voto", "#2563EB")
     with c4:
-        kpi("Municipios", str(len(por_muni)), "con al menos 1 voto", "#10B981")
+        kpi("Municipios", str(len(por_muni)), "con al menos 1 voto", "#059669")
 
     section("TOP 30 MUNICIPIOS", "emoji_events")
     top30 = sorted(por_muni.items(), key=lambda x: x[1], reverse=True)[:30]
@@ -204,7 +203,7 @@ def render(
                     x="Departamento",
                     y="Votos",
                     color="Votos",
-                    color_continuous_scale=["#1C2537", color],
+                    color_continuous_scale=["#F3F4F6", color],
                     hover_data=["Cod"],
                 )
                 fig.update_layout(
@@ -232,7 +231,7 @@ def render(
                     y="Municipio",
                     orientation="h",
                     color="Votos",
-                    color_continuous_scale=["#1C2537", color],
+                    color_continuous_scale=["#F3F4F6", color],
                     hover_data=["Clave"],
                 )
                 fig2.update_layout(
@@ -261,7 +260,7 @@ def render(
                 y="Municipio",
                 orientation="h",
                 color="Votos",
-                color_continuous_scale=["#1C2537", color],
+                color_continuous_scale=["#F3F4F6", color],
                 hover_data=["Clave"],
             )
             fig2.update_layout(
@@ -273,7 +272,7 @@ def render(
 
     section("DRILL-DOWN HASTA MESA", "travel_explore")
     st.markdown(
-        '<p style="color:#94A3B8;font-size:13px;margin-top:-8px;margin-bottom:16px;">'
+        '<p style="color:#6B7280;font-size:13px;margin-top:-8px;margin-bottom:16px;">'
         "Selecciona para ver el detalle hasta nivel de mesa individual.</p>",
         unsafe_allow_html=True,
     )
@@ -286,7 +285,7 @@ def render(
         sel_dep = COD_ANTIOQUIA
         dep_nom = nombre_depto(COD_ANTIOQUIA, divipol)
         st.markdown(
-            f'<p style="color:#F59E0B;font-size:13px;font-weight:600;">'
+            f'<p style="color:#D97706;font-size:13px;font-weight:600;">'
             f"Departamento: {dep_nom}</p>",
             unsafe_allow_html=True,
         )

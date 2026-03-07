@@ -235,7 +235,7 @@ def render(datos: dict):
                 x="Departamento",
                 y="Votos objetivo (candidato/partido)",
                 color="Votos objetivo (candidato/partido)",
-                color_continuous_scale=["#1C2537", "#2196F3"],
+                color_continuous_scale=["#F3F4F6", "#2563EB"],
                 hover_data=["Cód", "% participación objetivo"],
                 title=f"Votos objetivo por departamento ({objetivo_label})",
             )

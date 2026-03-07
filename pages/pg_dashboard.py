@@ -55,48 +55,48 @@ def render(datos: dict):
 
     # ── KPIs generales ──
     section("RESUMEN GENERAL", "public")
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
         kpi(
-            "Votos totales (todos)",
-            fmt(total_votos),
-            "todas las circunscripciones MMV",
-            "#E63946",
-        )
-    with c2:
-        kpi(
-            "Votos válidos Senado",
+            "Votos validos Senado",
             fmt(total_validos_senado),
             f"{pct(total_validos_senado, total_votos)} del total global",
-            "#2196F3",
+            "#2563EB",
+        )
+    # Votos válidos Cámara solo Antioquia
+    total_validos_camara_ant = 0
+    partidos_circ_cam = mmv.get("partidos_por_circ", {}).get("1", {})
+    for _cod, pdata in partidos_circ_cam.items():
+        dep_votos = pdata.get("por_depto_validos_total", {})
+        total_validos_camara_ant += dep_votos.get(COD_ANTIOQUIA, 0)
+
+    with c2:
+        kpi(
+            "Votos validos Camara Antioquia",
+            fmt(total_validos_camara_ant),
+            f"{pct(total_validos_camara_ant, total_votos)} del total global",
+            "#059669",
         )
     with c3:
-        kpi(
-            "Votos válidos Cámara",
-            fmt(total_validos_camara),
-            f"{pct(total_validos_camara, total_votos)} del total global",
-            "#10B981",
-        )
-    with c4:
         kpi(
             "Mesas reportadas",
             fmt(mmv["mesas_count"]),
             f"de {fmt(total_mesas_divipol)} totales · {pct(mmv['mesas_count'], total_mesas_divipol)}",
-            "#10B981",
+            "#059669",
         )
-    with c5:
+    with c4:
         kpi(
             "Blancos",
             fmt(total_blancos),
             f"{pct(total_blancos, total_votos)} del escrutinio",
-            "#F59E0B",
+            "#D97706",
         )
-    with c6:
+    with c5:
         kpi(
             "Nulos",
             fmt(total_nulos),
             f"{pct(total_nulos, total_votos)} del escrutinio · No marcados: {fmt(total_no_marcados)}",
-            "#94A3B8",
+            "#6B7280",
         )
 
     # ── Candidatos CREEMOS ──
@@ -181,7 +181,7 @@ def render(datos: dict):
                 y="Candidato",
                 orientation="h",
                 color="Votos",
-                color_continuous_scale=["#1C2537", "#E63946"],
+                color_continuous_scale=["#F3F4F6", "#DC2626"],
                 hover_data=["Partido"],
             )
             fig_sen.update_layout(
@@ -204,7 +204,7 @@ def render(datos: dict):
                 y="Candidato",
                 orientation="h",
                 color="Votos",
-                color_continuous_scale=["#1C2537", "#2196F3"],
+                color_continuous_scale=["#F3F4F6", "#2563EB"],
                 hover_data=["Partido"],
             )
             fig_cam.update_layout(
@@ -265,14 +265,14 @@ def render(datos: dict):
             "CREEMOS Senado",
             fmt(votos_creemos_sen),
             f"{pct(votos_creemos_sen, base_umbral_senado)} del total válido de Senado",
-            "#E63946",
+            "#DC2626",
         )
     with u2:
         kpi(
             "Umbral Senado (3%)",
             fmt(umbral_votos),
             f"sobre {fmt(base_umbral_senado)} votos válidos",
-            "#2196F3",
+            "#2563EB",
         )
     with u3:
         if base_umbral_senado == 0:
@@ -280,7 +280,7 @@ def render(datos: dict):
                 "Resultado",
                 "Sin datos",
                 "No hay votos válidos de Senado (circ 0) en MMV",
-                "#94A3B8",
+                "#6B7280",
             )
         else:
             estado = "Sí, supera" if supera_umbral else "No supera"
@@ -289,7 +289,7 @@ def render(datos: dict):
                 if supera_umbral
                 else f"Faltan: {fmt(umbral_votos - votos_creemos_sen)} votos"
             )
-            kpi("Resultado", estado, detalle, "#10B981" if supera_umbral else "#F59E0B")
+            kpi("Resultado", estado, detalle, "#059669" if supera_umbral else "#D97706")
 
     tab_sen, tab_cam = st.tabs(["Senado · Nacional", "Cámara · Antioquia"])
 
@@ -322,7 +322,7 @@ def render(datos: dict):
                         y=0.5,
                         font_size=13,
                         showarrow=False,
-                        font_color="#F1F5F9",
+                        font_color="#111827",
                     )
                 ],
             )
@@ -360,7 +360,7 @@ def render(datos: dict):
                         y=0.5,
                         font_size=13,
                         showarrow=False,
-                        font_color="#F1F5F9",
+                        font_color="#111827",
                     )
                 ],
             )

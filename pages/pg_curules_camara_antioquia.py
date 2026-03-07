@@ -115,28 +115,28 @@ def render(datos: dict):
             "Total votos validos",
             fmt(total_validos),
             "Camara Antioquia (lista + candidatos)",
-            "#2196F3",
+            "#2563EB",
         )
     with c2:
         kpi(
             "Cociente electoral",
             f"{cociente_electoral:,.2f}".replace(",", "."),
             f"Total / {CURULES_CAMARA_ANTIOQUIA} curules",
-            "#10B981",
+            "#059669",
         )
     with c3:
         kpi(
             "Umbral calculado",
             f"{umbral:,.2f}".replace(",", "."),
             "50% del cociente electoral",
-            "#F59E0B",
+            "#D97706",
         )
     with c4:
         kpi(
             "Partidos habilitados",
             fmt(len(partidos_habilitados)),
             f"Excluidos por umbral: {fmt(len(partidos_excluidos))}",
-            "#E63946",
+            "#DC2626",
         )
 
     section("CORTE DE ULTIMAS CURULES", "rule")
@@ -150,10 +150,10 @@ def render(datos: dict):
                     f"{nombre_partido(curul_17['partido'], partidos)} "
                     f"[{curul_17['partido']}] · divisor {curul_17['divisor']}"
                 ),
-                "#10B981",
+                "#059669",
             )
         else:
-            kpi("Curul 17 (ultima asignada)", "Sin datos", "No hubo reparto", "#94A3B8")
+            kpi("Curul 17 (ultima asignada)", "Sin datos", "No hubo reparto", "#6B7280")
     with r2:
         if curul_18:
             kpi(
@@ -163,10 +163,10 @@ def render(datos: dict):
                     f"{nombre_partido(curul_18['partido'], partidos)} "
                     f"[{curul_18['partido']}] · divisor {curul_18['divisor']}"
                 ),
-                "#F59E0B",
+                "#D97706",
             )
         else:
-            kpi("Curul 18 (primera por fuera)", "Sin datos", "No hay cociente 18", "#94A3B8")
+            kpi("Curul 18 (primera por fuera)", "Sin datos", "No hay cociente 18", "#6B7280")
 
     section("RESULTADO DE ASIGNACION", "how_to_vote")
     if not partidos_habilitados:
@@ -201,7 +201,7 @@ def render(datos: dict):
             y="Partido",
             orientation="h",
             color="Curules",
-            color_continuous_scale=["#1C2537", "#2196F3"],
+            color_continuous_scale=["#F3F4F6", "#2563EB"],
             hover_data=["Codigo", "Votos validos", "% votos"],
             title=f"Curules asignadas (total = {CURULES_CAMARA_ANTIOQUIA})",
         )

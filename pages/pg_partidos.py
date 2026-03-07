@@ -79,7 +79,7 @@ def _render_drilldown_partido(
 ):
     section("DRILL-DOWN HASTA MESA", "travel_explore")
     st.markdown(
-        '<p style="color:#94A3B8;font-size:13px;margin-top:-8px;margin-bottom:16px;">'
+        '<p style="color:#6B7280;font-size:13px;margin-top:-8px;margin-bottom:16px;">'
         "Selecciona para ver el detalle hasta nivel de mesa individual.</p>",
         unsafe_allow_html=True,
     )
@@ -105,7 +105,7 @@ def _render_drilldown_partido(
         sel_dep = fixed_dep
         dep_nom = nombre_depto(sel_dep, divipol)
         st.markdown(
-            f'<p style="color:#F59E0B;font-size:13px;font-weight:600;">'
+            f'<p style="color:#D97706;font-size:13px;font-weight:600;">'
             f"Departamento: {dep_nom} [{sel_dep}]</p>",
             unsafe_allow_html=True,
         )
@@ -299,7 +299,7 @@ def render(datos: dict):
                     y="Partido",
                     orientation="h",
                     color="Votos",
-                    color_continuous_scale=["#1C2537", "#E63946"],
+                    color_continuous_scale=["#F3F4F6", "#DC2626"],
                     hover_data=["% sobre Senado", "Deptos"],
                 )
                 fig_s.update_layout(
@@ -343,7 +343,7 @@ def render(datos: dict):
                         x="Departamento",
                         y="Votos",
                         color="Votos",
-                        color_continuous_scale=["#1C2537", "#E63946"],
+                        color_continuous_scale=["#F3F4F6", "#DC2626"],
                         hover_data=["Cod"],
                     )
                     fig_ds.update_layout(
@@ -371,7 +371,7 @@ def render(datos: dict):
                         y="Municipio",
                         orientation="h",
                         color="Votos",
-                        color_continuous_scale=["#1C2537", "#10B981"],
+                        color_continuous_scale=["#F3F4F6", "#059669"],
                         hover_data=["Clave"],
                     )
                     fig_ms.update_layout(
@@ -384,7 +384,7 @@ def render(datos: dict):
             _render_drilldown_partido(
                 cod_partido=sel_s_cod,
                 circ="0",
-                color="#E63946",
+                color="#DC2626",
                 key_prefix=f"sen_{sel_s_cod}",
                 divipol=divipol,
                 mmv_path_str=mmv_path_str,
@@ -420,7 +420,7 @@ def render(datos: dict):
                     y="Partido",
                     orientation="h",
                     color="Votos",
-                    color_continuous_scale=["#1C2537", "#2196F3"],
+                    color_continuous_scale=["#F3F4F6", "#2563EB"],
                     hover_data=["% sobre Camara Ant."],
                 )
                 fig_c.update_layout(
@@ -462,7 +462,7 @@ def render(datos: dict):
                     y="Municipio",
                     orientation="h",
                     color="Votos",
-                    color_continuous_scale=["#1C2537", "#2196F3"],
+                    color_continuous_scale=["#F3F4F6", "#2563EB"],
                     hover_data=["Clave"],
                 )
                 fig_mc.update_layout(
@@ -475,7 +475,7 @@ def render(datos: dict):
             _render_drilldown_partido(
                 cod_partido=sel_c_cod,
                 circ="1",
-                color="#2196F3",
+                color="#2563EB",
                 key_prefix=f"cam_{sel_c_cod}",
                 divipol=divipol,
                 mmv_path_str=mmv_path_str,

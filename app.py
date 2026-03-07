@@ -10,8 +10,7 @@ Entry point. Toda la lógica vive en pages/.
   pages/pg_candidato.py          → Detalle candidato individual (German / Juliana)
   pages/pg_partidos.py           → Partidos Senado & Cámara Antioquia
   pages/pg_geografico.py         → Análisis geográfico con 3 filtros
-  pages/pg_testigos.py           → Reportes de testigos
-  pages/pg_exportar.py           → Exportar CSVs
+  pages/pg_cruce_votos.py        → Cruce testigos vs oficial
 
 Para correr:
     pip install -r requirements.txt
@@ -39,8 +38,7 @@ import pages.pg_candidatos_general as pg_candidatos
 import pages.pg_candidato as pg_candidato
 import pages.pg_partidos as pg_partidos
 import pages.pg_geografico as pg_geografico
-import pages.pg_testigos as pg_testigos
-import pages.pg_exportar as pg_exportar
+import pages.pg_cruce_votos as pg_cruce_votos
 
 
 def main():
@@ -81,9 +79,7 @@ def main():
             else:
                 load_box.success("Datos cargados.")
         else:
-            load_box.warning(
-                f"Datos parciales: no se encontró MMV en {mmv_path}."
-            )
+            load_box.warning(f"Datos parciales: no se encontró MMV en {mmv_path}.")
         st.session_state["_data_boot_ok"] = True
     else:
         datos = cargar_todo(cache_key)
@@ -133,11 +129,8 @@ def main():
     elif page == "geografico":
         pg_geografico.render(datos)
 
-    elif page == "testigos":
-        pg_testigos.render(datos)
-
-    elif page == "exportar":
-        pg_exportar.render(datos)
+    elif page == "cruce_votos":
+        pg_cruce_votos.render(datos)
 
 
 if __name__ == "__main__":

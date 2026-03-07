@@ -52,11 +52,11 @@ def render(datos: dict):
     if filtro_tipo == "Senado":
         corp_obj = "001"
         circ_obj = "0"
-        color = "#E63946"
+        color = "#DC2626"
     else:
         corp_obj = "002"
         circ_obj = "1"
-        color = "#2196F3"
+        color = "#2563EB"
 
     candidatos_filtrados = {
         k: v
@@ -195,13 +195,13 @@ def render(datos: dict):
             color,
         )
     with c3:
-        kpi("Departamento", sel_dep, nombre_depto(sel_dep, divipol), "#2196F3")
+        kpi("Departamento", sel_dep, nombre_depto(sel_dep, divipol), "#2563EB")
     with c4:
         kpi(
             "Municipios",
             str(len(por_muni_dep)),
             "con al menos 1 voto en el depto",
-            "#10B981",
+            "#059669",
         )
 
     col_a, col_b = st.columns(2)
@@ -226,7 +226,7 @@ def render(datos: dict):
                 x="Departamento",
                 y="Votos",
                 color="Votos",
-                color_continuous_scale=["#1C2537", color],
+                color_continuous_scale=["#F3F4F6", color],
                 hover_data=["Cod"],
             )
             fig_d.update_layout(
@@ -254,7 +254,7 @@ def render(datos: dict):
                 y="Municipio",
                 orientation="h",
                 color="Votos",
-                color_continuous_scale=["#1C2537", color],
+                color_continuous_scale=["#F3F4F6", color],
                 hover_data=["Clave"],
             )
             fig_m.update_layout(
@@ -266,7 +266,7 @@ def render(datos: dict):
 
     section("DRILL-DOWN HASTA MESA", "travel_explore")
     st.markdown(
-        '<p style="color:#94A3B8;font-size:13px;margin-top:-8px;margin-bottom:16px;">'
+        '<p style="color:#6B7280;font-size:13px;margin-top:-8px;margin-bottom:16px;">'
         "Selecciona para ver el detalle hasta nivel de mesa individual.</p>",
         unsafe_allow_html=True,
     )
@@ -274,7 +274,7 @@ def render(datos: dict):
     if por_muni_dep:
         dep_nom = nombre_depto(sel_dep, divipol)
         st.markdown(
-            f'<p style="color:#F59E0B;font-size:13px;font-weight:600;">'
+            f'<p style="color:#D97706;font-size:13px;font-weight:600;">'
             f"Departamento: {dep_nom} [{sel_dep}]</p>",
             unsafe_allow_html=True,
         )
