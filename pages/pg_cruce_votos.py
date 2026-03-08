@@ -325,7 +325,7 @@ def render(datos: dict):
             st.dataframe(
                 pd.DataFrame(
                     [
-                        {"Mesa": f"Mesa {int(m.split('_')[-1])}"}
+                        {"Mesa": formatear_mesa_completa(m, divipol)}
                         for m in sorted(mesas_solo_testigo)
                     ]
                 ),
