@@ -75,15 +75,15 @@
         [text]="estadoMesaTexto()"
     />
     <p-message
-        *ngIf="mesa() && corporacionActualYaReportada()"
+        *ngIf="mesa() && bloqueoCargaActual()"
         severity="warn"
-        [text]="alertaSobrescrituraTexto()"
+        [text]="alertaMesaBloqueadaTexto()"
     />
     <p-message *ngIf="mensajeError()" severity="error" [text]="mensajeError()" />
     <p-message *ngIf="mensajeOk()" severity="success" [text]="mensajeOk()" />
     <p-message *ngIf="mensajeOk()" severity="info" text="Puedes validar el documento guardado en Firebase desde el modulo Exportar TXT." />
 
-    <section *ngIf="municipio() && puesto() && mesa()" class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+    <section *ngIf="municipio() && puesto() && mesa() && !bloqueoCargaActual()" class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
         <div class="mb-3 flex items-center justify-between">
             <h3 class="text-base font-semibold">Votos por candidato</h3>
             <div class="text-sm text-slate-500">

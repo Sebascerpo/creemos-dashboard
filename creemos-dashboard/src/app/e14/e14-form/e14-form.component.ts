@@ -87,23 +87,24 @@ export class E14FormComponent {
     corporacionAlternaLabel = computed(() => (this.corporacion() === 'senado' ? 'Camara' : 'Senado'));
     corporacionActualYaReportada = computed(() => (this.corporacion() === 'senado' ? this.mesaEstado().senado : this.mesaEstado().camara));
     corporacionAlternaYaReportada = computed(() => (this.corporacion() === 'senado' ? this.mesaEstado().camara : this.mesaEstado().senado));
+    bloqueoCargaActual = computed(() => !!this.mesa() && this.corporacionActualYaReportada());
     estadoMesaTexto = computed(() => {
         const s = this.mesaEstado().senado ? 'SI' : 'NO';
         const c = this.mesaEstado().camara ? 'SI' : 'NO';
         if (this.corporacionActualYaReportada()) {
-            return `Esta mesa ya tiene reporte previo. Senado: ${s} · Camara: ${c}. Si vuelves a enviar ${this.corporacionActualLabel()}, se sobrescribe ${this.corporacionActualLabel()} en esta mesa.`;
+            return `Esta mesa ya tiene reporte previo. Senado: ${s} · Camara: ${c}. Para ${this.corporacionActualLabel()} no se permite un segundo envio en la misma mesa.`;
         }
         if (this.corporacionAlternaYaReportada()) {
             return `Esta mesa ya tiene reporte previo. Senado: ${s} · Camara: ${c}. Puedes cargar ${this.corporacionActualLabel()} sin afectar ${this.corporacionAlternaLabel()}.`;
         }
         return `Estado actual de la mesa. Senado: ${s} · Camara: ${c}.`;
     });
-    alertaSobrescrituraTexto = computed(
+    alertaMesaBloqueadaTexto = computed(
         () =>
-            `Ya existe reporte para ${this.corporacionActualLabel()} en esta mesa. Al enviar, se reemplazaran los votos anteriores de ${this.corporacionActualLabel()} para esta misma mesa.`
+            `Ya existe votacion registrada para ${this.corporacionActualLabel()} en esta mesa. No puedes cargar candidatos para ${this.corporacionActualLabel()}.`
     );
     canSubmit = computed(() => {
-        return !!(this.municipio() && this.puesto() && this.mesa() && this.totalVotos() > 0 && !this.enviando());
+        return !!(this.municipio() && this.puesto() && this.mesa() && this.totalVotos() > 0 && !this.enviando() && !this.bloqueoCargaActual());
     });
 
     constructor() {
@@ -122,7 +123,14 @@ export class E14FormComponent {
         this.resetVotos();
     }
 
-    onMunicipioChange(codMuni: string): void {
+    onMunicipioChange(codMuni: string | null): void {
+        if (!codMuni) {
+            this.municipio.set(null);
+            this.puesto.set(null);
+            this.mesa.set(null);
+            this.mesaEstado.set({ senado: false, camara: false });
+            return;
+        }
         const muni = this.municipios().find((m) => m.cod === codMuni) ?? null;
         this.municipio.set(muni);
         this.puesto.set(null);
@@ -130,7 +138,13 @@ export class E14FormComponent {
         this.mesaEstado.set({ senado: false, camara: false });
     }
 
-    onPuestoChange(value: string): void {
+    onPuestoChange(value: string | null): void {
+        if (!value) {
+            this.puesto.set(null);
+            this.mesa.set(null);
+            this.mesaEstado.set({ senado: false, camara: false });
+            return;
+        }
         const [zona, codPuesto] = value.split('|');
         const p = this.puestos().find((row) => row.zona === zona && row.cod_puesto === codPuesto) ?? null;
         this.puesto.set(p);
@@ -138,15 +152,17 @@ export class E14FormComponent {
         this.mesaEstado.set({ senado: false, camara: false });
     }
 
-    async onMesaChange(numMesa: number | null): Promise<void> {
-        this.mesa.set(numMesa);
+    async onMesaChange(numMesa: number | string | null): Promise<void> {
+        const mesaNumerica = numMesa === null ? null : Number(numMesa);
+        const mesaValida = mesaNumerica !== null && Number.isFinite(mesaNumerica) && mesaNumerica > 0 ? mesaNumerica : null;
+        this.mesa.set(mesaValida);
         this.mesaEstado.set({ senado: false, camara: false });
         this.mensajeError.set('');
-        if (!numMesa) return;
+        if (!mesaValida) return;
         const m = this.municipio();
         const p = this.puesto();
         if (!m || !p) return;
-        const key = this.mmvBuilder.buildMesaKey(m.cod, p.zona, p.cod_puesto, numMesa);
+        const key = this.mmvBuilder.buildMesaKey(m.cod, p.zona, p.cod_puesto, mesaValida);
         try {
             this.mesaEstado.set(await this.firestore.getMesaEstado(key));
         } catch (error) {
@@ -205,6 +221,9 @@ export class E14FormComponent {
         this.enviando.set(true);
 
         try {
+            if (this.bloqueoCargaActual()) {
+                throw new Error(`La mesa ya tiene votacion registrada para ${this.corporacionActualLabel()}.`);
+            }
             const data = this.buildFormData();
             const total = data.votos.reduce((acc, r) => acc + r.votos, 0);
             const ok = await this.confirmarEnvio(data, total);
@@ -261,13 +280,10 @@ export class E14FormComponent {
     private confirmarEnvio(data: E14FormData, total: number): Promise<boolean> {
         return new Promise((resolve) => {
             const mensajeBase = `Vas a enviar Mesa ${data.num_mesa} en ${data.puesto.nombre}, ${data.municipio.nombre}. Total votos: ${total}.`;
-            const mensajeSobrescritura = this.corporacionActualYaReportada()
-                ? ` Ya existe ${this.corporacionActualLabel()} reportado para esta mesa y se sobrescribira al confirmar.`
-                : '';
             this.confirmation.confirm({
                 header: 'Confirmar envio E-14',
                 icon: 'pi pi-exclamation-triangle',
-                message: `${mensajeBase}${mensajeSobrescritura}`,
+                message: mensajeBase,
                 acceptLabel: 'Enviar',
                 rejectLabel: 'Cancelar',
                 acceptButtonStyleClass: 'p-button-primary',
@@ -286,6 +302,9 @@ export class E14FormComponent {
 
         if (code.includes('permission-denied')) {
             return 'No tienes permisos para guardar en Firestore. Verifica reglas y que el usuario logueado sea permitido.';
+        }
+        if (msg.includes('ya existe votacion registrada para')) {
+            return rawMessage;
         }
         if (code.includes('unauthenticated')) {
             return 'Sesion no autenticada. Inicia sesion nuevamente.';

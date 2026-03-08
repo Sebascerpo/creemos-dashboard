@@ -66,21 +66,18 @@ export class FirestoreService {
             return [canonical, snap] as const;
         });
 
-        let targetRef = canonicalRef;
-        let newestMs = -1;
         for (const item of sameMesaSnap.docs) {
             const payload = item.data() as Partial<MesaReportada>;
             const corp = this.normalizeCorporacion(payload.corporacion);
-            if (corp !== targetCorp) continue;
-            const ts = this.timestampMs(payload.timestamp);
-            if (ts >= newestMs) {
-                newestMs = ts;
-                targetRef = runInInjectionContext(this.injector, () => doc(this.db, `mesas_reportadas/${item.id}`));
+            if (corp === targetCorp) {
+                throw new Error(
+                    `La mesa ${data.num_mesa} ya tiene votacion registrada para ${targetCorp === '001' ? 'Senado' : 'Camara'}.`
+                );
             }
         }
 
         await runInInjectionContext(this.injector, () =>
-            setDoc(targetRef, {
+            setDoc(canonicalRef, {
                 ...data,
                 timestamp: serverTimestamp(),
                 updated_at: serverTimestamp()
