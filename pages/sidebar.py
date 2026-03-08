@@ -24,6 +24,7 @@ NAV_ITEMS = [
     ("Geografico", "map", "geografico"),
     ("Cruce Votos", "sync_alt", "cruce_votos"),
     ("Mesas Sin Votos", "do_not_disturb_on", "mesas_sin_votos"),
+    ("Mesas Diferencia", "warning", "mesas_diferencia"),
 ]
 
 
