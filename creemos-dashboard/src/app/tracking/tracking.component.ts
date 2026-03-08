@@ -67,7 +67,7 @@ export class TrackingComponent {
                     ultimas24h
                 };
             })
-            .sort((a, b) => b.avancePct - a.avancePct);
+            .sort((a, b) => b.mesasReportadas - a.mesasReportadas || b.avancePct - a.avancePct || a.nomMuni.localeCompare(b.nomMuni));
     });
 
     rowsDetalle = computed(() => {

@@ -56,13 +56,11 @@ export class E14FormComponent {
         { label: 'CAMARA', value: 'camara' as CorpKey }
     ];
     municipios = computed(() => this.catalogo.getMunicipios());
-    municipiosOptions = computed(() => this.municipios().map((m) => ({ label: m.nombre, value: m.cod })));
     municipio = signal<Municipio | null>(null);
     puestos = computed(() => {
         const m = this.municipio();
         return m ? this.catalogo.getPuestosByMunicipio(m.cod) : [];
     });
-    puestosOptions = computed(() => this.puestos().map((p) => ({ label: p.nombre, value: `${p.zona}|${p.cod_puesto}` })));
     puesto = signal<Puesto | null>(null);
     mesas = computed(() => {
         const m = this.municipio();
@@ -80,9 +78,9 @@ export class E14FormComponent {
     ultimoPayload = signal<MesaReportada | null>(null);
 
     candidatos = computed<CandidatoCatalogo[]>(() => this.catalogo.getCandidatosByCorporacion(this.corporacion()));
-    votos = signal<Record<string, number>>({});
+    votos = signal<Record<string, number | null>>({});
 
-    totalVotos = computed(() => Object.values(this.votos()).reduce((acc, n) => acc + (Number(n) || 0), 0));
+    totalVotos = computed(() => Object.values(this.votos()).reduce<number>((acc, n) => acc + (Number(n) || 0), 0));
     corporacionActualLabel = computed(() => (this.corporacion() === 'senado' ? 'Senado' : 'Camara'));
     corporacionAlternaLabel = computed(() => (this.corporacion() === 'senado' ? 'Camara' : 'Senado'));
     corporacionActualYaReportada = computed(() => (this.corporacion() === 'senado' ? this.mesaEstado().senado : this.mesaEstado().camara));
@@ -104,7 +102,7 @@ export class E14FormComponent {
             `Ya existe votacion registrada para ${this.corporacionActualLabel()} en esta mesa. No puedes cargar candidatos para ${this.corporacionActualLabel()}.`
     );
     canSubmit = computed(() => {
-        return !!(this.municipio() && this.puesto() && this.mesa() && this.totalVotos() > 0 && !this.enviando() && !this.bloqueoCargaActual());
+        return !!(this.municipio() && this.puesto() && this.mesa() && Number(this.totalVotos()) > 0 && !this.enviando() && !this.bloqueoCargaActual());
     });
 
     constructor() {
@@ -123,31 +121,28 @@ export class E14FormComponent {
         this.resetVotos();
     }
 
-    onMunicipioChange(codMuni: string | null): void {
-        if (!codMuni) {
+    onMunicipioChange(muni: Municipio | null): void {
+        if (!muni) {
             this.municipio.set(null);
             this.puesto.set(null);
             this.mesa.set(null);
             this.mesaEstado.set({ senado: false, camara: false });
             return;
         }
-        const muni = this.municipios().find((m) => m.cod === codMuni) ?? null;
         this.municipio.set(muni);
         this.puesto.set(null);
         this.mesa.set(null);
         this.mesaEstado.set({ senado: false, camara: false });
     }
 
-    onPuestoChange(value: string | null): void {
+    onPuestoChange(value: Puesto | null): void {
         if (!value) {
             this.puesto.set(null);
             this.mesa.set(null);
             this.mesaEstado.set({ senado: false, camara: false });
             return;
         }
-        const [zona, codPuesto] = value.split('|');
-        const p = this.puestos().find((row) => row.zona === zona && row.cod_puesto === codPuesto) ?? null;
-        this.puesto.set(p);
+        this.puesto.set(value);
         this.mesa.set(null);
         this.mesaEstado.set({ senado: false, camara: false });
     }
@@ -170,15 +165,19 @@ export class E14FormComponent {
         }
     }
 
-    onVotoChange(codCandidato: string, raw: number | string | null): void {
-        const parsed = Math.max(0, Math.floor(Number(raw) || 0));
+    onVotoChange(codCandidato: string, raw: number | string | null | undefined): void {
         const next = { ...this.votos() };
-        next[codCandidato] = parsed;
+        if (raw === null || raw === undefined || raw === '') {
+            next[codCandidato] = null;
+        } else {
+            const parsed = Math.max(0, Math.floor(Number(raw) || 0));
+            next[codCandidato] = Number.isFinite(parsed) ? parsed : null;
+        }
         this.votos.set(next);
     }
 
-    getVoto(codCandidato: string): number {
-        return this.votos()[codCandidato] ?? 0;
+    getVoto(codCandidato: string): number | null {
+        return this.votos()[codCandidato] ?? null;
     }
 
     getNumeroCandidato(codCandidato: string, esLista: boolean): string {
@@ -188,9 +187,9 @@ export class E14FormComponent {
     }
 
     private resetVotos(): void {
-        const base: Record<string, number> = {};
+        const base: Record<string, number | null> = {};
         for (const c of this.candidatos()) {
-            base[c.cod_candidato] = 0;
+            base[c.cod_candidato] = null;
         }
         this.votos.set(base);
     }
@@ -301,7 +300,7 @@ export class E14FormComponent {
         const msg = rawMessage.toLowerCase();
 
         if (code.includes('permission-denied')) {
-            return 'No tienes permisos para guardar en Firestore. Verifica reglas y que el usuario logueado sea permitido.';
+            return 'No tienes permisos para guardar en Base de datos. Verifica reglas y que el usuario logueado sea permitido.';
         }
         if (msg.includes('ya existe votacion registrada para')) {
             return rawMessage;
@@ -310,10 +309,10 @@ export class E14FormComponent {
             return 'Sesion no autenticada. Inicia sesion nuevamente.';
         }
         if (msg.includes('err_blocked_by_client') || msg.includes('blocked_by_client')) {
-            return 'El navegador bloqueo la conexion a Firestore (ERR_BLOCKED_BY_CLIENT). Desactiva AdBlock/Brave Shields para este sitio.';
+            return 'El navegador bloqueo la conexion a Base de datos (ERR_BLOCKED_BY_CLIENT). Desactiva AdBlock/Brave Shields para este sitio.';
         }
         if (code.includes('unavailable') || code.includes('network-request-failed')) {
-            return 'No fue posible conectar con Firestore. Revisa internet o bloqueadores del navegador.';
+            return 'No fue posible conectar con Base de datos. Revisa internet o bloqueadores del navegador.';
         }
         return error instanceof Error ? error.message : 'No fue posible enviar la mesa';
     }

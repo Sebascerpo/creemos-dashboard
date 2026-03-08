@@ -1,12 +1,12 @@
 <section class="space-y-4">
     <header>
         <h2 class="mb-1 text-2xl font-semibold">Exportar resultados MMV</h2>
-        <p class="text-sm text-slate-500">Vista en tiempo real de lo guardado en Firebase y descarga de TXT en formato oficial (38 caracteres por linea).</p>
+        <p class="text-sm text-slate-500">Vista en tiempo real de lo guardado en Base de datos y descarga de TXT en formato oficial (38 caracteres por linea).</p>
     </header>
 
     <section class="grid gap-3 md:grid-cols-4">
         <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <p class="text-xs uppercase tracking-wide text-slate-500">Documentos Firebase</p>
+            <p class="text-xs uppercase tracking-wide text-slate-500">Documentos en Base de datos</p>
             <h3 class="mt-1 text-2xl font-semibold">{{ docsFiltrados().length | number: '1.0-0' }}</h3>
         </article>
         <article class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
@@ -67,7 +67,7 @@
                     <td class="px-3 py-2 text-right">{{ d.total_votos | number: '1.0-0' }}</td>
                 </tr>
                 <tr *ngIf="!docsFiltrados().length">
-                    <td colspan="7" class="px-3 py-4 text-center text-slate-500">No hay documentos en Firebase para el filtro seleccionado.</td>
+                    <td colspan="7" class="px-3 py-4 text-center text-slate-500">No hay documentos en Base de datos para el filtro seleccionado.</td>
                 </tr>
             </tbody>
         </table>

@@ -22,34 +22,36 @@
         <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
             <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Municipio</p>
             <p-select
-                [options]="municipiosOptions()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Selecciona municipio"
+                [options]="municipios()"
+                optionLabel="nombre"
+                dataKey="cod"
+                [placeholder]="municipio()?.nombre || 'Selecciona municipio'"
                 [filter]="true"
                 [showClear]="true"
                 styleClass="e14-select"
                 panelStyleClass="e14-select-panel"
-                [ngModel]="municipio()?.cod ?? null"
+                [ngModel]="municipio()"
                 (ngModelChange)="onMunicipioChange($event)"
             />
+            <p *ngIf="municipio()" class="mt-2 truncate text-xs text-slate-500">Seleccionado: {{ municipio()!.nombre }}</p>
         </div>
 
         <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
             <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Puesto</p>
             <p-select
-                [options]="puestosOptions()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Selecciona puesto"
+                [options]="puestos()"
+                optionLabel="nombre"
+                dataKey="cod_puesto"
+                [placeholder]="puesto()?.nombre || 'Selecciona puesto'"
                 [filter]="true"
                 [showClear]="true"
                 [disabled]="!municipio()"
                 styleClass="e14-select"
                 panelStyleClass="e14-select-panel"
-                [ngModel]="puesto() ? (puesto()!.zona + '|' + puesto()!.cod_puesto) : null"
+                [ngModel]="puesto()"
                 (ngModelChange)="onPuestoChange($event)"
             />
+            <p *ngIf="puesto()" class="mt-2 truncate text-xs text-slate-500">Seleccionado: {{ puesto()!.nombre }}</p>
         </div>
 
         <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
@@ -58,7 +60,7 @@
                 [options]="mesasOptions()"
                 optionLabel="label"
                 optionValue="value"
-                placeholder="Selecciona mesa"
+                [placeholder]="mesa() ? ('Mesa ' + mesa()) : 'Selecciona mesa'"
                 [showClear]="true"
                 [disabled]="!puesto()"
                 styleClass="e14-select"
@@ -66,6 +68,7 @@
                 [ngModel]="mesa()"
                 (ngModelChange)="onMesaChange($event)"
             />
+            <p *ngIf="mesa()" class="mt-2 truncate text-xs text-slate-500">Seleccionado: Mesa {{ mesa() }}</p>
         </div>
     </section>
 
@@ -81,7 +84,7 @@
     />
     <p-message *ngIf="mensajeError()" severity="error" [text]="mensajeError()" />
     <p-message *ngIf="mensajeOk()" severity="success" [text]="mensajeOk()" />
-    <p-message *ngIf="mensajeOk()" severity="info" text="Puedes validar el documento guardado en Firebase desde el modulo Exportar TXT." />
+    <p-message *ngIf="mensajeOk()" severity="info" text="Puedes validar el documento guardado en Base de datos desde el modulo Exportar TXT." />
 
     <section *ngIf="municipio() && puesto() && mesa() && !bloqueoCargaActual()" class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
         <div class="mb-3 flex items-center justify-between">
@@ -122,7 +125,7 @@
     </div>
 
     <section *ngIf="ultimoPayload()" class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-        <h3 class="mb-2 text-base font-semibold">Ultimo payload enviado a Firebase</h3>
+        <h3 class="mb-2 text-base font-semibold">Ultimo payload enviado a Base de datos</h3>
         <div class="grid gap-3 text-sm md:grid-cols-2">
             <div><strong>Mesa key:</strong> {{ ultimoPayload()!.mesa_key }}</div>
             <div><strong>Corporacion:</strong> {{ ultimoPayload()!.corporacion_nombre }}</div>
