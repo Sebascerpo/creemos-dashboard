@@ -19,6 +19,7 @@ OPTIMIZACIÓN DE MEMORIA (v4):
 from __future__ import annotations
 
 import json
+import os
 from collections import defaultdict
 from pathlib import Path
 
@@ -187,8 +188,17 @@ def _resolve_cache_dir(mmv_path: Path) -> Path | None:
 # ──────────────────────────────────────────────
 
 
+def _get_mtime(path_str: str) -> float:
+    try:
+        return os.path.getmtime(path_str)
+    except Exception:
+        return 0.0
+
+
 @st.cache_data(show_spinner=False, ttl=3600)
-def cargar_geo_candidato(mmv_path_str: str, cand_key: str) -> dict:
+def _cached_cargar_geo_candidato(
+    mmv_path_str: str, cand_key: str, _mtime: float
+) -> dict:
     """Carga por_municipio y por_puesto para un candidato."""
     cache_dir = _resolve_cache_dir(Path(mmv_path_str))
     if cache_dir is None:
@@ -209,8 +219,16 @@ def cargar_geo_candidato(mmv_path_str: str, cand_key: str) -> dict:
         return {"por_municipio": {}, "por_puesto": {}}
 
 
+def cargar_geo_candidato(mmv_path_str: str, cand_key: str) -> dict:
+    return _cached_cargar_geo_candidato(
+        mmv_path_str, cand_key, _get_mtime(mmv_path_str)
+    )
+
+
 @st.cache_data(show_spinner=False, ttl=3600)
-def cargar_mesa_candidato(mmv_path_str: str, cand_key: str) -> dict[str, int]:
+def _cached_cargar_mesa_candidato(
+    mmv_path_str: str, cand_key: str, _mtime: float
+) -> dict[str, int]:
     """Carga por_mesa para un candidato."""
     cache_dir = _resolve_cache_dir(Path(mmv_path_str))
     if cache_dir is None:
@@ -227,8 +245,16 @@ def cargar_mesa_candidato(mmv_path_str: str, cand_key: str) -> dict[str, int]:
         return {}
 
 
+def cargar_mesa_candidato(mmv_path_str: str, cand_key: str) -> dict[str, int]:
+    return _cached_cargar_mesa_candidato(
+        mmv_path_str, cand_key, _get_mtime(mmv_path_str)
+    )
+
+
 @st.cache_data(show_spinner=False, ttl=3600)
-def cargar_geo_partido_circ(mmv_path_str: str, circ: str, cod_partido: str) -> dict:
+def _cached_cargar_geo_partido_circ(
+    mmv_path_str: str, circ: str, cod_partido: str, _mtime: float
+) -> dict:
     """Carga por_municipio y por_puesto para un partido en una circunscripción."""
     cache_dir = _resolve_cache_dir(Path(mmv_path_str))
     if cache_dir is None:
@@ -251,9 +277,15 @@ def cargar_geo_partido_circ(mmv_path_str: str, circ: str, cod_partido: str) -> d
         return {"por_municipio": {}, "por_puesto": {}}
 
 
+def cargar_geo_partido_circ(mmv_path_str: str, circ: str, cod_partido: str) -> dict:
+    return _cached_cargar_geo_partido_circ(
+        mmv_path_str, circ, cod_partido, _get_mtime(mmv_path_str)
+    )
+
+
 @st.cache_data(show_spinner=False, ttl=3600)
-def cargar_mesa_partido_circ(
-    mmv_path_str: str, circ: str, cod_partido: str
+def _cached_cargar_mesa_partido_circ(
+    mmv_path_str: str, circ: str, cod_partido: str, _mtime: float
 ) -> dict[str, int]:
     """Carga por_mesa para un partido en una circunscripción."""
     cache_dir = _resolve_cache_dir(Path(mmv_path_str))
@@ -273,8 +305,18 @@ def cargar_mesa_partido_circ(
         return {}
 
 
+def cargar_mesa_partido_circ(
+    mmv_path_str: str, circ: str, cod_partido: str
+) -> dict[str, int]:
+    return _cached_cargar_mesa_partido_circ(
+        mmv_path_str, circ, cod_partido, _get_mtime(mmv_path_str)
+    )
+
+
 @st.cache_data(show_spinner=False, ttl=3600)
-def cargar_geo_totales_circ(mmv_path_str: str, circ: str) -> dict:
+def _cached_cargar_geo_totales_circ(
+    mmv_path_str: str, circ: str, _mtime: float
+) -> dict:
     """Carga por_municipio y por_puesto totales para una circunscripción."""
     cache_dir = _resolve_cache_dir(Path(mmv_path_str))
     if cache_dir is None:
@@ -295,8 +337,14 @@ def cargar_geo_totales_circ(mmv_path_str: str, circ: str) -> dict:
         return {"por_municipio": {}, "por_puesto": {}}
 
 
+def cargar_geo_totales_circ(mmv_path_str: str, circ: str) -> dict:
+    return _cached_cargar_geo_totales_circ(mmv_path_str, circ, _get_mtime(mmv_path_str))
+
+
 @st.cache_data(show_spinner=False, ttl=3600)
-def cargar_mesa_totales_circ(mmv_path_str: str, circ: str) -> dict[str, int]:
+def _cached_cargar_mesa_totales_circ(
+    mmv_path_str: str, circ: str, _mtime: float
+) -> dict[str, int]:
     """Carga por_mesa totales para una circunscripción."""
     cache_dir = _resolve_cache_dir(Path(mmv_path_str))
     if cache_dir is None:
@@ -311,6 +359,12 @@ def cargar_mesa_totales_circ(mmv_path_str: str, circ: str) -> dict[str, int]:
         return _load_map(df.iloc[0]["por_mesa_json"])
     except Exception:
         return {}
+
+
+def cargar_mesa_totales_circ(mmv_path_str: str, circ: str) -> dict[str, int]:
+    return _cached_cargar_mesa_totales_circ(
+        mmv_path_str, circ, _get_mtime(mmv_path_str)
+    )
 
 
 # ──────────────────────────────────────────────
