@@ -82,3 +82,5 @@ serviceAccountKey.json
 # Misc
 *.pyo
 *.pyd
+
+cache_parquet/
