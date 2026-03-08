@@ -322,7 +322,12 @@ def render(datos: dict):
             f"Mesas solo en testigos ({len(mesas_solo_testigo)}) — sin dato oficial"
         ):
             st.dataframe(
-                pd.DataFrame([{"Mesa": m} for m in sorted(mesas_solo_testigo)]),
+                pd.DataFrame(
+                    [
+                        {"Mesa": f"Mesa {int(m.split('_')[-1])}"}
+                        for m in sorted(mesas_solo_testigo)
+                    ]
+                ),
                 use_container_width=True,
                 height=200,
             )
@@ -483,7 +488,7 @@ def render(datos: dict):
             return pd.DataFrame(
                 [
                     {
-                        "Mesa": r["mesa_key"],
+                        "Mesa": f"Mesa {int(r['mesa_key'].split('_')[-1])}",
                         "Municipio": nombre_municipio_str(r["muni_key"], divipol),
                         "Candidato": nombre_candidato(r["cand_key"], candidatos_meta),
                         "V. Testigo": r["votos_testigo"],
@@ -1024,7 +1029,7 @@ def render(datos: dict):
         [
             {
                 "Prioridad": r["Prioridad"],
-                "Mesa": r["mesa_key"],
+                "Mesa": f"Mesa {int(r['mesa_key'].split('_')[-1])}",
                 "Municipio": nombre_municipio_str(r["muni_key"], divipol),
                 "Puesto": r["puesto_key"],
                 "Corporación": r["corporacion"],
