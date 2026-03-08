@@ -25,6 +25,7 @@ NAV_ITEMS = [
     ("Cruce Votos", "sync_alt", "cruce_votos"),
     ("Mesas Sin Votos", "do_not_disturb_on", "mesas_sin_votos"),
     ("Mesas Diferencia", "warning", "mesas_diferencia"),
+    ("Preconteo vs Escrutinio", "compare", "preconteo_escrutinio"),
 ]
 
 

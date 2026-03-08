@@ -41,6 +41,7 @@ import pages.pg_geografico as pg_geografico
 import pages.pg_cruce_votos as pg_cruce_votos
 import pages.pg_mesas_sin_votos as pg_mesas_sin_votos
 import pages.pg_mesas_diferencia as pg_mesas_diferencia
+import pages.pg_preconteo_escrutinio as pg_preconteo_escrutinio
 
 
 def main():
@@ -139,6 +140,9 @@ def main():
 
     elif page == "mesas_diferencia":
         pg_mesas_diferencia.render(datos)
+
+    elif page == "preconteo_escrutinio":
+        pg_preconteo_escrutinio.render(datos)
 
 
 if __name__ == "__main__":
