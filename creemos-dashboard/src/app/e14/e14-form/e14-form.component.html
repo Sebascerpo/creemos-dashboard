@@ -77,7 +77,7 @@
     <p-message
         *ngIf="mesa() && corporacionActualYaReportada()"
         severity="warn"
-        [text]="'Ya existe reporte para ' + corporacionActualLabel() + ' en esta mesa. Si la vuelves a enviar, se sobrescribira la informacion anterior de ' + corporacionActualLabel() + '.'"
+        [text]="alertaSobrescrituraTexto()"
     />
     <p-message *ngIf="mensajeError()" severity="error" [text]="mensajeError()" />
     <p-message *ngIf="mensajeOk()" severity="success" [text]="mensajeOk()" />

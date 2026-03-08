@@ -84,12 +84,24 @@ export class E14FormComponent {
 
     totalVotos = computed(() => Object.values(this.votos()).reduce((acc, n) => acc + (Number(n) || 0), 0));
     corporacionActualLabel = computed(() => (this.corporacion() === 'senado' ? 'Senado' : 'Camara'));
+    corporacionAlternaLabel = computed(() => (this.corporacion() === 'senado' ? 'Camara' : 'Senado'));
     corporacionActualYaReportada = computed(() => (this.corporacion() === 'senado' ? this.mesaEstado().senado : this.mesaEstado().camara));
+    corporacionAlternaYaReportada = computed(() => (this.corporacion() === 'senado' ? this.mesaEstado().camara : this.mesaEstado().senado));
     estadoMesaTexto = computed(() => {
-        const s = this.mesaEstado().senado ? 'reportado' : 'pendiente';
-        const c = this.mesaEstado().camara ? 'reportado' : 'pendiente';
-        return `Estado actual de la mesa: Senado ${s} · Camara ${c}.`;
+        const s = this.mesaEstado().senado ? 'SI' : 'NO';
+        const c = this.mesaEstado().camara ? 'SI' : 'NO';
+        if (this.corporacionActualYaReportada()) {
+            return `Esta mesa ya tiene reporte previo. Senado: ${s} · Camara: ${c}. Si vuelves a enviar ${this.corporacionActualLabel()}, se sobrescribe ${this.corporacionActualLabel()} en esta mesa.`;
+        }
+        if (this.corporacionAlternaYaReportada()) {
+            return `Esta mesa ya tiene reporte previo. Senado: ${s} · Camara: ${c}. Puedes cargar ${this.corporacionActualLabel()} sin afectar ${this.corporacionAlternaLabel()}.`;
+        }
+        return `Estado actual de la mesa. Senado: ${s} · Camara: ${c}.`;
     });
+    alertaSobrescrituraTexto = computed(
+        () =>
+            `Ya existe reporte para ${this.corporacionActualLabel()} en esta mesa. Al enviar, se reemplazaran los votos anteriores de ${this.corporacionActualLabel()} para esta misma mesa.`
+    );
     canSubmit = computed(() => {
         return !!(this.municipio() && this.puesto() && this.mesa() && this.totalVotos() > 0 && !this.enviando());
     });
@@ -248,10 +260,14 @@ export class E14FormComponent {
 
     private confirmarEnvio(data: E14FormData, total: number): Promise<boolean> {
         return new Promise((resolve) => {
+            const mensajeBase = `Vas a enviar Mesa ${data.num_mesa} en ${data.puesto.nombre}, ${data.municipio.nombre}. Total votos: ${total}.`;
+            const mensajeSobrescritura = this.corporacionActualYaReportada()
+                ? ` Ya existe ${this.corporacionActualLabel()} reportado para esta mesa y se sobrescribira al confirmar.`
+                : '';
             this.confirmation.confirm({
                 header: 'Confirmar envio E-14',
                 icon: 'pi pi-exclamation-triangle',
-                message: `Vas a enviar Mesa ${data.num_mesa} en ${data.puesto.nombre}, ${data.municipio.nombre}. Total votos: ${total}.`,
+                message: `${mensajeBase}${mensajeSobrescritura}`,
                 acceptLabel: 'Enviar',
                 rejectLabel: 'Cancelar',
                 acceptButtonStyleClass: 'p-button-primary',
