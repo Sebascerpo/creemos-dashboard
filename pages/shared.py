@@ -77,6 +77,24 @@ COLORES = {
 # ──────────────────────────────────────────────
 
 
+def formatear_mesa_completa(mesa_key: str, divipol: dict) -> str:
+    """Devuelve el nombre completo: Municipio - Puesto - Mesa N"""
+    parts = mesa_key.split("_")
+    if len(parts) != 5:
+        return mesa_key
+    muni_key = f"{parts[0]}_{parts[1]}"
+    puesto_key = f"{parts[0]}_{parts[1]}_{parts[2]}_{parts[3]}"
+    mesa_num = int(parts[4])
+
+    muni_info = divipol.get("por_muni", {}).get(muni_key, {})
+    nom_muni = muni_info.get("nombre_municipio", muni_key)
+
+    puesto_info = divipol.get("por_puesto", {}).get(puesto_key, {})
+    nom_puesto = puesto_info.get("nombre_puesto", puesto_key)
+
+    return f"{nom_muni} - {nom_puesto} - Mesa {mesa_num}"
+
+
 def inject_styles():
     st.markdown(
         """

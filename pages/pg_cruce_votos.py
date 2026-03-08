@@ -42,6 +42,7 @@ from pages.shared import (
     nombre_candidato,
     nombre_depto,
     nombre_municipio_str,
+    formatear_mesa_completa,
     resolver_mmv_path,
 )
 
@@ -488,7 +489,7 @@ def render(datos: dict):
             return pd.DataFrame(
                 [
                     {
-                        "Mesa": f"Mesa {int(r['mesa_key'].split('_')[-1])}",
+                        "Mesa": formatear_mesa_completa(r["mesa_key"], divipol),
                         "Municipio": nombre_municipio_str(r["muni_key"], divipol),
                         "Candidato": nombre_candidato(r["cand_key"], candidatos_meta),
                         "V. Testigo": r["votos_testigo"],
@@ -1029,7 +1030,7 @@ def render(datos: dict):
         [
             {
                 "Prioridad": r["Prioridad"],
-                "Mesa": f"Mesa {int(r['mesa_key'].split('_')[-1])}",
+                "Mesa": formatear_mesa_completa(r["mesa_key"], divipol),
                 "Municipio": nombre_municipio_str(r["muni_key"], divipol),
                 "Puesto": r["puesto_key"],
                 "Corporación": r["corporacion"],
