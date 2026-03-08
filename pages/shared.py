@@ -100,8 +100,12 @@ html, body, .stApp {
     background-color: #FFFFFF !important;
     color: #111827 !important;
 }
-.stApp *:not([data-testid="stIconMaterial"]):not(.material-symbols-rounded):not([class*="material"]) {
+}
+.stApp, .stApp * {
     font-family: 'Inter', sans-serif;
+}
+.material-symbols-rounded, [data-testid="stIconMaterial"] {
+    font-family: 'Material Symbols Rounded' !important;
 }
 
 /* Sidebar */
