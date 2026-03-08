@@ -100,7 +100,9 @@ html, body, .stApp {
     background-color: #FFFFFF !important;
     color: #111827 !important;
 }
-.stApp * { font-family: 'Inter', sans-serif; }
+.stApp *:not([data-testid="stIconMaterial"]):not(.material-symbols-rounded):not([class*="material"]) {
+    font-family: 'Inter', sans-serif;
+}
 
 /* Sidebar */
 [data-testid="stSidebar"] {

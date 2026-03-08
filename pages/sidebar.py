@@ -23,6 +23,7 @@ NAV_ITEMS = [
     ("Partidos", "account_balance", "partidos"),
     ("Geografico", "map", "geografico"),
     ("Cruce Votos", "sync_alt", "cruce_votos"),
+    ("Mesas Sin Votos", "do_not_disturb_on", "mesas_sin_votos"),
 ]
 
 

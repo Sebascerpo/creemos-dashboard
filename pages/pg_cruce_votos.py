@@ -236,33 +236,60 @@ def render(datos: dict):
     # ════════════════════════════════════════════
     section("§1 — COBERTURA", "fact_check")
 
-    mesas_testigo = testigos["mesas"]
-    # Solo contar mesas de Antioquia (monitoreo)
+    def _es_mesa_regular(mesa_key: str) -> bool:
+        """Excluir mesas especiales (zona 99)."""
+        parts = mesa_key.split("_")
+        if len(parts) >= 3:
+            return parts[2] != "99"
+        return True
+
+    mesas_testigo = {m for m in testigos["mesas"] if _es_mesa_regular(m)}
+    # Solo contar mesas de Antioquia (monitoreo), sin mesas especiales
     mesas_oficial = set()
     for muni_key, muni_data in mmv["municipios"].items():
         if muni_key.startswith(COD_ANTIOQUIA + "_"):
-            mesas_oficial.update(muni_data.get("mesas", set()))
+            mesas_oficial.update(
+                m for m in muni_data.get("mesas", set()) if _es_mesa_regular(m)
+            )
 
     mesas_ambas = mesas_testigo & mesas_oficial
     mesas_solo_testigo = mesas_testigo - mesas_oficial
     n_test = len(mesas_testigo)
     n_ofic = len(mesas_oficial)
     n_ambas = len(mesas_ambas)
-    cobertura_pct = (n_ambas / n_ofic * 100) if n_ofic > 0 else 0
+    # Universo total de mesas regulares Antioquia
+    # (DIVIPOL: puestos sin contenido extra al final = regulares)
+    n_universo = 0
+    divipol_path = DATA_DIR / "DIVIPOL.txt"
+    if divipol_path.exists():
+        with open(divipol_path, encoding="latin-1") as _f:
+            for _line in _f:
+                _line = _line.rstrip("\n")
+                if len(_line) < 114:
+                    continue
+                if _line[0:2] != COD_ANTIOQUIA:
+                    continue
+                # Puestos especiales tienen texto CIRCUNSCRIPCIÓN después de pos. 114
+                if _line[114:].strip():
+                    continue
+                _nm = _line[108:114].strip()
+                n_universo += int(_nm) if _nm.isdigit() else 0
+
+    cobertura_pct = (n_ambas / n_universo * 100) if n_universo > 0 else 0
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         kpi(
             "Mesas testigo",
             fmt(n_test),
-            f"{testigos['lineas']} líneas procesadas",
+            f"{testigos['lineas']} lineas procesadas",
             "#2563EB",
         )
     with c2:
         kpi(
-            "Mesas oficial (Antioquia)",
-            fmt(n_ofic),
-            "boletín MMV · solo Antioquia",
+            "Total mesas Antioquia",
+            fmt(n_universo),
+            "segun DIVIPOL · sin mesas especiales",
             "#DC2626",
         )
     with c3:
@@ -271,7 +298,7 @@ def render(datos: dict):
         kpi(
             "Cobertura",
             f"{cobertura_pct:.1f}%",
-            f"{fmt(n_ambas)} de {fmt(n_ofic)} mesas oficiales",
+            f"{fmt(n_ambas)} de {fmt(n_universo)} mesas totales",
             "#D97706",
         )
 
