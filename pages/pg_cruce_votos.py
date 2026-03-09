@@ -936,3 +936,97 @@ def render(datos: dict):
             )
     else:
         st.info("Sin registros que coincidan con los filtros.")
+
+    # ════════════════════════════════════════════
+    # §6 — COMPARATIVO INTERNO CANDIDATOS (108 vs 117)
+    # ════════════════════════════════════════════
+    section("§6 — COMPARATIVO CANDIDATOS (108 vs 117)", "people")
+    st.caption(
+        "Cruce directo de votos mesa a mesa entre los candidatos 108 (José Miguel Zuluaga) y 117 (Germán Darío Hoyos)."
+    )
+
+    CAND_108 = "01067_108"
+    CAND_117 = "01067_117"
+
+    # Filtrar cruce original para estos dos candidatos
+    df_108 = df_cruce[df_cruce["cand_key"] == CAND_108].set_index("mesa_key")
+    df_117 = df_cruce[df_cruce["cand_key"] == CAND_117].set_index("mesa_key")
+
+    # Unir por mesa
+    mesas_cands = index_union = df_108.index.union(df_117.index)
+    if mesas_cands.empty:
+        st.info("No hay datos cruzables para los candidatos especificados.")
+    else:
+        data_comparativa = []
+        for m_key in mesas_cands:
+            r_108 = df_108.loc[m_key] if m_key in df_108.index else None
+            r_117 = df_117.loc[m_key] if m_key in df_117.index else None
+
+            # Si existía duplicados, tomamos el primero
+            if isinstance(r_108, pd.DataFrame):
+                r_108 = r_108.iloc[0]
+            if isinstance(r_117, pd.DataFrame):
+                r_117 = r_117.iloc[0]
+
+            v_108_ofic = r_108["votos_oficial"] if r_108 is not None else 0
+            v_108_test = r_108["votos_testigo"] if r_108 is not None else 0
+
+            v_117_ofic = r_117["votos_oficial"] if r_117 is not None else 0
+            v_117_test = r_117["votos_testigo"] if r_117 is not None else 0
+
+            # Diferencias directas Oficial
+            diff_ofic = v_108_ofic - v_117_ofic
+            diff_test = v_108_test - v_117_test
+
+            data_comparativa.append(
+                {
+                    "Mesa": formatear_mesa_completa(m_key, divipol),
+                    "Municipio": nombre_municipio_str(
+                        r_108["muni_key"] if r_108 is not None else r_117["muni_key"],
+                        divipol,
+                    ),
+                    "108_Oficial": v_108_ofic,
+                    "108_Testigo": v_108_test,
+                    "117_Oficial": v_117_ofic,
+                    "117_Testigo": v_117_test,
+                    "Ventaja_108_Oficial": diff_ofic,
+                    "Ventaja_108_Testigo": diff_test,
+                    "Discrepancia_108": (
+                        r_108["diferencia"] if r_108 is not None else 0
+                    ),
+                    "Discrepancia_117": (
+                        r_117["diferencia"] if r_117 is not None else 0
+                    ),
+                }
+            )
+
+        df_comp = pd.DataFrame(data_comparativa)
+
+        c_108_win_o = (df_comp["Ventaja_108_Oficial"] > 0).sum()
+        c_117_win_o = (df_comp["Ventaja_108_Oficial"] < 0).sum()
+        c_empate_o = (df_comp["Ventaja_108_Oficial"] == 0).sum()
+
+        k1, k2, k3 = st.columns(3)
+        with k1:
+            kpi(
+                "Mesas ganadas - 108 (Oficial)",
+                str(c_108_win_o),
+                "José Miguel Zuluaga",
+                "#2563EB",
+            )
+        with k2:
+            kpi(
+                "Mesas ganadas - 117 (Oficial)",
+                str(c_117_win_o),
+                "Germán Darío Hoyos",
+                "#DC2626",
+            )
+        with k3:
+            kpi("Empates (Oficial)", str(c_empate_o), "Mismos votos", "#6B7280")
+
+        st.markdown("**Detalle por mesa**")
+        st.dataframe(
+            df_comp,
+            use_container_width=True,
+            height=400,
+        )
