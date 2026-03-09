@@ -46,21 +46,24 @@ from pages.shared import (
     resolver_mmv_path,
 )
 
-# ── Claves candidatos CREEMOS ──
-CAND_JULIANA = "01070_001"
-CAND_GERMAN = "01067_117"
-CURULES_SENADO = 100
-UMBRAL_PCT = 3.0
-CIRC_SENADO = "0"
+# ── Claves candidatos y Partidos ──
+PARTIDOS_OBJETIVO = {
+    "01067": {"nombre": "CREEMOS", "color": "#2563EB"},
+    "00002": {"nombre": "CONSERVADOR", "color": "#2196F3"},
+    "03055": {"nombre": "PACTO HISTORICO", "color": "#9C27B0"},
+    "00011": {"nombre": "CENTRO DEMOCRATICO", "color": "#DC2626"},
+}
+CURULES_CAMARA = 17  # Antioquia
+UMBRAL_PCT = 50.0 / CURULES_CAMARA  # Cociente electoral simplificado o cifra umbral
 CIRC_CAMARA = "1"
 
 
-def _votos_partido_senado(mmv: dict) -> dict[str, int]:
-    """Votos válidos por partido Senado nacional."""
+def _votos_partido_camara(mmv: dict) -> dict[str, int]:
+    """Votos válidos por partido Cámara Antioquia."""
     out: dict[str, int] = {}
-    pc = mmv.get("partidos_por_circ", {}).get(CIRC_SENADO, {})
+    pc = mmv.get("partidos_por_circ", {}).get(CIRC_CAMARA, {})
     for cod, d in pc.items():
-        v = int(d.get("votos_validos_total", 0) or 0)
+        v = int(d.get("por_depto_validos_total", {}).get(COD_ANTIOQUIA, 0) or 0)
         if v > 0:
             out[cod] = v
     return out
@@ -431,7 +434,13 @@ def render(datos: dict):
             "#D97706",
         )
 
-    tab_sen, tab_cam = st.tabs(["Senado", "Cámara"])
+    # Filtrar solo corporación Cámara (Antioquia)
+    df_cruce = df_cruce[df_cruce["corporacion"] == "Camara"]
+    df_cruce = df_cruce[df_cruce["cod_partido"].isin(PARTIDOS_OBJETIVO.keys())]
+
+    if df_cruce.empty:
+        st.info("No hay datos cruzables para los 4 partidos en Cámara.")
+        return
 
     def _render_discrepancias_tab(df_tab: pd.DataFrame, color: str):
         if df_tab.empty:
@@ -518,14 +527,8 @@ def render(datos: dict):
             else:
                 st.success("Sin discrepancias negativas")
 
-    with tab_sen:
-        _render_discrepancias_tab(
-            df_cruce[df_cruce["corporacion"] == "Senado"], "#DC2626"
-        )
-    with tab_cam:
-        _render_discrepancias_tab(
-            df_cruce[df_cruce["corporacion"] == "Camara"], "#2563EB"
-        )
+    # Render único para Cámara
+    _render_discrepancias_tab(df_cruce, "#2563EB")
 
     # ════════════════════════════════════════════
     # §3 — ANÁLISIS DE PATRONES
@@ -709,247 +712,54 @@ def render(datos: dict):
             )
 
     # ════════════════════════════════════════════
-    # §4 — IMPACTO ACUMULADO
+    # §4 — IMPACTO ACUMULADO : MULTI-PARTIDO
     # ════════════════════════════════════════════
     section("§4 — IMPACTO ACUMULADO", "trending_up")
 
-    # Impacto por partido CREEMOS (lista + candidatos)
-    st.markdown("**Impacto en partido CREEMOS (lista + candidatos)**")
+    st.markdown("**Comparación Oficial vs Testigo por Partido (Cámara Antioquia)**")
 
-    # Para el impacto de partido, sumamos TODOS los registros del
-    # partido CREEMOS: tanto lista (000) como candidatos individuales.
-    cands_creemos = {
-        CAND_JULIANA: {"nombre": "Juliana (Senado)", "color": "#DC2626"},
-        CAND_GERMAN: {"nombre": "German Dario (Camara)", "color": "#2563EB"},
-    }
+    cols_imp = st.columns(4)
+    votos_oficial_cam = _votos_partido_camara(mmv)
 
-    cols_imp = st.columns(len(cands_creemos))
-    for col, (ck, info) in zip(cols_imp, cands_creemos.items()):
-        df_cand = df_cruce[df_cruce["cand_key"] == ck]
-        v_test = df_cand["votos_testigo"].sum() if not df_cand.empty else 0
-        v_ofic = df_cand["votos_oficial"].sum() if not df_cand.empty else 0
-        diff_total = v_test - v_ofic
+    for idx, (cod_p, info) in enumerate(PARTIDOS_OBJETIVO.items()):
+        col = cols_imp[idx]
+        df_cand = df_cruce[df_cruce["cod_partido"] == cod_p]
+        v_diff = df_cand["diferencia"].sum() if not df_cand.empty else 0
+        v_ofic = votos_oficial_cam.get(cod_p, 0)
+        v_test = v_ofic + v_diff
+
         with col:
+            st.markdown(f"**{info['nombre']}**", unsafe_allow_html=True)
             kpi(
-                f"{info['nombre']} — Testigo",
-                fmt(v_test),
-                f"en {df_cand['mesa_key'].nunique() if not df_cand.empty else 0} mesas cruzadas",
-                info["color"],
-            )
-            kpi(
-                f"{info['nombre']} — Oficial",
+                f"Oficial",
                 fmt(v_ofic),
-                f"diferencia acumulada: {diff_total:+,}",
+                f"Suma válida MMV",
+                "#6B7280",
+            )
+            kpi(
+                f"Testigo",
+                fmt(v_test),
+                f"Dif total: {v_diff:+,.0f}",
                 info["color"],
             )
-            if diff_total > 0:
-                st.error(f"Posibles {fmt(diff_total)} votos sustraídos")
-            elif diff_total < 0:
-                st.warning(
-                    f"Oficial tiene {fmt(abs(diff_total))} votos más que testigo"
-                )
+            if v_diff > 0:
+                st.error(f"Faltan {fmt(v_diff)} votos")
+            elif v_diff < 0:
+                st.warning(f"Exceden {fmt(abs(v_diff))} votos")
             else:
-                st.success("Sin diferencia")
+                st.success("Correcto")
 
-    # Impacto en umbral Senado
-    st.markdown("---")
-    st.markdown("**Impacto en el umbral del Senado (3%)**")
-
-    votos_partido_sen = _votos_partido_senado(mmv)
-    party_creemos = CAND_JULIANA.split("_")[0]
-    stats_circ = mmv.get("stats_por_circ", {}).get(CIRC_SENADO, {})
-    base_umbral = stats_circ.get("votos_validos_total", 0)
-    umbral_votos = math.ceil(base_umbral * (UMBRAL_PCT / 100)) if base_umbral > 0 else 0
-
-    votos_creemos_oficial = votos_partido_sen.get(party_creemos, 0)
-
-    # Calcular ajuste testigo: sumar la diferencia acumulada del cruce a CREEMOS
-    # Incluye TANTO lista (000) como candidatos individuales del partido
-    df_creemos_sen = df_cruce[
-        (df_cruce["cod_partido"] == party_creemos)
-        & (df_cruce["corporacion"] == "Senado")
-    ]
-    diff_creemos_total = (
-        int(df_creemos_sen["diferencia"].sum()) if not df_creemos_sen.empty else 0
-    )
-    votos_creemos_testigo = votos_creemos_oficial + diff_creemos_total
-
-    supera_oficial = votos_creemos_oficial >= umbral_votos and base_umbral > 0
-    supera_testigo = votos_creemos_testigo >= umbral_votos and base_umbral > 0
-
-    u1, u2, u3 = st.columns(3)
-    with u1:
-        kpi(
-            "CREEMOS oficial",
-            fmt(votos_creemos_oficial),
-            f"{pct(votos_creemos_oficial, base_umbral)} del total válido",
-            "#DC2626",
-        )
-    with u2:
-        kpi(
-            "CREEMOS + ajuste testigo",
-            fmt(votos_creemos_testigo),
-            f"diferencia de {diff_creemos_total:+,} votos",
-            "#2563EB",
-        )
-    with u3:
-        kpi(
-            "Umbral (3%)",
-            fmt(umbral_votos),
-            f"sobre {fmt(base_umbral)} válidos",
-            "#D97706",
-        )
-
-    r1, r2 = st.columns(2)
-    with r1:
-        if base_umbral == 0:
-            kpi("Resultado oficial", "Sin datos", "", "#6B7280")
-        else:
-            est = "Sí supera" if supera_oficial else "No supera"
-            d = votos_creemos_oficial - umbral_votos
-            kpi(
-                "Resultado oficial",
-                est,
-                f"{'Ventaja' if d >= 0 else 'Faltan'}: {fmt(abs(d))} votos",
-                "#059669" if supera_oficial else "#DC2626",
-            )
-    with r2:
-        if base_umbral == 0:
-            kpi("Resultado testigo", "Sin datos", "", "#6B7280")
-        else:
-            est = "Sí supera" if supera_testigo else "No supera"
-            d = votos_creemos_testigo - umbral_votos
-            kpi(
-                "Resultado testigo",
-                est,
-                f"{'Ventaja' if d >= 0 else 'Faltan'}: {fmt(abs(d))} votos",
-                "#059669" if supera_testigo else "#DC2626",
-            )
-
-    if supera_oficial != supera_testigo:
-        st.error(
-            "ALERTA DE MATERIALIDAD: El resultado del umbral CAMBIA entre "
-            "la fuente oficial y la de testigos. La discrepancia es material."
-        )
-
-    # Proyección
-    if n_ambas > 0 and n_ofic > n_ambas and diff_creemos_total != 0:
-        factor = n_ofic / n_ambas
-        diff_proyectada = int(diff_creemos_total * factor)
-        votos_proyectados = votos_creemos_oficial + diff_proyectada
-        st.caption(
-            f"Proyección: si la discrepancia ({diff_creemos_total:+,} en {n_ambas} mesas) "
-            f"se repite proporcionalmente en las {fmt(n_ofic)} mesas totales, "
-            f"CREEMOS tendría ~{fmt(votos_proyectados)} votos (+{fmt(diff_proyectada)})."
-        )
-
-    # D'Hondt comparativo
-    st.markdown("---")
-    st.markdown("**Curules D'Hondt: Oficial vs Testigo**")
-
-    if votos_partido_sen:
-        # Ajustar TODOS los partidos según diferencias del cruce
-        votos_testigo_sen = dict(votos_partido_sen)
-        df_sen_cruce = df_cruce[df_cruce["corporacion"] == "Senado"]
-        if not df_sen_cruce.empty:
-            diff_por_partido = df_sen_cruce.groupby("cod_partido")["diferencia"].sum()
-            for cod_p, diff_p in diff_por_partido.items():
-                if cod_p in votos_testigo_sen:
-                    votos_testigo_sen[cod_p] = max(
-                        0, votos_testigo_sen[cod_p] + int(diff_p)
-                    )
-
-        # Aplicar umbral 3%: solo partidos que superan entran al D'Hondt
-        habilitados_oficial = {
-            c: v for c, v in votos_partido_sen.items() if v >= umbral_votos
-        }
-        habilitados_testigo = {
-            c: v for c, v in votos_testigo_sen.items() if v >= umbral_votos
-        }
-
-        curules_oficial = (
-            _reparto_dhondt(habilitados_oficial, CURULES_SENADO)
-            if habilitados_oficial
-            else {}
-        )
-        curules_testigo = (
-            _reparto_dhondt(habilitados_testigo, CURULES_SENADO)
-            if habilitados_testigo
-            else {}
-        )
-
-        n_hab_o = len(habilitados_oficial)
-        n_hab_t = len(habilitados_testigo)
-        n_exc_o = len(votos_partido_sen) - n_hab_o
-        n_exc_t = len(votos_testigo_sen) - n_hab_t
-
-        st.caption(
-            f"Oficial: {n_hab_o} partidos superan umbral, {n_exc_o} excluidos | "
-            f"Testigo: {n_hab_t} partidos superan umbral, {n_exc_t} excluidos"
-        )
-
-        # Tabla comparativa
-        partidos_con_curul = set(c for c, n in curules_oficial.items() if n > 0) | set(
-            c for c, n in curules_testigo.items() if n > 0
-        )
-        rows_dh = []
-        for cod in sorted(
-            partidos_con_curul, key=lambda c: curules_oficial.get(c, 0), reverse=True
-        ):
-            co = curules_oficial.get(cod, 0)
-            ct = curules_testigo.get(cod, 0)
-            rows_dh.append(
-                {
-                    "Partido": nombre_partido(cod, partidos)[:28],
-                    "Código": cod,
-                    "Curules oficial": co,
-                    "Curules testigo": ct,
-                    "Diferencia": ct - co,
-                }
-            )
-        df_dh = pd.DataFrame(rows_dh)
-        cambio_curules = df_dh[df_dh["Diferencia"] != 0]
-
-        col_dh_l, col_dh_r = st.columns(2)
-        with col_dh_l:
-            st.dataframe(df_dh, use_container_width=True, height=350)
-        with col_dh_r:
-            if not cambio_curules.empty:
-                st.error(
-                    f"Cambio en curules: {len(cambio_curules)} partido(s) afectados"
-                )
-                st.dataframe(cambio_curules, use_container_width=True, height=200)
-            else:
-                st.success("Sin cambio en distribución de curules.")
-
-            # CREEMOS destacado
-            c_o = curules_oficial.get(party_creemos, 0)
-            c_t = curules_testigo.get(party_creemos, 0)
-            kpi("CREEMOS curules oficial", str(c_o), "", "#DC2626")
-            kpi(
-                "CREEMOS curules testigo",
-                str(c_t),
-                f"diferencia: {c_t - c_o:+d}",
-                "#2563EB",
-            )
-    else:
-        st.info("Sin datos de partidos para Senado.")
+    # (Curules projection eliminated)
 
     # ════════════════════════════════════════════
     # §5 — LISTA DE ACCIÓN JURÍDICA
     # ════════════════════════════════════════════
     section("§5 — LISTA DE ACCION JURIDICA", "gavel")
 
-    # Solo discrepancias de CREEMOS (candidatos + lista)
-    party_jul = CAND_JULIANA.split("_")[0]  # 01070
-    party_ger = CAND_GERMAN.split("_")[0]  # 01067
-    partidos_creemos = {party_jul, party_ger}
+    # Solo discrepancias de los partidos objetivo
+    df_disc_full = df_cruce[df_cruce["diferencia"] != 0].copy()
 
-    df_disc_full = df_cruce[
-        (df_cruce["diferencia"] != 0) & (df_cruce["cod_partido"].isin(partidos_creemos))
-    ].copy()
-
-    st.caption("Muestra solo discrepancias de candidatos y listas del partido CREEMOS.")
+    st.caption("Muestra solo discrepancias de los 4 partidos clave analizados.")
 
     if df_disc_full.empty:
         st.success("No hay discrepancias — no se requiere acción jurídica.")

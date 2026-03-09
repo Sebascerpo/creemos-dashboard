@@ -95,13 +95,13 @@
         {
           "zona": "03",
           "cod_puesto": "01",
-          "nombre": "I.E.  ASIA IGNACIANA",
+          "nombre": "I.E. ASIA IGNACIANA",
           "num_mesas": 45
         },
         {
           "zona": "03",
           "cod_puesto": "02",
-          "nombre": "SEC.ESC.  MANUEL URIBE ANGEL",
+          "nombre": "SEC.ESC. MANUEL URIBE ANGEL",
           "num_mesas": 43
         },
         {
@@ -137,7 +137,7 @@
         {
           "zona": "05",
           "cod_puesto": "01",
-          "nombre": "I.E. MONTECARLO GUILLERMO GAVIRIA CORREA",
+          "nombre": "I.E. MONTECARLO GUILLERMO GAVIRIA CORRE",
           "num_mesas": 48
         },
         {
@@ -197,7 +197,7 @@
         {
           "zona": "06",
           "cod_puesto": "03",
-          "nombre": "IE RODRIGO LARA BONILLA - SEDE LA SUSANA",
+          "nombre": "IE RODRIGO LARA BONILLA - SEDE LA SUSAN",
           "num_mesas": 24
         },
         {
@@ -215,13 +215,13 @@
         {
           "zona": "07",
           "cod_puesto": "02",
-          "nombre": "I.E. MONSEÑOR FRANCISCO CRISTOBAL TORO",
+          "nombre": "I.E. MONSEï¿½OR FRANCISCO CRISTOBAL TOR",
           "num_mesas": 33
         },
         {
           "zona": "07",
           "cod_puesto": "03",
-          "nombre": "I.E. GILBERTO ALZATE AVENDAÑO",
+          "nombre": "I.E. GILBERTO ALZATE AVENDAï¿½O",
           "num_mesas": 36
         },
         {
@@ -275,7 +275,7 @@
         {
           "zona": "08",
           "cod_puesto": "04",
-          "nombre": "I.E. JAVIERA LONDOÑO SEVILLA",
+          "nombre": "I.E. JAVIERA LONDOï¿½O SEVILLA",
           "num_mesas": 36
         },
         {
@@ -317,7 +317,7 @@
         {
           "zona": "09",
           "cod_puesto": "03",
-          "nombre": "I.E. PBRO ANTONIO JOSE BERNAL LONDOÑO SJ",
+          "nombre": "I.E. PBRO ANTONIO JOSE BERNAL LONDOï¿½O",
           "num_mesas": 43
         },
         {
@@ -605,7 +605,7 @@
         {
           "zona": "15",
           "cod_puesto": "06",
-          "nombre": "SEC.ESC.NIÑO JESUS DE PRAGA",
+          "nombre": "SEC.ESC.NIï¿½O JESUS DE PRAGA",
           "num_mesas": 12
         },
         {
@@ -677,7 +677,7 @@
         {
           "zona": "17",
           "cod_puesto": "03",
-          "nombre": "I.E. MANUEL JOSÑ CAYZEDO",
+          "nombre": "I.E. MANUEL JOSï¿½ CAYZEDO",
           "num_mesas": 29
         },
         {
@@ -731,7 +731,7 @@
         {
           "zona": "18",
           "cod_puesto": "03",
-          "nombre": "ESC NORMAL SUPERIOR ANTIOQUEÑA",
+          "nombre": "ESC NORMAL SUPERIOR ANTIOQUEï¿½A",
           "num_mesas": 28
         },
         {
@@ -767,7 +767,7 @@
         {
           "zona": "19",
           "cod_puesto": "04",
-          "nombre": "I.E. CENTRO FORMATIVO DE ANTIOQUIA -CEFA",
+          "nombre": "I.E. CENTRO FORMATIVO DE ANTIOQUIA -CEF",
           "num_mesas": 48
         },
         {
@@ -779,7 +779,7 @@
         {
           "zona": "19",
           "cod_puesto": "06",
-          "nombre": "I.E. JAVIERA LONDOÑO",
+          "nombre": "I.E. JAVIERA LONDOï¿½O",
           "num_mesas": 9
         },
         {
@@ -839,7 +839,7 @@
         {
           "zona": "21",
           "cod_puesto": "04",
-          "nombre": "COL. CALASANZ (FEM) CAMPESTRE ESCOLAPIAS",
+          "nombre": "COL. CALASANZ (FEM) CAMPESTRE ESCOLAPIA",
           "num_mesas": 29
         },
         {
@@ -881,7 +881,7 @@
         {
           "zona": "22",
           "cod_puesto": "04",
-          "nombre": "COL. SAN IGNACIO DE LOYOLA - SD INFANTIL",
+          "nombre": "COL. SAN IGNACIO DE LOYOLA - SD INFANTI",
           "num_mesas": 11
         },
         {
@@ -995,7 +995,7 @@
         {
           "zona": "25",
           "cod_puesto": "04",
-          "nombre": "SEC. ESC. MONSEÑOR PERDOMO",
+          "nombre": "SEC. ESC. MONSEï¿½OR PERDOMO",
           "num_mesas": 32
         },
         {
@@ -1007,7 +1007,7 @@
         {
           "zona": "25",
           "cod_puesto": "06",
-          "nombre": "I.E.STELLA VELEZ LONDOÑO",
+          "nombre": "I.E.STELLA VELEZ LONDOï¿½O",
           "num_mesas": 6
         },
         {
@@ -1055,7 +1055,7 @@
         {
           "zona": "26",
           "cod_puesto": "07",
-          "nombre": "SEC. ESC. AMOR AL NIÑO",
+          "nombre": "SEC. ESC. AMOR AL NIï¿½O",
           "num_mesas": 12
         },
         {
@@ -1127,7 +1127,7 @@
         {
           "zona": "28",
           "cod_puesto": "04",
-          "nombre": "COL DE LA COMPAÑIA DE MARIA LA ENSEÑANZA",
+          "nombre": "COL DE LA COMPAï¿½IA DE MARIA LA ENSEï¿",
           "num_mesas": 30
         },
         {
@@ -1313,7 +1313,7 @@
         {
           "zona": "32",
           "cod_puesto": "03",
-          "nombre": "I.E HORACIO MUÑOZ SUESCUN",
+          "nombre": "I.E HORACIO MUï¿½OZ SUESCUN",
           "num_mesas": 27
         },
         {
@@ -1361,7 +1361,7 @@
         {
           "zona": "98",
           "cod_puesto": "02",
-          "nombre": "ESTABLECIMIENTO CARCELARIO PEDREGAL MEDE",
+          "nombre": "ESTABLECIMIENTO CARCELARIO PEDREGAL MED",
           "num_mesas": 1
         },
         {
@@ -1391,7 +1391,7 @@
         {
           "zona": "99",
           "cod_puesto": "04",
-          "nombre": "PARROQ SAN JOSEMARIA ESCRIVA DE BALAGUER",
+          "nombre": "PARROQ SAN JOSEMARIA ESCRIVA DE BALAGUE",
           "num_mesas": 1
         },
         {
@@ -1421,7 +1421,7 @@
         {
           "zona": "99",
           "cod_puesto": "35",
-          "nombre": "C.E. JUAN ANDRES PATIÑO",
+          "nombre": "C.E. JUAN ANDRES PATIï¿½O",
           "num_mesas": 1
         },
         {
@@ -1445,7 +1445,7 @@
         {
           "zona": "99",
           "cod_puesto": "A3",
-          "nombre": "IE MONSEÑOR VICTOR WIEDEMANN",
+          "nombre": "IE MONSEï¿½OR VICTOR WIEDEMANN",
           "num_mesas": 15
         },
         {
@@ -1571,7 +1571,7 @@
         {
           "zona": "99",
           "cod_puesto": "05",
-          "nombre": "SD  LA ANTIGUA I.E LA MILAGROSA",
+          "nombre": "SD LA ANTIGUA I.E LA MILAGROSA",
           "num_mesas": 2
         }
       ]
@@ -1637,7 +1637,7 @@
         {
           "zona": "99",
           "cod_puesto": "04",
-          "nombre": "I.E. SAN FERNANDO DE AMAGAÑ",
+          "nombre": "I.E. SAN FERNANDO DE AMAGAï¿½",
           "num_mesas": 4
         },
         {
@@ -1661,7 +1661,7 @@
         {
           "zona": "00",
           "cod_puesto": "02",
-          "nombre": "SEDE B  I.E. EDUARDO FERNANDEZ BOTERO",
+          "nombre": "SEDE B I.E. EDUARDO FERNANDEZ BOTERO",
           "num_mesas": 23
         },
         {
@@ -1669,6 +1669,18 @@
           "cod_puesto": "01",
           "nombre": "CARCEL MUNICIPAL",
           "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E.R. LA MANGUITA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "I.E.R. PORTACHUELO",
+          "num_mesas": 2
         }
       ]
     },
@@ -1691,7 +1703,7 @@
         {
           "zona": "01",
           "cod_puesto": "03",
-          "nombre": "C DE DESARROLLO INFANTIL CDI CAFETERITOS",
+          "nombre": "C DE DESARROLLO INFANTIL CDI CAFETERITO",
           "num_mesas": 7
         },
         {
@@ -1793,7 +1805,7 @@
         {
           "zona": "99",
           "cod_puesto": "01",
-          "nombre": "I.E  LOS ANGELES",
+          "nombre": "I.E LOS ANGELES",
           "num_mesas": 3
         },
         {
@@ -1841,8 +1853,50 @@
         {
           "zona": "00",
           "cod_puesto": "00",
-          "nombre": "COLISEO LUIS RODRIGO CÑRDENAS LOPERA",
+          "nombre": "COLISEO LUIS RODRIGO Cï¿½RDENAS LOPERA",
           "num_mesas": 31
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "C.E.R MERCEDES YEPES",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I.E.R AMANDA POSADA",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "09",
+          "nombre": "C.E.R LA HONDONA",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "13",
+          "nombre": "C.E.R MADRESECA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "15",
+          "nombre": "C.E.R EL CARMï¿½N",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "16",
+          "nombre": "C.E.R LA CASITA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "37",
+          "nombre": "C.E.R SANTO DOMINGO",
+          "num_mesas": 1
         }
       ]
     },
@@ -1931,7 +1985,7 @@
         {
           "zona": "99",
           "cod_puesto": "01",
-          "nombre": "I.E.R.  ASCENCION MONTOYA DE TORRES",
+          "nombre": "I.E.R. ASCENCION MONTOYA DE TORRES",
           "num_mesas": 7
         },
         {
@@ -2051,7 +2105,7 @@
         {
           "zona": "04",
           "cod_puesto": "06",
-          "nombre": "COLISEO CUBIERTO ANTONIO ROLDAN BETANCUR",
+          "nombre": "COLISEO CUBIERTO ANTONIO ROLDAN BETANCU",
           "num_mesas": 20
         },
         {
@@ -2065,6 +2119,30 @@
           "cod_puesto": "01",
           "nombre": "CARCEL Y PENIT DE MEDIA SEG DE APARTADO",
           "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "15",
+          "nombre": "I.E.R CHURIDO PUEBLO",
+          "num_mesas": 6
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "21",
+          "nombre": "I.E.R PUERTO GIRON",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "25",
+          "nombre": "I.E.R. BARTOLOME CATAï¿½O VALLEJO",
+          "num_mesas": 6
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "50",
+          "nombre": "I.E.R. EL REPOSO",
+          "num_mesas": 16
         }
       ]
     },
@@ -2225,7 +2303,7 @@
         {
           "zona": "02",
           "cod_puesto": "02",
-          "nombre": "COL. COOPERATIVO SIMÑN BOLIVAR",
+          "nombre": "COL. COOPERATIVO SIMï¿½N BOLIVAR",
           "num_mesas": 9
         },
         {
@@ -2309,13 +2387,13 @@
         {
           "zona": "01",
           "cod_puesto": "02",
-          "nombre": "SD PRINCIPAL I.E. ALBERTO DIAZ MUÑOZ",
+          "nombre": "SD PRINCIPAL I.E. ALBERTO DIAZ MUï¿½OZ",
           "num_mesas": 21
         },
         {
           "zona": "01",
           "cod_puesto": "03",
-          "nombre": "SD PRADERA I.E ALBERTO DIAZ MUÑOZ",
+          "nombre": "SD PRADERA I.E ALBERTO DIAZ MUï¿½OZ",
           "num_mesas": 8
         },
         {
@@ -2363,7 +2441,7 @@
         {
           "zona": "02",
           "cod_puesto": "05",
-          "nombre": "SD AVENIDAS LICEO ANTIOQUEÑO",
+          "nombre": "SD AVENIDAS LICEO ANTIOQUEï¿½O",
           "num_mesas": 1
         },
         {
@@ -2375,7 +2453,7 @@
         {
           "zona": "03",
           "cod_puesto": "01",
-          "nombre": "SD SERRAMONTE LICEO ANTIOQUEÑO",
+          "nombre": "SD SERRAMONTE LICEO ANTIOQUEï¿½O",
           "num_mesas": 1
         },
         {
@@ -2465,13 +2543,13 @@
         {
           "zona": "06",
           "cod_puesto": "01",
-          "nombre": "SECC VILLA LINDA IE ANTONIO MARIA BEDOYA",
+          "nombre": "SECC VILLA LINDA IE ANTONIO MARIA BEDOY",
           "num_mesas": 1
         },
         {
           "zona": "06",
           "cod_puesto": "02",
-          "nombre": "TIERRA ADENTRO I.E. ANTONIO MARIA BEDOYA",
+          "nombre": "TIERRA ADENTRO I.E. ANTONIO MARIA BEDOY",
           "num_mesas": 1
         },
         {
@@ -2507,7 +2585,7 @@
         {
           "zona": "08",
           "cod_puesto": "01",
-          "nombre": "COL NUESTRA SEÑORA DE CHIQUINQ",
+          "nombre": "COL NUESTRA SEï¿½ORA DE CHIQUINQ",
           "num_mesas": 26
         },
         {
@@ -2561,13 +2639,13 @@
         {
           "zona": "10",
           "cod_puesto": "02",
-          "nombre": "I.E FONTIDUEÑO JAIME ARANGO R",
+          "nombre": "I.E FONTIDUEï¿½O JAIME ARANGO R",
           "num_mesas": 24
         },
         {
           "zona": "10",
           "cod_puesto": "03",
-          "nombre": "SEC PRIMARIA IE FONTIDUEÑO JAIME ARANGO",
+          "nombre": "SEC PRIMARIA IE FONTIDUEï¿½O JAIME ARAN",
           "num_mesas": 1
         },
         {
@@ -2790,13 +2868,61 @@
     },
     {
       "cod": "062",
-      "nombre": "BRICEÑO",
+      "nombre": "BRICEï¿½O",
       "puestos": [
         {
           "zona": "00",
           "cod_puesto": "00",
           "nombre": "I.E. ANTONIO ROLDAN BETANCUR",
           "num_mesas": 15
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "17",
+          "nombre": "C.E.R. BUENAVISTA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "20",
+          "nombre": "C.E.R. PESCADO CAPITAN",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "22",
+          "nombre": "C.E.R. CHORRILLOS",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "25",
+          "nombre": "C.E.R.VEREDA EL ANIME",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "30",
+          "nombre": "C.E.R. EL ROBLAL",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "40",
+          "nombre": "C.E.R. CHIRI",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "50",
+          "nombre": "C.E. LAS CRUCES",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "60",
+          "nombre": "C.E.R. MORAVIA",
+          "num_mesas": 1
         }
       ]
     },
@@ -2807,8 +2933,50 @@
         {
           "zona": "00",
           "cod_puesto": "00",
-          "nombre": "IE MONSEÑOR GERARDO PATIÑO",
+          "nombre": "IE MONSEï¿½OR GERARDO PATIï¿½O",
           "num_mesas": 25
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E. COL. GUARUMO",
+          "num_mesas": 10
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "C.E.R EL TIGRE",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "SEDE SAN PABLO - C.E.R. EL TIGRE",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I.E. GASPAR DE RODAS JARDIN SEDE 2",
+          "num_mesas": 17
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "07",
+          "nombre": "I.E. ESC. MANIZALEZ",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "13",
+          "nombre": "IE AURELIO MEJIA PTO BELGICA",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "29",
+          "nombre": "I.E. ESC. PIAMONTE",
+          "num_mesas": 5
         }
       ]
     },
@@ -2945,14 +3113,14 @@
         {
           "zona": "99",
           "cod_puesto": "80",
-          "nombre": "ESCUELA  NORIZAL",
+          "nombre": "ESCUELA NORIZAL",
           "num_mesas": 2
         }
       ]
     },
     {
       "cod": "076",
-      "nombre": "CAÑASGORDAS",
+      "nombre": "CAï¿½ASGORDAS",
       "puestos": [
         {
           "zona": "00",
@@ -2963,7 +3131,7 @@
         {
           "zona": "00",
           "cod_puesto": "02",
-          "nombre": "IE NICOLAS GAVIRIA SD ESC URBANA CAÑASGO",
+          "nombre": "IE NICOLAS GAVIRIA SD ESC URBANA CAï¿",
           "num_mesas": 1
         },
         {
@@ -3059,7 +3227,7 @@
         {
           "zona": "01",
           "cod_puesto": "01",
-          "nombre": "INST. EDUC. JOSE MARIA MUÑOZ",
+          "nombre": "INST. EDUC. JOSE MARIA MUï¿½OZ",
           "num_mesas": 18
         },
         {
@@ -3125,8 +3293,32 @@
         {
           "zona": "03",
           "cod_puesto": "04",
-          "nombre": "I.E. LUIS CARLOS GALAN SEDE MEGA COLEGIO",
+          "nombre": "I.E. LUIS CARLOS GALAN SEDE MEGA COLEGI",
           "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "C.E.R. VIJAGUAL",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "20",
+          "nombre": "I.E.R. VILLA NELLY",
+          "num_mesas": 9
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "30",
+          "nombre": "I.E. PIEDRAS BLANCAS",
+          "num_mesas": 10
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "70",
+          "nombre": "I.E. ZUNGO EMBARCADERO",
+          "num_mesas": 10
         }
       ]
     },
@@ -3137,7 +3329,7 @@
         {
           "zona": "01",
           "cod_puesto": "01",
-          "nombre": "I. E. FRAY JULIO TOBONÑ SEDE C",
+          "nombre": "I. E. FRAY JULIO TOBONï¿½ SEDE C",
           "num_mesas": 1
         },
         {
@@ -3317,19 +3509,19 @@
         {
           "zona": "02",
           "cod_puesto": "05",
-          "nombre": "I.E. DIVINO NIÑO PRINCIPAL",
+          "nombre": "I.E. DIVINO NIï¿½O PRINCIPAL",
           "num_mesas": 21
         },
         {
           "zona": "02",
           "cod_puesto": "06",
-          "nombre": "SD CARACOLI I.E. DIVINO NIÑO",
+          "nombre": "SD CARACOLI I.E. DIVINO NIï¿½O",
           "num_mesas": 14
         },
         {
           "zona": "02",
           "cod_puesto": "07",
-          "nombre": "SD SAN JOSE I.E. DIVINO NIÑO",
+          "nombre": "SD SAN JOSE I.E. DIVINO NIï¿½O",
           "num_mesas": 4
         },
         {
@@ -3342,6 +3534,72 @@
           "zona": "98",
           "cod_puesto": "01",
           "nombre": "CARCEL",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E. VILLA DEL SOCORRO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I.E.R. CUTURU - SEDE CUTURU",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "06",
+          "nombre": "CER NO HAY COMO DIOS - SEDE SANTA ELENA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "SD LA ILUSION C.E.R SANTA ELENA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "17",
+          "nombre": "I.E.R MARGENTO - SEDE MARGENTO",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "25",
+          "nombre": "SD RIVERAS DEL CAUCA CER SANTA ELENA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "27",
+          "nombre": "CER VILLA FATIMA - SEDE VEINTE DE JULIO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "28",
+          "nombre": "CER RIVERAS DEL CAUCA - SANTIAGO CASTIL",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "40",
+          "nombre": "SD CACERI I.E.R. CACERI",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "60",
+          "nombre": "SD ALTO CACERI I.E.R. CACERI",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "70",
+          "nombre": "C.E.R SANTA ROSITA",
           "num_mesas": 1
         }
       ]
@@ -3491,7 +3749,7 @@
         {
           "zona": "02",
           "cod_puesto": "01",
-          "nombre": "SEDE COPACABANA TECNOLOGICO DE ANTIOQUIA",
+          "nombre": "SEDE COPACABANA TECNOLOGICO DE ANTIOQUI",
           "num_mesas": 8
         },
         {
@@ -3515,7 +3773,7 @@
         {
           "zona": "03",
           "cod_puesto": "01",
-          "nombre": "Col. AutÑnomo Ntra. SeÑora de la B. E",
+          "nombre": "Col. Autï¿½nomo Ntra. Seï¿½ora de la B.",
           "num_mesas": 12
         },
         {
@@ -3545,7 +3803,7 @@
         {
           "zona": "99",
           "cod_puesto": "02",
-          "nombre": "SEDE MONTAÑUELA - I. E. SAN LUIS GONZAGA",
+          "nombre": "SEDE MONTAï¿½UELA - I. E. SAN LUIS GONZ",
           "num_mesas": 1
         }
       ]
@@ -3607,6 +3865,12 @@
           "cod_puesto": "03",
           "nombre": "COLEGIO DIOCESANO LAURA MONTOYA",
           "num_mesas": 18
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "CASETA COMUNAL BARRANQUILLITA",
+          "num_mesas": 3
         }
       ]
     },
@@ -3625,6 +3889,54 @@
           "cod_puesto": "02",
           "nombre": "ESC JUAN HENRIQUE WHITE",
           "num_mesas": 23
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "CASETA COMUNAL CAMPARRUSIA",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "SD LLANO GRANDE I.E. MADRE LAURA MONTOY",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "SD VALLESI I.E. MADRE LAURA MONTOYA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "C.E.R. JOSEFA ROMERO",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "SEDE BOTON - I.E. JUAN H. WHITE",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "09",
+          "nombre": "I.E.R. URAMA SEDE PRIMARIA",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "CASETA COMUNAL LA BALSITA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "70",
+          "nombre": "SD TAPARALES IER INDIGENISTA LLANO GORD",
+          "num_mesas": 2
         }
       ]
     },
@@ -3727,6 +4039,18 @@
           "cod_puesto": "01",
           "nombre": "CARCEL MUNICIPAL",
           "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "60",
+          "nombre": "ESCUELA RURAL PUERTO CLAVER",
+          "num_mesas": 16
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "65",
+          "nombre": "COLEGIO RURAL PUERTO LOPEZ",
+          "num_mesas": 10
         }
       ]
     },
@@ -3755,7 +4079,7 @@
         {
           "zona": "01",
           "cod_puesto": "02",
-          "nombre": "UNIVERSIDAD EIA.  SEDE ZUÑIGA",
+          "nombre": "UNIVERSIDAD EIA. SEDE ZUï¿½IGA",
           "num_mesas": 1
         },
         {
@@ -3869,7 +4193,7 @@
         {
           "zona": "07",
           "cod_puesto": "01",
-          "nombre": "SECRETARIA DE OBRAS PUBLICAS DE ENVIGADO",
+          "nombre": "SECRETARIA DE OBRAS PUBLICAS DE ENVIGAD",
           "num_mesas": 40
         },
         {
@@ -3893,7 +4217,7 @@
         {
           "zona": "08",
           "cod_puesto": "02",
-          "nombre": "IE LETICIA ARANGO DE AVENDAÑO",
+          "nombre": "IE LETICIA ARANGO DE AVENDAï¿½O",
           "num_mesas": 19
         },
         {
@@ -3911,7 +4235,7 @@
         {
           "zona": "09",
           "cod_puesto": "02",
-          "nombre": "URB. MULTIFAMILIAR  SEÑORIAL",
+          "nombre": "URB. MULTIFAMILIAR SEï¿½ORIAL",
           "num_mesas": 19
         },
         {
@@ -3971,7 +4295,7 @@
         {
           "zona": "99",
           "cod_puesto": "02",
-          "nombre": "PANTANILLO IE MARTIN EDUARDO RIOS LLANOS",
+          "nombre": "PANTANILLO IE MARTIN EDUARDO RIOS LLANO",
           "num_mesas": 2
         }
       ]
@@ -3983,7 +4307,7 @@
         {
           "zona": "00",
           "cod_puesto": "01",
-          "nombre": "ESC NORMAL SUPERIOR MARIANO OSPINA SEC P",
+          "nombre": "ESC NORMAL SUPERIOR MARIANO OSPINA SEC",
           "num_mesas": 33
         },
         {
@@ -4055,7 +4379,7 @@
         {
           "zona": "00",
           "cod_puesto": "02",
-          "nombre": "I.E. AGROPECUARIA PEDRO ANTONIO ELEJALDE",
+          "nombre": "I.E. AGROPECUARIA PEDRO ANTONIO ELEJALD",
           "num_mesas": 6
         },
         {
@@ -4175,7 +4499,7 @@
         {
           "zona": "01",
           "cod_puesto": "02",
-          "nombre": "COLEGIO NUESTRA SEÑORA DEL ROSARIO",
+          "nombre": "COLEGIO NUESTRA SEï¿½ORA DEL ROSARIO",
           "num_mesas": 35
         },
         {
@@ -4199,7 +4523,7 @@
         {
           "zona": "02",
           "cod_puesto": "04",
-          "nombre": "LICEO  MANUEL  JOSE  SIERRA",
+          "nombre": "LICEO MANUEL JOSE SIERRA",
           "num_mesas": 3
         },
         {
@@ -4217,7 +4541,7 @@
         {
           "zona": "99",
           "cod_puesto": "30",
-          "nombre": "I.E. NUESTRA SEÑORA DEL CARMEN",
+          "nombre": "I.E. NUESTRA SEï¿½ORA DEL CARMEN",
           "num_mesas": 1
         },
         {
@@ -4271,13 +4595,13 @@
         {
           "zona": "99",
           "cod_puesto": "01",
-          "nombre": "SD SANTA ANA  I.E. JORGE ALBERTO GOMEZ",
+          "nombre": "SD SANTA ANA I.E. JORGE ALBERTO GOMEZ",
           "num_mesas": 2
         },
         {
           "zona": "99",
           "cod_puesto": "40",
-          "nombre": "SD JESUS MARIA  I.E. JORGE ALBERTO GOMEZ",
+          "nombre": "SD JESUS MARIA I.E. JORGE ALBERTO GOME",
           "num_mesas": 1
         }
       ]
@@ -4343,7 +4667,7 @@
         {
           "zona": "01",
           "cod_puesto": "05",
-          "nombre": "CDI-CARRUSEL DE LOS SUEÑOS 1",
+          "nombre": "CDI-CARRUSEL DE LOS SUEï¿½OS 1",
           "num_mesas": 2
         },
         {
@@ -4409,7 +4733,7 @@
         {
           "zona": "00",
           "cod_puesto": "00",
-          "nombre": "COLISEO MUNICIPAL DE GUATAPÑ",
+          "nombre": "COLISEO MUNICIPAL DE GUATAPï¿½",
           "num_mesas": 24
         }
       ]
@@ -4493,7 +4817,7 @@
         {
           "zona": "01",
           "cod_puesto": "04",
-          "nombre": "I.E. MARIA JESUS MEJIA SEDE BACHILLERATO",
+          "nombre": "I.E. MARIA JESUS MEJIA SEDE BACHILLERAT",
           "num_mesas": 13
         },
         {
@@ -4541,7 +4865,7 @@
         {
           "zona": "03",
           "cod_puesto": "05",
-          "nombre": "SEDE JUNTA DE ACCION COMUNAL LA FINQUITA",
+          "nombre": "SEDE JUNTA DE ACCION COMUNAL LA FINQUIT",
           "num_mesas": 2
         },
         {
@@ -4637,7 +4961,7 @@
         {
           "zona": "07",
           "cod_puesto": "02",
-          "nombre": "IE CIUDAD ITAGÑÑ-SD MARÑA BERNAL MOLINA",
+          "nombre": "IE CIUDAD ITAGï¿½ï¿½-SD MARï¿½A BERNAL",
           "num_mesas": 16
         },
         {
@@ -4655,7 +4979,7 @@
         {
           "zona": "07",
           "cod_puesto": "05",
-          "nombre": "I.E. CIUDAD ITAGÑÑ SEDE EL TABLAZO",
+          "nombre": "I.E. CIUDAD ITAGï¿½ï¿½ SEDE EL TABLAZO",
           "num_mesas": 2
         },
         {
@@ -4667,25 +4991,25 @@
         {
           "zona": "08",
           "cod_puesto": "02",
-          "nombre": "I.E. AVELINO SALDARRIAGA SEDE LA UNIÑN",
+          "nombre": "I.E. AVELINO SALDARRIAGA SEDE LA UNIï¿½",
           "num_mesas": 20
         },
         {
           "zona": "08",
           "cod_puesto": "03",
-          "nombre": "PLACA POLIDEPORTIVA LA UNIÑN",
+          "nombre": "PLACA POLIDEPORTIVA LA UNIï¿½N",
           "num_mesas": 1
         },
         {
           "zona": "08",
           "cod_puesto": "04",
-          "nombre": "SEDE JUNTA DE ACCION COMUNAL LA UNIÑN",
+          "nombre": "SEDE JUNTA DE ACCION COMUNAL LA UNIï¿½N",
           "num_mesas": 1
         },
         {
           "zona": "08",
           "cod_puesto": "05",
-          "nombre": "PLACA POLIDEPORTIVA SANTA MARIA LA NUEVA",
+          "nombre": "PLACA POLIDEPORTIVA SANTA MARIA LA NUEV",
           "num_mesas": 1
         },
         {
@@ -4746,6 +5070,78 @@
           "zona": "98",
           "cod_puesto": "01",
           "nombre": "CARCEL ITUANGO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I.E BADILLO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "09",
+          "nombre": "CASETA COMUNAL EL ARO",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "C.E.R BONANZA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "11",
+          "nombre": "C.E.R EL CEDRAL",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "13",
+          "nombre": "I.E JESUS MARIA VALLE JARAMILLO",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "16",
+          "nombre": "C.E.R PATRICIO SUCERQUIA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "17",
+          "nombre": "SALON PARROQUIAL SANTA ANA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "18",
+          "nombre": "I.E LA PEREZ",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "19",
+          "nombre": "C.E.R SANTA LUCIA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "20",
+          "nombre": "C.E.R SAN JUANILLO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "21",
+          "nombre": "CASA DE LA CULTURA SANTA RITA DE ITUANG",
+          "num_mesas": 7
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "50",
+          "nombre": "ANTIGUA INSPECCION DE POLICIA LA HUNDID",
           "num_mesas": 1
         }
       ]
@@ -4847,7 +5243,7 @@
         {
           "zona": "03",
           "cod_puesto": "01",
-          "nombre": "IE BERNARDO URIBE LONDOÑO SD 1",
+          "nombre": "IE BERNARDO URIBE LONDOï¿½O SD 1",
           "num_mesas": 13
         },
         {
@@ -5015,7 +5411,7 @@
         {
           "zona": "00",
           "cod_puesto": "02",
-          "nombre": "I.E. FELIX MARIA RESTREPO LONDOÑO",
+          "nombre": "I.E. FELIX MARIA RESTREPO LONDOï¿½O",
           "num_mesas": 20
         },
         {
@@ -5099,7 +5495,7 @@
         {
           "zona": "99",
           "cod_puesto": "03",
-          "nombre": "ROUND POINT VIA MEDELLIN A PUERTO BERRIO",
+          "nombre": "ROUND POINT VIA MEDELLIN A PUERTO BERRI",
           "num_mesas": 2
         }
       ]
@@ -5191,6 +5587,24 @@
           "cod_puesto": "00",
           "nombre": "I.E MURINDO",
           "num_mesas": 9
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E. OPOGADO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "I.E. CAMPO ALEGRE",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "I.E. JEDEGA",
+          "num_mesas": 1
         }
       ]
     },
@@ -5203,12 +5617,36 @@
           "cod_puesto": "00",
           "nombre": "I.E MUTATA",
           "num_mesas": 33
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "C.E.R PAVARANDOCITO",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "C.E.R LA MILAGROSA",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "PLACA POLIDEPORTIVA PAVARANDOGRANDE",
+          "num_mesas": 8
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I.E.R. LA INMACULADA CAUCHERAS",
+          "num_mesas": 8
         }
       ]
     },
     {
       "cod": "190",
-      "nombre": "NARIÑO",
+      "nombre": "NARIï¿½O",
       "puestos": [
         {
           "zona": "00",
@@ -5269,6 +5707,42 @@
           "cod_puesto": "02",
           "nombre": "ESCUELA URBANA I.E. NECHI",
           "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E.R. TRINIDAD ARRIBA - SAN PABLO ABAJ",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "06",
+          "nombre": "BIJAGUAL I.E. JORGE ELICER GAITAN",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "12",
+          "nombre": "I. E. COLORADO",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "15",
+          "nombre": "I.E.R. LA CONCHA",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "17",
+          "nombre": "I. E. LAS FLORES",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "24",
+          "nombre": "LOS CARGUEROS I.E. JORGE ELICER GAITAN",
+          "num_mesas": 4
         }
       ]
     },
@@ -5287,6 +5761,60 @@
           "cod_puesto": "02",
           "nombre": "I.E EDUARDO ESPITIA ROMERO",
           "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E.R CARIBIA",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "I.E.R LAS CHANGAS",
+          "num_mesas": 10
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "I.E.R. TULAPITA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "I.E.R EL MELLITO",
+          "num_mesas": 8
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "12",
+          "nombre": "I.E.R EL TOTUMO",
+          "num_mesas": 11
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "15",
+          "nombre": "I.E.R MELLO VILLAVICENCIO",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "16",
+          "nombre": "I.E.R MULATOS",
+          "num_mesas": 6
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "23",
+          "nombre": "I.E.R PUEBLO NUEVO",
+          "num_mesas": 15
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "27",
+          "nombre": "I.E.R ZAPATA",
+          "num_mesas": 5
         }
       ]
     },
@@ -5322,7 +5850,7 @@
     },
     {
       "cod": "196",
-      "nombre": "PEÑOL",
+      "nombre": "PEï¿½OL",
       "puestos": [
         {
           "zona": "00",
@@ -5339,7 +5867,7 @@
         {
           "zona": "00",
           "cod_puesto": "00",
-          "nombre": "COLISEO RICARDO ANTONIO DAVID PIEDRAHITA",
+          "nombre": "COLISEO RICARDO ANTONIO DAVID PIEDRAHIT",
           "num_mesas": 15
         },
         {
@@ -5411,7 +5939,7 @@
         {
           "zona": "01",
           "cod_puesto": "03",
-          "nombre": "I.E. ANTONIO NARIÑO",
+          "nombre": "I.E. ANTONIO NARIï¿½O",
           "num_mesas": 13
         },
         {
@@ -5551,6 +6079,48 @@
           "cod_puesto": "02",
           "nombre": "PARQUE EDUC. ISABELITA TEJADA CUARTAS",
           "num_mesas": 16
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I. E.R. LA CRUZADA",
+          "num_mesas": 11
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "E. R. CAMPO VIJAO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "C.E.R. CAï¿½AVERAL",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "C.E.R. CHORRO DE LAGRIMAS",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I. E.R. PABLO VI",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "06",
+          "nombre": "SD LA GORGONA - IE IGNACIO YEPES YEPES",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "07",
+          "nombre": "CENTRO CULTURAL LEJANIAS",
+          "num_mesas": 1
         }
       ]
     },
@@ -5609,7 +6179,7 @@
         {
           "zona": "02",
           "cod_puesto": "02",
-          "nombre": "SD BALDOMERO IE JOSEFINA MUÑOZ GONZALEZ",
+          "nombre": "SD BALDOMERO IE JOSEFINA MUï¿½OZ GONZAL",
           "num_mesas": 33
         },
         {
@@ -5633,7 +6203,7 @@
         {
           "zona": "03",
           "cod_puesto": "04",
-          "nombre": "SD CUATRO ESQ IE JOSEFINA MUÑOZ GONZALEZ",
+          "nombre": "SD CUATRO ESQ IE JOSEFINA MUï¿½OZ GONZA",
           "num_mesas": 22
         },
         {
@@ -5651,7 +6221,7 @@
         {
           "zona": "04",
           "cod_puesto": "03",
-          "nombre": "ESC PASCUALA MUÑOZ",
+          "nombre": "ESC PASCUALA MUï¿½OZ",
           "num_mesas": 14
         },
         {
@@ -5783,7 +6353,7 @@
         {
           "zona": "02",
           "cod_puesto": "04",
-          "nombre": "CASA DE LA CULTURA LA BARQUEREÑA",
+          "nombre": "CASA DE LA CULTURA LA BARQUEREï¿½A",
           "num_mesas": 12
         },
         {
@@ -5819,7 +6389,7 @@
         {
           "zona": "99",
           "cod_puesto": "01",
-          "nombre": "I.E MARIA AUXILIADORAÑÑÑÑ",
+          "nombre": "I.E MARIA AUXILIADORAï¿½ï¿½ï¿½ï¿½",
           "num_mesas": 3
         },
         {
@@ -5873,7 +6443,7 @@
         {
           "zona": "99",
           "cod_puesto": "70",
-          "nombre": "C. E. R. PEÑALISA",
+          "nombre": "C. E. R. PEï¿½ALISA",
           "num_mesas": 2
         }
       ]
@@ -5903,7 +6473,7 @@
         {
           "zona": "99",
           "cod_puesto": "03",
-          "nombre": "ESCUELA MONTAÑA/ADENTRO",
+          "nombre": "ESCUELA MONTAï¿½A/ADENTRO",
           "num_mesas": 1
         },
         {
@@ -5915,7 +6485,7 @@
         {
           "zona": "99",
           "cod_puesto": "07",
-          "nombre": "PUESTO DE SALUD  SAN RAFAEL",
+          "nombre": "PUESTO DE SALUD SAN RAFAEL",
           "num_mesas": 1
         },
         {
@@ -5927,7 +6497,7 @@
         {
           "zona": "99",
           "cod_puesto": "20",
-          "nombre": "ESCUELA EL PEÑOL I.E.R. LAS CRUCES",
+          "nombre": "ESCUELA EL PEï¿½OL I.E.R. LAS CRUCES",
           "num_mesas": 1
         },
         {
@@ -5945,7 +6515,7 @@
         {
           "zona": "00",
           "cod_puesto": "00",
-          "nombre": "COLIS. MPAL JULIAN CONRADO E IVAN GIRAL.",
+          "nombre": "COLIS. MPAL JULIAN CONRADO E IVAN GIRAL",
           "num_mesas": 37
         },
         {
@@ -6036,7 +6606,7 @@
     },
     {
       "cod": "230",
-      "nombre": "SAN JOSE DE LA MONTAÑA",
+      "nombre": "SAN JOSE DE LA MONTAï¿½A",
       "puestos": [
         {
           "zona": "00",
@@ -6065,7 +6635,7 @@
         {
           "zona": "99",
           "cod_puesto": "10",
-          "nombre": "I.E.R MONSEÑOR ESCOBAR VELEZ",
+          "nombre": "I.E.R MONSEï¿½OR ESCOBAR VELEZ",
           "num_mesas": 7
         },
         {
@@ -6185,7 +6755,7 @@
         {
           "zona": "02",
           "cod_puesto": "02",
-          "nombre": "CTRO DE INTEGRAC. CIUDAD. LOS ENCENILLOS",
+          "nombre": "CTRO DE INTEGRAC. CIUDAD. LOS ENCENILLO",
           "num_mesas": 16
         },
         {
@@ -6233,13 +6803,13 @@
         {
           "zona": "01",
           "cod_puesto": "02",
-          "nombre": "E.U.I.  ZOILA LOPEZ",
+          "nombre": "E.U.I. ZOILA LOPEZ",
           "num_mesas": 11
         },
         {
           "zona": "02",
           "cod_puesto": "01",
-          "nombre": "SD POLICARPAÑS. I.E. SAN PEDRO DE URABA",
+          "nombre": "SD POLICARPAï¿½S. I.E. SAN PEDRO DE URA",
           "num_mesas": 20
         },
         {
@@ -6247,6 +6817,60 @@
           "cod_puesto": "02",
           "nombre": "E.U.I. HERNANDEZ CASTILLO",
           "num_mesas": 13
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "I.E.R. LOS ALMAGROS",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "I.E.R. BUCHADO MEDIO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "I.E.R. ALTO ROSARIO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I.E.R. LAS PAVAS",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "06",
+          "nombre": "I.E.R ARENAS MONAS",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "I.E.R EL TOMATE",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "15",
+          "nombre": "I.E.R EL RAYO",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "25",
+          "nombre": "I.E.R SANTA CATALINA",
+          "num_mesas": 9
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "32",
+          "nombre": "I.E.R ZAPINDONGA",
+          "num_mesas": 4
         }
       ]
     },
@@ -6347,7 +6971,7 @@
         {
           "zona": "99",
           "cod_puesto": "06",
-          "nombre": "C.E.R. COMPAÑÑA ABAJO",
+          "nombre": "C.E.R. COMPAï¿½ï¿½A ABAJO",
           "num_mesas": 1
         },
         {
@@ -6407,13 +7031,13 @@
         {
           "zona": "02",
           "cod_puesto": "01",
-          "nombre": "I.E. MONSEÑOR EMILIO BOTERO",
+          "nombre": "I.E. MONSEï¿½OR EMILIO BOTERO",
           "num_mesas": 16
         },
         {
           "zona": "02",
           "cod_puesto": "02",
-          "nombre": "COLISEO LUIS FERNANDO PATIÑO",
+          "nombre": "COLISEO LUIS FERNANDO PATIï¿½O",
           "num_mesas": 15
         },
         {
@@ -6623,7 +7247,7 @@
         {
           "zona": "99",
           "cod_puesto": "40",
-          "nombre": "C.E.R. MONSEÑOR FRANCISCO L. GOMEZ G.",
+          "nombre": "C.E.R. MONSEï¿½OR FRANCISCO L. GOMEZ G.",
           "num_mesas": 2
         }
       ]
@@ -6655,6 +7279,30 @@
           "cod_puesto": "02",
           "nombre": "I.E. MANUEL CEPEDA",
           "num_mesas": 15
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E.R. FRAY MARTIN DE PORRES (FRAGUAS)",
+          "num_mesas": 6
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "SD CAMPO ALEGRE I.E.R. LIBORIO BATALLER",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "I.E.R. SANTA LAURA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "SD LA PO CAMPESINA-IE STO DOMINGO SAVIO",
+          "num_mesas": 1
         }
       ]
     },
@@ -6869,7 +7517,7 @@
         {
           "zona": "99",
           "cod_puesto": "15",
-          "nombre": "SD NUEVO HORIZONTE I.E. JOSE MARIA VILLA",
+          "nombre": "SD NUEVO HORIZONTE I.E. JOSE MARIA VILL",
           "num_mesas": 2
         },
         {
@@ -6935,14 +7583,44 @@
         {
           "zona": "02",
           "cod_puesto": "02",
-          "nombre": "I.E. RAFAEL NUÑEZ",
+          "nombre": "I.E. RAFAEL NUï¿½EZ",
           "num_mesas": 19
         },
         {
           "zona": "98",
           "cod_puesto": "01",
-          "nombre": "CÑRCEL MUNICIPAL",
+          "nombre": "Cï¿½RCEL MUNICIPAL",
           "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "I.E.R MONTENEGRO",
+          "num_mesas": 4
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "20",
+          "nombre": "IE LA INMACULADA",
+          "num_mesas": 6
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "30",
+          "nombre": "IE LA CAUCANA",
+          "num_mesas": 9
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "35",
+          "nombre": "C.E.R EL GUAIMARO",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "60",
+          "nombre": "C.E.R PUERTO ANTIOQUIA",
+          "num_mesas": 2
         }
       ]
     },
@@ -7087,6 +7765,132 @@
           "cod_puesto": "03",
           "nombre": "IE SAG. CORAZON DE JESUS SD JESUS MORA",
           "num_mesas": 7
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "I.E. VILLA MARIA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "C.E.R PUYA DEL MEDIO",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "IE SAN JOSE-LA SALLE",
+          "num_mesas": 21
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "I.E. PUERTO CESAR",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "I.E. COMUNAL SAN JORGE",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "06",
+          "nombre": "IE EL DOS",
+          "num_mesas": 10
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "07",
+          "nombre": "C.E. SANTIAGO DE URABA",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "08",
+          "nombre": "IE NUEVO ANTIOQUIA",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "09",
+          "nombre": "IE NUEVA GRANADA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "10",
+          "nombre": "IE PUNTA DE PIEDRA",
+          "num_mesas": 9
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "12",
+          "nombre": "IE PUEBLO BELLO",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "13",
+          "nombre": "IE RIOGRANDE",
+          "num_mesas": 8
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "14",
+          "nombre": "IE NUEVA COLONIA",
+          "num_mesas": 23
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "16",
+          "nombre": "IE SAN JOSE DE MULATOS",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "17",
+          "nombre": "IE SAN PABLO DE TULAPA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "18",
+          "nombre": "IE SAN VICENTE DEL CONGO",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "26",
+          "nombre": "IE BOCAS DEL ATRATO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "30",
+          "nombre": "IE ALTO DE MULATOS",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "35",
+          "nombre": "E.U.I. LOMAS AISLADAS",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "A1",
+          "nombre": "IE CURRULAO",
+          "num_mesas": 25
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "A2",
+          "nombre": "IE CENTRAL",
+          "num_mesas": 20
         }
       ]
     },
@@ -7183,6 +7987,18 @@
           "cod_puesto": "00",
           "nombre": "COLISEO GUILLERMO GAVIRIA",
           "num_mesas": 21
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "COLISEO ROBERTO GALLEGO",
+          "num_mesas": 16
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "09",
+          "nombre": "PUESTO DE SALUD (RAUDAL)",
+          "num_mesas": 2
         }
       ]
     },
@@ -7193,7 +8009,7 @@
         {
           "zona": "00",
           "cod_puesto": "00",
-          "nombre": "E.U. DE NIÑOS GUILLERMO VALENCIA",
+          "nombre": "E.U. DE NIï¿½OS GUILLERMO VALENCIA",
           "num_mesas": 17
         },
         {
@@ -7211,13 +8027,13 @@
         {
           "zona": "00",
           "cod_puesto": "01",
-          "nombre": "BLOQUE II -  LA ESCUELA I.E. EFE GOMEZ",
+          "nombre": "BLOQUE II - LA ESCUELA I.E. EFE GOMEZ",
           "num_mesas": 20
         },
         {
           "zona": "00",
           "cod_puesto": "02",
-          "nombre": "BLOQUE I -  EL COLEGIO I.E. EFE GOMEZ",
+          "nombre": "BLOQUE I - EL COLEGIO I.E. EFE GOMEZ",
           "num_mesas": 14
         },
         {
@@ -7243,6 +8059,54 @@
           "cod_puesto": "00",
           "nombre": "PARQUE EDUCATIVO SABERES ANCESTRALES",
           "num_mesas": 9
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "I.E. PLAYA BAJO MURRI",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "IE BUCHADO",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "20",
+          "nombre": "IE LOMA MURRI",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "30",
+          "nombre": "IE PALOBLANCO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "75",
+          "nombre": "IE SAN ALEJANDRO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "82",
+          "nombre": "IE S.A. DE PADUA",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "86",
+          "nombre": "CASA COMUNAL SAN MIGUEL",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "91",
+          "nombre": "IE ALIANZA PARA EL PROGRESO",
+          "num_mesas": 2
         }
       ]
     },
@@ -7373,7 +8237,7 @@
         {
           "zona": "99",
           "cod_puesto": "09",
-          "nombre": "IE CEDEÑO",
+          "nombre": "IE CEDEï¿½O",
           "num_mesas": 4
         },
         {
@@ -7483,6 +8347,36 @@
           "cod_puesto": "02",
           "nombre": "COLISEO BENITO ARIAS",
           "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "25",
+          "nombre": "C.E.R CUATRO BOCAS",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "32",
+          "nombre": "I.E.R. ALTO CIMITARRA",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "50",
+          "nombre": "C.E.R CAï¿½O BLANCO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "60",
+          "nombre": "I.E.R. SAN LUIS BELTRAN",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "65",
+          "nombre": "I.E.R. SAN MIGUEL DEL TIGRE",
+          "num_mesas": 5
         }
       ]
     },
@@ -7501,6 +8395,42 @@
           "cod_puesto": "02",
           "nombre": "IE LUIS FERNANDO RESTREPO RESTREPO",
           "num_mesas": 16
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "01",
+          "nombre": "IE LA PAJUILA",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "02",
+          "nombre": "I.E.R. VEGAS DE SEGOVIA",
+          "num_mesas": 3
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "03",
+          "nombre": "IE NANCY ROCIO GARCIA",
+          "num_mesas": 5
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "04",
+          "nombre": "C.E.R CORDERO ICACAL",
+          "num_mesas": 2
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "05",
+          "nombre": "C.E.R. EL SALTILLO",
+          "num_mesas": 1
+        },
+        {
+          "zona": "99",
+          "cod_puesto": "13",
+          "nombre": "IE SIMON BOLIVAR",
+          "num_mesas": 5
         }
       ]
     }
