@@ -13,7 +13,9 @@ export class MmvBuilderService {
 
     validateRecord(record: string): boolean {
         if (record.length !== 38) return false;
-        return /^[0-9]{38}$/.test(record);
+        const identificacion = record.slice(0, 30);
+        const votos = record.slice(30, 38);
+        return /^[0-9A-Za-z]{30}$/.test(identificacion) && /^[0-9]{8}$/.test(votos);
     }
 
     buildRecords(formData: E14FormData, circunscripcion: string, codPartido: string): string[] {
@@ -24,8 +26,8 @@ export class MmvBuilderService {
             const record =
                 '01' +
                 this.pad(formData.municipio.cod, 3) +
-                this.pad(formData.puesto.zona, 2) +
-                this.pad(formData.puesto.cod_puesto, 2) +
+                this.pad(formData.puesto.zona, 2).toUpperCase() +
+                this.pad(formData.puesto.cod_puesto, 2).toUpperCase() +
                 this.pad(formData.num_mesa, 6) +
                 '00' +
                 '9999' +
