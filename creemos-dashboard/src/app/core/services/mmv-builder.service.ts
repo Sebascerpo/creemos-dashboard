@@ -18,7 +18,7 @@ export class MmvBuilderService {
         return /^[0-9A-Za-z]{30}$/.test(identificacion) && /^[0-9]{8}$/.test(votos);
     }
 
-    buildRecords(formData: E14FormData, circunscripcion: string, codPartido: string): string[] {
+    buildRecords(formData: E14FormData, circunscripcion: string): string[] {
         const out: string[] = [];
         for (const item of formData.votos) {
             const votos = Math.max(0, Number(item.votos) || 0);
@@ -32,7 +32,7 @@ export class MmvBuilderService {
                 '00' +
                 '9999' +
                 circunscripcion +
-                this.pad(codPartido, 5) +
+                this.pad(item.cod_partido, 5) +
                 this.pad(item.cod_candidato, 3) +
                 this.pad(votos, 8);
             if (!this.validateRecord(record)) {

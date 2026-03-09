@@ -2,23 +2,11 @@
     <p-confirmdialog />
 
     <header>
-        <h2 class="mb-1 text-2xl font-semibold">Reporte E-14</h2>
+        <h2 class="mb-1 text-2xl font-semibold">Reporte E-14 Camara Antioquia</h2>
         <p class="text-sm text-slate-500">Formulario de carga por mesa en formato MMV.</p>
     </header>
 
-    <section class="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
-        <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Corporacion</p>
-            <p-selectbutton
-                [options]="corpOptions"
-                optionLabel="label"
-                optionValue="value"
-                [allowEmpty]="false"
-                [ngModel]="corporacion()"
-                (ngModelChange)="onCorporacionChange($event)"
-            />
-        </div>
-
+    <section class="grid gap-3 lg:grid-cols-3">
         <div class="min-w-0 rounded-xl border border-slate-200 p-3 dark:border-slate-700">
             <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Municipio</p>
             <p-select
@@ -72,16 +60,8 @@
         </div>
     </section>
 
-    <p-message
-        *ngIf="mesa() && (mesaEstado().senado || mesaEstado().camara)"
-        severity="info"
-        [text]="estadoMesaTexto()"
-    />
-    <p-message
-        *ngIf="mesa() && bloqueoCargaActual()"
-        severity="warn"
-        [text]="alertaMesaBloqueadaTexto()"
-    />
+    <p-message *ngIf="mesa()" severity="info" [text]="estadoMesaTexto()" />
+    <p-message *ngIf="mesa() && bloqueoCargaActual()" severity="warn" [text]="alertaMesaBloqueadaTexto()" />
     <p-message *ngIf="mensajeError()" severity="error" [text]="mensajeError()" />
     <p-message *ngIf="mensajeOk()" severity="success" [text]="mensajeOk()" />
     <p-message *ngIf="mensajeOk()" severity="info" text="Puedes validar el documento guardado en Base de datos desde el modulo Exportar TXT." />
@@ -97,17 +77,19 @@
         <p-table [value]="candidatos()" [tableStyle]="{ 'min-width': '50rem' }">
             <ng-template pTemplate="header">
                 <tr>
+                    <th>Partido</th>
                     <th>Numero</th>
                     <th class="text-right">Votos</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-c>
                 <tr>
+                    <td>{{ c.nombre_partido }}</td>
                     <td>{{ getNumeroCandidato(c.cod_candidato, c.es_lista) }}</td>
                     <td class="text-right">
                         <p-inputnumber
-                            [ngModel]="getVoto(c.cod_candidato)"
-                            (ngModelChange)="onVotoChange(c.cod_candidato, $event)"
+                            [ngModel]="getVotoByRow(c)"
+                            (ngModelChange)="onVotoChangeByRow(c, $event)"
                             [min]="0"
                             [max]="99999999"
                             [useGrouping]="false"
@@ -140,3 +122,4 @@
         </div>
     </section>
 </section>
+

@@ -12,15 +12,12 @@ import { ConfirmationService } from 'primeng/api';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
-import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
-
-type CorpKey = 'senado' | 'camara';
 
 @Component({
     selector: 'app-e14-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, SelectButtonModule, SelectModule, InputNumberModule, TableModule, ButtonModule, MessageModule, ConfirmDialogModule],
+    imports: [CommonModule, FormsModule, SelectModule, InputNumberModule, TableModule, ButtonModule, MessageModule, ConfirmDialogModule],
     providers: [ConfirmationService],
     templateUrl: './e14-form.component.html',
     styles: [
@@ -50,11 +47,6 @@ export class E14FormComponent {
     private readonly auth = inject(AuthService);
     private readonly confirmation = inject(ConfirmationService);
 
-    corporacion = signal<CorpKey>('senado');
-    corpOptions = [
-        { label: 'SENADO', value: 'senado' as CorpKey },
-        { label: 'CAMARA', value: 'camara' as CorpKey }
-    ];
     municipios = computed(() => this.catalogo.getMunicipios());
     municipio = signal<Municipio | null>(null);
     puestos = computed(() => {
@@ -70,36 +62,26 @@ export class E14FormComponent {
     });
     mesa = signal<number | null>(null);
     mesasOptions = computed(() => this.mesas().map((n) => ({ label: `Mesa ${n}`, value: n })));
-    mesaEstado = signal<{ senado: boolean; camara: boolean }>({ senado: false, camara: false });
+    camaraYaReportada = signal(false);
     enviando = signal(false);
 
     mensajeError = signal('');
     mensajeOk = signal('');
     ultimoPayload = signal<MesaReportada | null>(null);
 
-    candidatos = computed<CandidatoCatalogo[]>(() => this.catalogo.getCandidatosByCorporacion(this.corporacion()));
+    candidatos = computed<CandidatoCatalogo[]>(() => this.catalogo.getCandidatosByCorporacion('camara'));
     votos = signal<Record<string, number | null>>({});
 
     totalVotos = computed(() => Object.values(this.votos()).reduce<number>((acc, n) => acc + (Number(n) || 0), 0));
-    corporacionActualLabel = computed(() => (this.corporacion() === 'senado' ? 'Senado' : 'Camara'));
-    corporacionAlternaLabel = computed(() => (this.corporacion() === 'senado' ? 'Camara' : 'Senado'));
-    corporacionActualYaReportada = computed(() => (this.corporacion() === 'senado' ? this.mesaEstado().senado : this.mesaEstado().camara));
-    corporacionAlternaYaReportada = computed(() => (this.corporacion() === 'senado' ? this.mesaEstado().camara : this.mesaEstado().senado));
-    bloqueoCargaActual = computed(() => !!this.mesa() && this.corporacionActualYaReportada());
+    bloqueoCargaActual = computed(() => !!this.mesa() && this.camaraYaReportada());
     estadoMesaTexto = computed(() => {
-        const s = this.mesaEstado().senado ? 'SI' : 'NO';
-        const c = this.mesaEstado().camara ? 'SI' : 'NO';
-        if (this.corporacionActualYaReportada()) {
-            return `Esta mesa ya tiene reporte previo. Senado: ${s} · Camara: ${c}. Para ${this.corporacionActualLabel()} no se permite un segundo envio en la misma mesa.`;
+        if (this.camaraYaReportada()) {
+            return 'Esta mesa ya tiene reporte previo de Camara. No se permite un segundo envio en la misma mesa.';
         }
-        if (this.corporacionAlternaYaReportada()) {
-            return `Esta mesa ya tiene reporte previo. Senado: ${s} · Camara: ${c}. Puedes cargar ${this.corporacionActualLabel()} sin afectar ${this.corporacionAlternaLabel()}.`;
-        }
-        return `Estado actual de la mesa. Senado: ${s} · Camara: ${c}.`;
+        return 'Mesa disponible para cargar Camara.';
     });
     alertaMesaBloqueadaTexto = computed(
-        () =>
-            `Ya existe votacion registrada para ${this.corporacionActualLabel()} en esta mesa. No puedes cargar candidatos para ${this.corporacionActualLabel()}.`
+        () => 'Ya existe votacion registrada para Camara en esta mesa. No puedes cargar candidatos para Camara.'
     );
     canSubmit = computed(() => {
         return !!(this.municipio() && this.puesto() && this.mesa() && Number(this.totalVotos()) > 0 && !this.enviando() && !this.bloqueoCargaActual());
@@ -109,49 +91,30 @@ export class E14FormComponent {
         this.resetVotos();
     }
 
-    onCorporacionChange(value: CorpKey): void {
-        this.corporacion.set(value);
-        this.municipio.set(null);
-        this.puesto.set(null);
-        this.mesa.set(null);
-        this.mesaEstado.set({ senado: false, camara: false });
-        this.mensajeError.set('');
-        this.mensajeOk.set('');
-        this.ultimoPayload.set(null);
-        this.resetVotos();
+    private candidatoKey(c: CandidatoCatalogo): string {
+        return `${c.cod_partido}_${c.cod_candidato}`;
     }
 
     onMunicipioChange(muni: Municipio | null): void {
-        if (!muni) {
-            this.municipio.set(null);
-            this.puesto.set(null);
-            this.mesa.set(null);
-            this.mesaEstado.set({ senado: false, camara: false });
-            return;
-        }
         this.municipio.set(muni);
         this.puesto.set(null);
         this.mesa.set(null);
-        this.mesaEstado.set({ senado: false, camara: false });
+        this.camaraYaReportada.set(false);
+        this.mensajeError.set('');
     }
 
     onPuestoChange(value: Puesto | null): void {
-        if (!value) {
-            this.puesto.set(null);
-            this.mesa.set(null);
-            this.mesaEstado.set({ senado: false, camara: false });
-            return;
-        }
         this.puesto.set(value);
         this.mesa.set(null);
-        this.mesaEstado.set({ senado: false, camara: false });
+        this.camaraYaReportada.set(false);
+        this.mensajeError.set('');
     }
 
     async onMesaChange(numMesa: number | string | null): Promise<void> {
         const mesaNumerica = numMesa === null ? null : Number(numMesa);
         const mesaValida = mesaNumerica !== null && Number.isFinite(mesaNumerica) && mesaNumerica > 0 ? mesaNumerica : null;
         this.mesa.set(mesaValida);
-        this.mesaEstado.set({ senado: false, camara: false });
+        this.camaraYaReportada.set(false);
         this.mensajeError.set('');
         if (!mesaValida) return;
         const m = this.municipio();
@@ -159,25 +122,34 @@ export class E14FormComponent {
         if (!m || !p) return;
         const key = this.mmvBuilder.buildMesaKey(m.cod, p.zona, p.cod_puesto, mesaValida);
         try {
-            this.mesaEstado.set(await this.firestore.getMesaEstado(key));
+            const estado = await this.firestore.getMesaEstado(key);
+            this.camaraYaReportada.set(estado.camara);
         } catch (error) {
             this.mensajeError.set('No fue posible validar el estado previo de la mesa.');
         }
     }
 
-    onVotoChange(codCandidato: string, raw: number | string | null | undefined): void {
+    onVotoChange(key: string, raw: number | string | null | undefined): void {
         const next = { ...this.votos() };
         if (raw === null || raw === undefined || raw === '') {
-            next[codCandidato] = null;
+            next[key] = null;
         } else {
             const parsed = Math.max(0, Math.floor(Number(raw) || 0));
-            next[codCandidato] = Number.isFinite(parsed) ? parsed : null;
+            next[key] = Number.isFinite(parsed) ? parsed : null;
         }
         this.votos.set(next);
     }
 
-    getVoto(codCandidato: string): number | null {
-        return this.votos()[codCandidato] ?? null;
+    getVoto(key: string): number | null {
+        return this.votos()[key] ?? null;
+    }
+
+    getVotoByRow(row: CandidatoCatalogo): number | null {
+        return this.getVoto(this.candidatoKey(row));
+    }
+
+    onVotoChangeByRow(row: CandidatoCatalogo, raw: number | string | null | undefined): void {
+        this.onVotoChange(this.candidatoKey(row), raw);
     }
 
     getNumeroCandidato(codCandidato: string, esLista: boolean): string {
@@ -189,9 +161,20 @@ export class E14FormComponent {
     private resetVotos(): void {
         const base: Record<string, number | null> = {};
         for (const c of this.candidatos()) {
-            base[c.cod_candidato] = null;
+            base[this.candidatoKey(c)] = null;
         }
         this.votos.set(base);
+    }
+
+    private resetFormulario(): void {
+        this.municipio.set(null);
+        this.puesto.set(null);
+        this.mesa.set(null);
+        this.camaraYaReportada.set(false);
+        this.mensajeError.set('');
+        this.mensajeOk.set('');
+        this.ultimoPayload.set(null);
+        this.resetVotos();
     }
 
     private buildFormData(): E14FormData {
@@ -202,14 +185,18 @@ export class E14FormComponent {
             throw new Error('Faltan selecciones obligatorias');
         }
         return {
-            corporacion: this.corporacion(),
+            corporacion: 'camara',
             municipio,
             puesto,
             num_mesa: mesa,
-            votos: Object.entries(this.votos()).map(([cod_candidato, votos]) => ({
-                cod_candidato,
-                votos: Math.max(0, Number(votos) || 0)
-            }))
+            votos: Object.entries(this.votos()).map(([key, votos]) => {
+                const [cod_partido, cod_candidato] = key.split('_');
+                return {
+                    cod_partido,
+                    cod_candidato,
+                    votos: Math.max(0, Number(votos) || 0)
+                };
+            })
         };
     }
 
@@ -221,7 +208,7 @@ export class E14FormComponent {
 
         try {
             if (this.bloqueoCargaActual()) {
-                throw new Error(`La mesa ya tiene votacion registrada para ${this.corporacionActualLabel()}.`);
+                throw new Error('La mesa ya tiene votacion registrada para Camara.');
             }
             const data = this.buildFormData();
             const total = data.votos.reduce((acc, r) => acc + r.votos, 0);
@@ -231,9 +218,8 @@ export class E14FormComponent {
                 return;
             }
 
-            const circ = this.catalogo.getCircunscripcion(data.corporacion);
-            const codPartido = this.catalogo.getPartidoCod(data.corporacion);
-            const records = this.mmvBuilder.buildRecords(data, circ, codPartido);
+            const circ = this.catalogo.getCircunscripcion('camara');
+            const records = this.mmvBuilder.buildRecords(data, circ);
             if (records.length === 0) {
                 throw new Error('No hay votos mayores a cero para enviar');
             }
@@ -252,10 +238,10 @@ export class E14FormComponent {
                 cod_puesto: data.puesto.cod_puesto,
                 nom_puesto: data.puesto.nombre,
                 num_mesa: data.num_mesa,
-                corporacion: data.corporacion === 'senado' ? '001' : '002',
-                corporacion_nombre: data.corporacion === 'senado' ? 'SENADO' : 'CAMARA',
+                corporacion: '002',
+                corporacion_nombre: 'CAMARA',
                 circunscripcion: circ,
-                cod_partido: codPartido,
+                cod_partido: 'MULTI',
                 registros_mmv: records,
                 total_votos: total,
                 testigo_uid: user.uid,
@@ -264,8 +250,7 @@ export class E14FormComponent {
             };
             await this.firestore.submitMesa(payload);
 
-            const keepCorp = this.corporacion();
-            this.onCorporacionChange(keepCorp);
+            this.resetFormulario();
             this.ultimoPayload.set(payload);
             this.mensajeOk.set(`Mesa ${data.num_mesa} enviada correctamente (${records.length} registros MMV).`);
         } catch (error) {
@@ -317,3 +302,4 @@ export class E14FormComponent {
         return error instanceof Error ? error.message : 'No fue posible enviar la mesa';
     }
 }
+

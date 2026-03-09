@@ -12,17 +12,19 @@ export interface Municipio {
 }
 
 export interface CandidatoCatalogo {
+    cod_partido: string;
+    nombre_partido: string;
     cod_candidato: string;
     nombre_completo: string;
     es_lista: boolean;
 }
 
 export interface E14FormData {
-    corporacion: 'senado' | 'camara';
+    corporacion: 'camara';
     municipio: Municipio;
     puesto: Puesto;
     num_mesa: number;
-    votos: Array<{ cod_candidato: string; votos: number }>;
+    votos: Array<{ cod_partido: string; cod_candidato: string; votos: number }>;
 }
 
 export interface MesaReportada {

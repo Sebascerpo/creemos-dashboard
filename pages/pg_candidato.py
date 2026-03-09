@@ -289,7 +289,7 @@ def render(
             f"Departamento: {dep_nom}</p>",
             unsafe_allow_html=True,
         )
-        col_muni, col_puesto, col_mesa = st.columns(3)
+        col_muni, col_comuna, col_puesto, col_mesa = st.columns(4)
     else:
         deptos_disp = sorted(set(k.split("_")[0] for k in por_muni.keys()))
         deptos_opc = {f"{nombre_depto(d, divipol)} [{d}]": d for d in deptos_disp}
@@ -326,8 +326,39 @@ def render(
             st.info("Sin municipios")
             return
 
+    sel_zona = None
+    if solo_antioquia and sel_muni:
+        votos_por_zona = {}
+        for k, v in por_puesto.items():
+            if k.startswith(sel_muni + "_"):
+                z = k.split("_")[2]
+                votos_por_zona[z] = votos_por_zona.get(z, 0) + v
+
+        zonas_opc = {}
+        for z in sorted(
+            votos_por_zona.keys(), key=lambda x: votos_por_zona[x], reverse=True
+        ):
+            zonas_opc[f"Zona/Comuna {z} ({fmt(votos_por_zona.get(z, 0))} vts)"] = z
+
+        with col_comuna:
+            if zonas_opc:
+                sel_zona = zonas_opc[
+                    st.selectbox(
+                        "Comuna/Zona",
+                        list(zonas_opc.keys()),
+                        key=f"dd_comuna_{cand_key}",
+                    )
+                ]
+            else:
+                st.info("Sin comunas")
+                return
+
+    prefix_puesto = (
+        f"{sel_muni}_{sel_zona}_" if (solo_antioquia and sel_zona) else f"{sel_muni}_"
+    )
+
     puestos_disp = sorted(
-        {k: v for k, v in por_puesto.items() if k.startswith(sel_muni + "_")}.items(),
+        {k: v for k, v in por_puesto.items() if k.startswith(prefix_puesto)}.items(),
         key=lambda x: x[1],
         reverse=True,
     )
@@ -352,6 +383,7 @@ def render(
             ]
         else:
             st.info("Sin puestos")
+            return
 
     # ── LAZY LOAD: mesa data only when puesto selected ──
     por_mesa = {}
@@ -380,7 +412,6 @@ def render(
             st.info("Sin mesas")
 
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-    r1, r2, r3 = st.columns(3)
 
     votos_muni = por_muni.get(sel_muni, 0) if sel_muni else 0
     votos_puesto = por_puesto.get(sel_puesto, 0) if sel_puesto else 0
@@ -388,6 +419,31 @@ def render(
     total_muni = totales_muni.get(sel_muni, 0) if sel_muni else 0
     total_puesto = totales_puesto.get(sel_puesto, 0) if sel_puesto else 0
     total_mesa = totales_mesa.get(sel_mesa, 0) if sel_mesa else 0
+
+    if solo_antioquia:
+        r1, r_comuna, r2, r3 = st.columns(4)
+        votos_zona = 0
+        total_zona = 0
+        if sel_muni and sel_zona:
+            votos_zona = sum(
+                v
+                for k, v in por_puesto.items()
+                if k.startswith(f"{sel_muni}_{sel_zona}_")
+            )
+            total_zona = sum(
+                v
+                for k, v in totales_puesto.items()
+                if k.startswith(f"{sel_muni}_{sel_zona}_")
+            )
+        with r_comuna:
+            kpi(
+                "Votos en zona",
+                fmt(votos_zona),
+                f"Zona {sel_zona} · {pct(votos_zona, total_zona)} del total de la zona ({fmt(total_zona)} válidos)",
+                color,
+            )
+    else:
+        r1, r2, r3 = st.columns(3)
 
     with r1:
         muni_nom = (

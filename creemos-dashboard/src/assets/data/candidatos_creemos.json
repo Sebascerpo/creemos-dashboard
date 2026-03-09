@@ -1,220 +1,509 @@
 {
-  "partido": {
-    "cod_senado": "01070",
-    "cod_camara": "01067",
-    "nombre": "CREEMOS"
-  },
-  "senado": {
-    "corporacion": "001",
-    "circunscripcion": "0",
-    "circunscripcion_nombre": "NACIONAL",
-    "candidatos": [
-      {
-        "cod_candidato": "000",
-        "nombre_completo": "CREEMOS",
-        "es_lista": true
-      },
-      {
-        "cod_candidato": "001",
-        "nombre_completo": "JULIANA GUTIERREZ ZULUAGA",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "002",
-        "nombre_completo": "ANDRES FELIPE BEDOYA RENDON",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "003",
-        "nombre_completo": "NATALIA EUGENIA LOPEZ FUENTES",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "005",
-        "nombre_completo": "ELIECER CAMACHO JIMENEZ",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "006",
-        "nombre_completo": "SARA JARAMILLO GALLEGO",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "007",
-        "nombre_completo": "WILDER ZAPATA TORRES",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "008",
-        "nombre_completo": "DIEGO ANDRES HERNANDEZ MOSQUERA",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "009",
-        "nombre_completo": "NELSON BARRERA ROA",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "011",
-        "nombre_completo": "JUAN DIEGO MUÑOZ COSSIO",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "012",
-        "nombre_completo": "LAURA MARCELA GAMBOA PATERNINA",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "013",
-        "nombre_completo": "JHON ALEX MENDEZ VARGAS",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "014",
-        "nombre_completo": "MARIA CATALINA RAMIREZ VELEZ",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "015",
-        "nombre_completo": "LIDA GREGORIA DRAGO CALY",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "016",
-        "nombre_completo": "GUSTAVO ALONSO PINEDO POLO",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "017",
-        "nombre_completo": "ANGEL AUGUSTO SANCHEZ HERNANDEZ",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "018",
-        "nombre_completo": "JUAN ALEJANDRO ANGEL ARANGO",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "019",
-        "nombre_completo": "JORGE HUGO ARANGUREN OCAMPO",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "020",
-        "nombre_completo": "MARTHA ALICIA RESTREPO CORREA",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "021",
-        "nombre_completo": "CLAUDIA EUSEBIA CESPEDES CAMPOS",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "022",
-        "nombre_completo": "SARA MARIA ARBELAEZ RAMIREZ",
-        "es_lista": false
-      },
-      {
-        "cod_candidato": "023",
-        "nombre_completo": "LUIS ERNESTO RIVERA ESCOBAR",
-        "es_lista": false
-      }
-    ]
-  },
   "camara_antioquia": {
     "corporacion": "002",
     "circunscripcion": "1",
     "circunscripcion_nombre": "TERRITORIAL DEPARTAMENTAL",
     "cod_depto": "01",
+    "partidos": [
+      {
+        "cod_partido": "00002",
+        "nombre": "PARTIDO CONSERVADOR COLOMBIANO"
+      },
+      {
+        "cod_partido": "00011",
+        "nombre": "PARTIDO CENTRO DEMOCRï¿½TICO"
+      },
+      {
+        "cod_partido": "01067",
+        "nombre": "CREEMOS"
+      },
+      {
+        "cod_partido": "03055",
+        "nombre": "PACTO HISTï¿½RICO ANTIOQUIA"
+      }
+    ],
     "candidatos": [
       {
+        "cod_partido": "00002",
         "cod_candidato": "000",
-        "nombre_completo": "CREEMOS",
+        "nombre_completo": "PARTIDO CONSERVADOR COLOMBIANO",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
         "es_lista": true
       },
       {
+        "cod_partido": "00002",
         "cod_candidato": "101",
-        "nombre_completo": "LUIS GUILLERMO PATIÑO ARISTIZABAL",
+        "nombre_completo": "LUIS MIGUEL LOPEZ ARISTIZABAL",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
         "es_lista": false
       },
       {
+        "cod_partido": "00002",
+        "cod_candidato": "102",
+        "nombre_completo": "YAN MARCILY ZULUAGA SUAREZ",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "103",
+        "nombre_completo": "MARIANA CARVAJAL LOPEZ",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "104",
+        "nombre_completo": "JAIME ALONSO CANO MARTINEZ",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "105",
+        "nombre_completo": "JUAN CAMILO CALLEJAS TAMAYO",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "106",
+        "nombre_completo": "DARIO AUGUSTO ALZATE RAMIREZ",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "107",
+        "nombre_completo": "ENRIQUE HUMBERTO HENAO GRANJA",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "108",
+        "nombre_completo": "NICOLAS ALBEIRO ECHEVERRY ALVARAN",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "109",
+        "nombre_completo": "MANUELA ARANGO URIBE",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "110",
+        "nombre_completo": "LUISA FERNANDA OCHOA VILLEGAS",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "111",
+        "nombre_completo": "ERIKA JOHANNA VILLA MARIN",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "112",
+        "nombre_completo": "ADRIANA MARIA GUERRA GRACIANO",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "114",
+        "nombre_completo": "CARLOS ALBERTO LOAIZA GIRALDO",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "115",
+        "nombre_completo": "LEONARDO ALVAREZ MARIN",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "116",
+        "nombre_completo": "YANETH CRISTINA BEDOYA PIEDRAHITA",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00002",
+        "cod_candidato": "117",
+        "nombre_completo": "FRAY DANIEL SEPULVEDA RIVILLAS",
+        "nombre_partido": "PARTIDO CONSERVADOR COLOMBIANO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "000",
+        "nombre_completo": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": true
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "101",
+        "nombre_completo": "ANDRES FELIPE GUERRA HOYOS",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "102",
+        "nombre_completo": "OSCAR DARIO PEREZ PINEDA",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "103",
+        "nombre_completo": "LINA MARCELA MENA CORDOBA",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "104",
+        "nombre_completo": "FEDERICO EDUARDO HOYOS SALAZAR",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "105",
+        "nombre_completo": "MARIA TERESA MONTOYA ALVAREZ",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "106",
+        "nombre_completo": "ANDRES FELIPE GAVIRIA CANO",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "107",
+        "nombre_completo": "JUAN DAVID ZULUAGA ZULUAGA",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "108",
+        "nombre_completo": "YULIETH ANDREA SANCHEZ CARREï¿½O",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "109",
+        "nombre_completo": "JULIAN FERNANDO LOPERA GARZON",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "110",
+        "nombre_completo": "JHON JAIRO BERRIO LOPEZ",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "111",
+        "nombre_completo": "LIGIA ESTELA GIL PEREZ",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "112",
+        "nombre_completo": "SERGIO OSVALDO MOLINA PEREZ",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "113",
+        "nombre_completo": "MELISSA ORREGO EUSSE",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "114",
+        "nombre_completo": "OSBALDO ANGULO DE LA ROSA",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "115",
+        "nombre_completo": "JOSE GREGORIO ORJUELA PEREZ",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "116",
+        "nombre_completo": "DAVID TOLEDO OSPINA",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "00011",
+        "cod_candidato": "117",
+        "nombre_completo": "ANA LIGIA MORA MARTINEZ",
+        "nombre_partido": "PARTIDO CENTRO DEMOCRï¿½TICO",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "01067",
+        "cod_candidato": "000",
+        "nombre_completo": "CREEMOS",
+        "nombre_partido": "CREEMOS",
+        "es_lista": true
+      },
+      {
+        "cod_partido": "01067",
+        "cod_candidato": "101",
+        "nombre_completo": "LUIS GUILLERMO PATIï¿½O ARISTIZABAL",
+        "nombre_partido": "CREEMOS",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "01067",
         "cod_candidato": "102",
         "nombre_completo": "SIMON MOLINA GOMEZ",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "103",
         "nombre_completo": "CLAUDIA PATRICIA HOYOS ARISMENDI",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "104",
         "nombre_completo": "IVAN ALONSO MONTOYA URREGO",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "105",
         "nombre_completo": "HECTOR JAIME RENDON OSORIO",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "106",
         "nombre_completo": "CAMILA OSPINA ZAPATA",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "107",
         "nombre_completo": "EDWIN ANGOLA MENA",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "108",
         "nombre_completo": "JOSE MIGUEL ZULUAGA MORA",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "109",
-        "nombre_completo": "VIVIANA MUÑOZ GIRALDO",
+        "nombre_completo": "VIVIANA MUï¿½OZ GIRALDO",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "110",
         "nombre_completo": "CARLOS IGNACIO CUERVO VALENCIA",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "111",
-        "nombre_completo": "RODRIGO PATIÑO CORREA",
+        "nombre_completo": "RODRIGO PATIï¿½O CORREA",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "112",
         "nombre_completo": "CAROLINA VARGAS GOMEZ",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "113",
         "nombre_completo": "JUAN DAVID GUZMAN CANO",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "114",
         "nombre_completo": "CAMILA JARAMILLO CANO",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "115",
         "nombre_completo": "INGRI EMIR HOLGUIN RENDON",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "116",
         "nombre_completo": "FABIO ALONSO NARANJO VILLADA",
+        "nombre_partido": "CREEMOS",
         "es_lista": false
       },
       {
+        "cod_partido": "01067",
         "cod_candidato": "117",
         "nombre_completo": "GERMAN DARIO HOYOS GIRALDO",
+        "nombre_partido": "CREEMOS",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "000",
+        "nombre_completo": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": true
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "101",
+        "nombre_completo": "HERNAN MURIEL PEREZ",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "102",
+        "nombre_completo": "LUZ VERONICA ESTRADA HOLGUIN",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "103",
+        "nombre_completo": "DAVID ALEJANDRO TORO RAMIREZ",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "104",
+        "nombre_completo": "LUISA FERNANDA GIRALDO VILLADA",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "105",
+        "nombre_completo": "GABRIEL JAIME URREGO BERNAL",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "106",
+        "nombre_completo": "DIANA MARCELA VELASCO MORALES",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "107",
+        "nombre_completo": "JUAN GUILLERMO ARIAS ARIAS",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "108",
+        "nombre_completo": "LUISA ESTER PALACIOS SANCHEZ",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "109",
+        "nombre_completo": "DAVINSON ARLEY ARRIETA CARDOZO",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "110",
+        "nombre_completo": "ELIANA MARIA TORRES REAL",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "111",
+        "nombre_completo": "LARRY STEVEN HOYOS ESCOBAR",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "112",
+        "nombre_completo": "DORA CECILIA SALDARRIAGA GRISALES",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "113",
+        "nombre_completo": "FREDY EDISON LARGO SUAREZ",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "114",
+        "nombre_completo": "LAURA MANUELA GOMEZ OCAMPO",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
+        "es_lista": false
+      },
+      {
+        "cod_partido": "03055",
+        "cod_candidato": "117",
+        "nombre_completo": "JULIO ALEJANDRO GIRALDO PEREIRA",
+        "nombre_partido": "PACTO HISTï¿½RICO ANTIOQUIA",
         "es_lista": false
       }
     ]

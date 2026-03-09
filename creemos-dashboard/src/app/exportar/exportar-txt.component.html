@@ -25,15 +25,8 @@
 
     <section class="grid gap-3 rounded-xl border border-slate-200 p-3 dark:border-slate-700 md:grid-cols-[1fr_auto] md:items-end">
         <div>
-            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Filtrar corporacion</p>
-            <p-selectbutton
-                [options]="opcionesCorporacion"
-                optionLabel="label"
-                optionValue="value"
-                [allowEmpty]="false"
-                [ngModel]="filtroCorporacion()"
-                (ngModelChange)="filtroCorporacion.set($event)"
-            />
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Corporacion</p>
+            <p class="text-sm font-medium">Camara Antioquia</p>
         </div>
         <div class="flex justify-end">
             <button pButton type="button" label="Descargar TXT" icon="pi pi-download" (click)="descargarTxt()"></button>

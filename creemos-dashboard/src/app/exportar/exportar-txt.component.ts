@@ -1,45 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
 import { MesaReportada } from '../core/models/catalogo.model';
 import { FirestoreService } from '../core/services/firestore.service';
 import { MmvBuilderService } from '../core/services/mmv-builder.service';
 
-type CorpFilter = 'todas' | 'senado' | 'camara';
-
 @Component({
     selector: 'app-exportar-txt',
     standalone: true,
-    imports: [CommonModule, FormsModule, SelectButtonModule, ButtonModule, TableModule, MessageModule],
+    imports: [CommonModule, ButtonModule, TableModule, MessageModule],
     templateUrl: './exportar-txt.component.html'
 })
 export class ExportarTxtComponent {
     private readonly firestore = inject(FirestoreService);
     private readonly mmvBuilder = inject(MmvBuilderService);
 
-    readonly filtroCorporacion = signal<CorpFilter>('todas');
-    readonly opcionesCorporacion = [
-        { label: 'Todas', value: 'todas' as CorpFilter },
-        { label: 'Senado', value: 'senado' as CorpFilter },
-        { label: 'Camara', value: 'camara' as CorpFilter }
-    ];
-
     readonly docsFirebase = toSignal(this.firestore.getMesasReportadas(), { initialValue: [] as MesaReportada[] });
     readonly mensaje = signal('');
     readonly error = signal('');
 
-    readonly docsFiltrados = computed(() => {
-        const filtro = this.filtroCorporacion();
-        if (filtro === 'todas') return this.docsFirebase();
-
-        const corporacionObjetivo = filtro === 'senado' ? '001' : '002';
-        return this.docsFirebase().filter((d) => String(d.corporacion ?? '') === corporacionObjetivo);
-    });
+    readonly docsFiltrados = computed(() => this.docsFirebase().filter((d) => String(d.corporacion ?? '') === '002'));
 
     readonly totalVotos = computed(() => this.docsFiltrados().reduce((acc, d) => acc + (Number(d.total_votos) || 0), 0));
 
@@ -81,7 +64,7 @@ export class ExportarTxtComponent {
 
         const lineas = this.registros().validos;
         if (!lineas.length) {
-            this.error.set('No hay registros MMV validos para descargar con el filtro actual.');
+            this.error.set('No hay registros MMV validos de Camara para descargar.');
             return;
         }
 

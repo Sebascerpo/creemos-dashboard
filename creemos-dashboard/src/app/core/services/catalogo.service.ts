@@ -4,9 +4,13 @@ import { firstValueFrom } from 'rxjs';
 import { CandidatoCatalogo, Municipio, Puesto } from '../models/catalogo.model';
 
 interface CandidatosPayload {
-    partido: { cod_senado: string; cod_camara: string; nombre: string };
-    senado: { corporacion: string; circunscripcion: string; candidatos: CandidatoCatalogo[] };
-    camara_antioquia: { corporacion: string; circunscripcion: string; cod_depto: string; candidatos: CandidatoCatalogo[] };
+    camara_antioquia: {
+        corporacion: string;
+        circunscripcion: string;
+        cod_depto: string;
+        partidos: Array<{ cod_partido: string; nombre: string }>;
+        candidatos: CandidatoCatalogo[];
+    };
 }
 
 interface DivipolPayload {
@@ -50,28 +54,26 @@ export class CatalogoService {
         return Array.from({ length: total }, (_, i) => i + 1);
     }
 
-    getCandidatosByCorporacion(corporacion: 'senado' | 'camara'): CandidatoCatalogo[] {
+    getCandidatosByCorporacion(_: 'camara' = 'camara'): CandidatoCatalogo[] {
         const payload = this.candidatosSig();
         if (!payload) return [];
-        return corporacion === 'senado' ? payload.senado.candidatos : payload.camara_antioquia.candidatos;
+        return payload.camara_antioquia.candidatos;
     }
 
-    getPartidoCod(corporacion: 'senado' | 'camara'): string {
+    getPartidosCamara(): Array<{ cod_partido: string; nombre: string }> {
+        return this.candidatosSig()?.camara_antioquia.partidos ?? [];
+    }
+
+    getCircunscripcion(_: 'camara' = 'camara'): string {
         const payload = this.candidatosSig();
         if (!payload) return '';
-        return corporacion === 'senado' ? payload.partido.cod_senado : payload.partido.cod_camara;
+        return payload.camara_antioquia.circunscripcion;
     }
 
-    getCircunscripcion(corporacion: 'senado' | 'camara'): string {
-        const payload = this.candidatosSig();
-        if (!payload) return '';
-        return corporacion === 'senado' ? payload.senado.circunscripcion : payload.camara_antioquia.circunscripcion;
-    }
-
-    getCandidatoNombreMap(corporacion: 'senado' | 'camara'): Record<string, string> {
+    getCandidatoNombreMap(_: 'camara' = 'camara'): Record<string, string> {
         const out: Record<string, string> = {};
-        for (const c of this.getCandidatosByCorporacion(corporacion)) {
-            out[c.cod_candidato] = c.nombre_completo;
+        for (const c of this.getCandidatosByCorporacion('camara')) {
+            out[`${c.cod_partido}_${c.cod_candidato}`] = c.nombre_completo;
         }
         return out;
     }
