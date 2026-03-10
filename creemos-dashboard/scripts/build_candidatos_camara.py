@@ -23,6 +23,12 @@ CANDIDATOS_TXT = MAESTROS_DIR / "CANDIDATOS.txt"
 PARTIDOS_TXT = MAESTROS_DIR / "PARTIDOS.txt"
 OUT_JSON = ROOT / "src/assets/data/candidatos_creemos.json"
 
+# Catalogo reducido para digitacion E-14 (solo 2 candidatos CREEMOS)
+ALLOWED_CANDIDATES: set[tuple[str, str]] = {
+    ("01067", "108"),  # JOSE MIGUEL ZULUAGA MORA
+    ("01067", "117"),  # GERMAN DARIO HOYOS GIRALDO
+}
+
 
 def _clean_spaces(value: str) -> str:
     return re.sub(r"\s+", " ", value.strip())
@@ -74,6 +80,8 @@ def _parse_candidatos(path: Path, partidos_map: dict[str, str]) -> tuple[list[di
         party4 = line[12:16]
         cod_partido = party4.zfill(5)
         cod_candidato = line[16:19]
+        if (cod_partido, cod_candidato) not in ALLOWED_CANDIDATES:
+            continue
         es_lista = cod_candidato == "000"
         orden_tarjeton = _extract_orden_tarjeton(line)
 
@@ -121,11 +129,13 @@ def _parse_candidatos(path: Path, partidos_map: dict[str, str]) -> tuple[list[di
 def main() -> None:
     partidos_map = _parse_partidos(PARTIDOS_TXT)
     candidatos, party_names, party_order = _parse_candidatos(CANDIDATOS_TXT, partidos_map)
+    used_party_codes = {c["cod_partido"] for c in candidatos}
 
     partidos = [
         {"cod_partido": cod, "nombre": nombre, "orden_partido": party_order.get(cod, 999)}
         for cod, nombre in sorted(
-            party_names.items(), key=lambda x: (party_order.get(x[0], 999), x[0])
+            ((cod, name) for cod, name in party_names.items() if cod in used_party_codes),
+            key=lambda x: (party_order.get(x[0], 999), x[0]),
         )
     ]
 
