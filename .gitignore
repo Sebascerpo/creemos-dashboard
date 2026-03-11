@@ -12,7 +12,7 @@ pip-wheel-metadata/
 *.egg
 *.manifest
 *.spec
-
+escrutinio/*.csv
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -84,3 +84,4 @@ serviceAccountKey.json
 *.pyd
 
 cache_parquet/
+escrutinio/*.csv
