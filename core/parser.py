@@ -101,6 +101,7 @@ def _source_signature(mmv_path: Path) -> dict:
         "cache_version": CACHE_VERSION,
         "source_name": mmv_path.name,
         "source_size": int(stt.st_size),
+        "source_mtime": int(stt.st_mtime),
     }
 
 
@@ -168,6 +169,7 @@ def _cache_valido(cache_dir: Path, sig: dict) -> bool:
             int(row.get("cache_version", -1)) == int(sig["cache_version"])
             and str(row.get("source_name", "")) == str(sig["source_name"])
             and int(row.get("source_size", -1)) == int(sig["source_size"])
+            and int(row.get("source_mtime", -1)) == int(sig["source_mtime"])
         )
     except Exception:
         return False

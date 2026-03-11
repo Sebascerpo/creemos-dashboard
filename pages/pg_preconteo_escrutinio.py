@@ -7,7 +7,10 @@ Ambos archivos tienen el mismo formato MMV de 38 caracteres.
 
 from __future__ import annotations
 
+import os
+import math
 import pandas as pd
+import plotly.express as px
 import streamlit as st
 
 from core.parser import COD_ANTIOQUIA, procesar_mmv
@@ -16,6 +19,11 @@ from pages.shared import (
     fmt,
     kpi,
     section,
+    nombre_partido,
+    nombre_candidato,
+    formatear_mesa_completa,
+    pct,
+    plotly_defaults,
 )
 
 
@@ -86,9 +94,182 @@ def _partido_candidatos(
     return filas
 
 
+def _get_mtime(path_str: str) -> float:
+    try:
+        return os.path.getmtime(path_str)
+    except Exception:
+        return 0.0
+
+
+@st.cache_data(show_spinner=False, ttl=3600)
+@st.cache_data(show_spinner=False, ttl=3600)
+def _cached_mesas_candidato(
+    path_str: str,
+    cod_partido: str,
+    cod_candidato: str,
+    circ: str,
+    depto: str,
+    _mtime: float,
+) -> dict[str, int]:
+    out: dict[str, int] = {}
+    with open(path_str, encoding="latin-1") as f:
+        for line in f:
+            if not line.strip() or len(line) < 38:
+                continue
+            if line[0:2] != depto:
+                continue
+            if line[21:22] != circ:
+                continue
+            if line[22:27] != cod_partido:
+                continue
+            if line[27:30] != cod_candidato:
+                continue
+            votos_str = line[30:38].strip()
+            if not votos_str.isdigit():
+                continue
+            votos = int(votos_str)
+            if votos <= 0:
+                continue
+            mesa_key = f"{line[0:2]}_{line[2:5]}_{line[5:7]}_{line[7:9]}_{line[9:15]}"
+            out[mesa_key] = out.get(mesa_key, 0) + votos
+    return out
+
+
+def cargar_mesas_candidato(path: Path, cod_partido: str, cod_candidato: str, circ: str, depto: str) -> dict[str, int]:
+    return _cached_mesas_candidato(
+        str(path),
+        cod_partido,
+        cod_candidato,
+        circ,
+        depto,
+        _get_mtime(str(path)),
+    )
+
+
+def _cached_compare_preconteo_escrutinio(
+    pre_path_str: str,
+    esc_path_str: str,
+    circ: str,
+    depto: str,
+    _mtime_pre: float,
+    _mtime_esc: float,
+) -> dict:
+    # Build mesa set from escrutinio (valid votes only)
+    mesas_esc = set()
+    cand_esc = {}
+    mesa_tot_esc = {}
+
+    with open(esc_path_str, encoding="latin-1") as f:
+        for line in f:
+            if not line.strip() or len(line) < 38:
+                continue
+            if line[0:2] != depto:
+                continue
+            if line[21:22] != circ:
+                continue
+            cand = line[27:30]
+            if cand in ("996", "997", "998"):
+                continue
+            votos_str = line[30:38].strip()
+            if not votos_str.isdigit():
+                continue
+            votos = int(votos_str)
+            if votos <= 0:
+                continue
+            mesa_key = f"{line[0:2]}_{line[2:5]}_{line[5:7]}_{line[7:9]}_{line[9:15]}"
+            mesas_esc.add(mesa_key)
+            key = f"{line[22:27]}_{cand}"
+            cand_esc[key] = cand_esc.get(key, 0) + votos
+            mesa_tot_esc[mesa_key] = mesa_tot_esc.get(mesa_key, 0) + votos
+
+    cand_pre = {}
+    mesa_tot_pre = {}
+
+    with open(pre_path_str, encoding="latin-1") as f:
+        for line in f:
+            if not line.strip() or len(line) < 38:
+                continue
+            if line[0:2] != depto:
+                continue
+            if line[21:22] != circ:
+                continue
+            cand = line[27:30]
+            if cand in ("996", "997", "998"):
+                continue
+            mesa_key = f"{line[0:2]}_{line[2:5]}_{line[5:7]}_{line[7:9]}_{line[9:15]}"
+            if mesa_key not in mesas_esc:
+                continue
+            votos_str = line[30:38].strip()
+            if not votos_str.isdigit():
+                continue
+            votos = int(votos_str)
+            if votos <= 0:
+                continue
+            key = f"{line[22:27]}_{cand}"
+            cand_pre[key] = cand_pre.get(key, 0) + votos
+            mesa_tot_pre[mesa_key] = mesa_tot_pre.get(mesa_key, 0) + votos
+
+    return {
+        "mesas_esc": mesas_esc,
+        "cand_pre": cand_pre,
+        "cand_esc": cand_esc,
+        "mesa_pre": mesa_tot_pre,
+        "mesa_esc": mesa_tot_esc,
+    }
+
+
+
+CURULES_CAMARA_ANTIOQUIA = 17
+CIRC_CAMARA_TERRITORIAL = "1"
+UMBRAL_FACTOR = 0.5  # 50% del cociente electoral
+
+
+def _votos_partido_camara_antioquia_escrutinio(mmv: dict) -> dict[str, int]:
+    """
+    Votos validos por partido en Camara Antioquia (escrutinio):
+    lista (000) + candidatos, circunscripcion 1, departamento 01.
+    """
+    out: dict[str, int] = {}
+    partidos_circ = mmv.get("partidos_por_circ", {}).get(CIRC_CAMARA_TERRITORIAL, {})
+    for cod_partido, d in partidos_circ.items():
+        votos = int(d.get("por_depto_validos_total", {}).get(COD_ANTIOQUIA, 0) or 0)
+        if votos > 0:
+            out[cod_partido] = votos
+    return out
+
+
+def _reparto_dhondt(votos_partido: dict[str, int], total_curules: int) -> tuple[dict[str, int], list[dict]]:
+    """
+    D'Hondt para reparto de curules.
+    Retorna curules por partido y cocientes ordenados.
+    """
+    cocientes: list[dict] = []
+    for cod_partido, votos in votos_partido.items():
+        for divisor in range(1, total_curules + 1):
+            cocientes.append({
+                "partido": cod_partido,
+                "votos_partido": votos,
+                "divisor": divisor,
+                "cociente": votos / divisor,
+            })
+
+    cocientes = sorted(
+        cocientes,
+        key=lambda x: (-x["cociente"], -x["votos_partido"], x["partido"]),
+    )
+    top = cocientes[:total_curules]
+
+    curules = {cod: 0 for cod in votos_partido.keys()}
+    for item in top:
+        curules[item["partido"]] += 1
+
+    return curules, cocientes
+
 def render(datos: dict):
     mmv_pre = datos.get("mmv")
     candidatos_meta = datos.get("candidatos", {})
+    partidos = datos.get("partidos", {})
+    divipol = datos.get("divipol", {})
 
     if not mmv_pre:
         st.warning("No hay datos de preconteo cargados.")
@@ -268,6 +449,481 @@ def render(datos: dict):
             )
 
             st.dataframe(styled, use_container_width=True, hide_index=True)
+
+    # ═══════════════════════════════════════
+    # §4 — COMPARACION EN TIEMPO REAL (ESCRUTINIO VS PRECONTEO)
+    # ═══════════════════════════════════════
+    section("COMPARACION EN TIEMPO REAL — CAMARA ANTIOQUIA", "table")
+    # (caption removida por solicitud)
+
+    pre_path = DATA_DIR / "PPP_MMV_DD_9999.txt"
+    if not pre_path.exists():
+        st.warning(f"No se encontro el archivo de preconteo: {pre_path}.")
+    else:
+        with st.spinner("Comparando mesas de escrutinio contra preconteo..."):
+            comp = _cached_compare_preconteo_escrutinio(
+                str(pre_path),
+                str(esc_path),
+                "1",
+                "01",
+                _get_mtime(str(pre_path)),
+                _get_mtime(str(esc_path)),
+            )
+
+        mesas_esc = comp["mesas_esc"]
+        cand_pre = comp["cand_pre"]
+        cand_esc = comp["cand_esc"]
+        mesa_pre = comp["mesa_pre"]
+        mesa_esc = comp["mesa_esc"]
+
+        total_pre = sum(cand_pre.values())
+        total_esc = sum(cand_esc.values())
+        total_diff = total_esc - total_pre
+
+        # (cards removidas por solicitud)
+
+        # Mesa-level differences
+        rows_mesa = []
+        same = 0
+        pre_only = 0
+        esc_only = 0
+        for mesa_key in sorted(mesas_esc):
+            p = mesa_pre.get(mesa_key, 0)
+            e = mesa_esc.get(mesa_key, 0)
+            if p == e:
+                same += 1
+            else:
+                rows_mesa.append({
+                    "Mesa": formatear_mesa_completa(mesa_key, divipol),
+                    "Preconteo": p,
+                    "Escrutinio": e,
+                    "Diferencia": e - p,
+                })
+            if p > 0 and e == 0:
+                pre_only += 1
+            if e > 0 and p == 0:
+                esc_only += 1
+
+        # (cards removidas por solicitud)
+
+        st.markdown("**Diferencias por mesa — German Dario Hoyos (01067-117)**")
+        german_pre = cargar_mesas_candidato(pre_path, "01067", "117", "1", "01")
+        german_esc = cargar_mesas_candidato(esc_path, "01067", "117", "1", "01")
+        mesas_german = sorted(set(german_pre) | set(german_esc))
+        rows_german = []
+        for mesa_key in mesas_german:
+            if mesa_key not in mesas_esc:
+                continue
+            p = german_pre.get(mesa_key, 0)
+            e = german_esc.get(mesa_key, 0)
+            if p == e:
+                continue
+            depto, muni, zona, puesto, mesa = mesa_key.split("_")
+            muni_key = f"{depto}_{muni}"
+            puesto_key = f"{depto}_{muni}_{zona}_{puesto}"
+            rows_german.append({
+                "MesaKey": mesa_key,
+                "MunicipioKey": muni_key,
+                "PuestoKey": puesto_key,
+                "MesaNum": mesa,
+                "Mesa": formatear_mesa_completa(mesa_key, divipol),
+                "Preconteo": p,
+                "Escrutinio": e,
+                "Diferencia": e - p,
+            })
+
+        german_total_pre = sum(german_pre.get(m, 0) for m in mesas_esc)
+        german_total_esc = sum(german_esc.get(m, 0) for m in mesas_esc)
+        german_total_diff = german_total_esc - german_total_pre
+        sum_rows_diff = sum(r["Diferencia"] for r in rows_german)
+
+        st.caption(
+            f"Total German en mesas con escrutinio — "
+            f"Preconteo: {fmt(german_total_pre)} · "
+            f"Escrutinio: {fmt(german_total_esc)} · "
+            f"Diferencia: {fmt(german_total_diff)}"
+        )
+        if sum_rows_diff != german_total_diff:
+            st.warning(
+                "La suma de diferencias por mesa no coincide con el total. "
+                f"Suma mesas: {fmt(sum_rows_diff)} · Total: {fmt(german_total_diff)}"
+            )
+
+        if rows_german:
+            # Drill-down por municipio -> puesto -> mesa
+            muni_data = {}
+            for row in rows_german:
+                muni_key = row["MunicipioKey"]
+                puesto_key = row["PuestoKey"]
+                muni_info = divipol.get("por_muni", {}).get(muni_key, {})
+                puesto_info = divipol.get("por_puesto", {}).get(puesto_key, {})
+                muni_name = muni_info.get("nombre_municipio", muni_key)
+                puesto_name = puesto_info.get("nombre_puesto", puesto_key)
+
+                m = muni_data.setdefault(
+                    muni_key,
+                    {"nombre": muni_name, "total": 0, "diff": 0, "puestos": {}},
+                )
+                m["total"] += 1
+                m["diff"] += row["Diferencia"]
+                pmap = m["puestos"].setdefault(
+                    puesto_key,
+                    {"nombre": puesto_name, "total": 0, "diff": 0, "mesas": []},
+                )
+                pmap["total"] += 1
+                pmap["diff"] += row["Diferencia"]
+                mesa_num = row.get("MesaNum", "")
+                if str(mesa_num).isdigit():
+                    mesa_label = f"Mesa {int(mesa_num)}"
+                else:
+                    mesa_label = f"Mesa {mesa_num}".strip()
+                pmap["mesas"].append({
+                    "MesaKey": row["MesaKey"],
+                    "Mesa": mesa_label,
+                    "Preconteo": row["Preconteo"],
+                    "Escrutinio": row["Escrutinio"],
+                    "Diferencia": row["Diferencia"],
+                })
+
+            st.markdown("---")
+            st.markdown("**DRILL-DOWN POR MUNICIPIO**")
+            def _fmt_diff(valor: int) -> str:
+                signo = "+" if valor > 0 else ""
+                return f"{signo}{fmt(valor)}"
+
+            muni_keys = sorted(
+                muni_data.keys(),
+                key=lambda k: (abs(muni_data[k]["diff"]), muni_data[k]["nombre"]),
+                reverse=True,
+            )
+            sel_muni = st.selectbox(
+                "Municipio",
+                muni_keys,
+                format_func=lambda k: f"{muni_data[k]['nombre']} ({_fmt_diff(muni_data[k]['diff'])})",
+                key="german_muni",
+            )
+            puestos = muni_data[sel_muni]["puestos"] if sel_muni else {}
+            puesto_keys = sorted(
+                puestos.keys(),
+                key=lambda k: (abs(puestos[k]["diff"]), puestos[k]["nombre"]),
+                reverse=True,
+            )
+            sel_puesto = st.selectbox(
+                "Puesto de votación",
+                puesto_keys,
+                format_func=lambda k: f"{puestos[k]['nombre']} ({_fmt_diff(puestos[k]['diff'])})",
+                key="german_puesto",
+            )
+            mesas = puestos[sel_puesto]["mesas"] if sel_puesto else []
+            mesa_map = {m["MesaKey"]: m for m in mesas}
+            mesa_keys = sorted(
+                mesa_map.keys(),
+                key=lambda k: (abs(mesa_map[k]["Diferencia"]), mesa_map[k]["Mesa"]),
+                reverse=True,
+            )
+            sel_mesa = st.selectbox(
+                "Mesa",
+                mesa_keys,
+                format_func=lambda k: f"{mesa_map[k]['Mesa']} ({_fmt_diff(mesa_map[k]['Diferencia'])})",
+                key="german_mesa",
+            )
+
+            if sel_mesa:
+                row = mesa_map[sel_mesa]
+                st.dataframe(
+                    pd.DataFrame(
+                        [{
+                            "Mesa": row["Mesa"],
+                            "Preconteo": row["Preconteo"],
+                            "Escrutinio": row["Escrutinio"],
+                            "Diferencia": row["Diferencia"],
+                        }]
+                    ),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+        else:
+            st.success("No hay diferencias por mesa para German en los datos actuales del escrutinio.")
+
+        # Candidate/party differences
+        all_keys = set(cand_pre) | set(cand_esc)
+        rows_cand = []
+        party_map = {}
+
+        for key in sorted(all_keys):
+            p = cand_pre.get(key, 0)
+            e = cand_esc.get(key, 0)
+            if p == 0 and e == 0:
+                continue
+            party, _cand = key.split("_", 1)
+            nombre = nombre_candidato(key, candidatos_meta)
+            partido_nombre = nombre_partido(party, partidos)
+            rows_cand.append({
+                "Partido": f"{partido_nombre} ({party})",
+                "Candidato": nombre,
+                                "Preconteo": p,
+                "Escrutinio": e,
+                "Diferencia": e - p,
+            })
+            agg = party_map.get(party, {"Preconteo": 0, "Escrutinio": 0})
+            agg["Preconteo"] += p
+            agg["Escrutinio"] += e
+            party_map[party] = agg
+
+        st.markdown("**Diferencias por candidato (lista + candidato)**")
+        if rows_cand:
+            df_cand = pd.DataFrame(rows_cand).sort_values("Diferencia", key=abs, ascending=False)
+            st.dataframe(df_cand, use_container_width=True, hide_index=True)
+        else:
+            st.info("No hay diferencias por candidato.")
+
+        st.markdown("**RANKING CREEMOS — PRECONTEO VS ESCRUTINIO**")
+        creemos_key = "01067"
+        rows_creemos = []
+        for key in sorted(all_keys):
+            if not key.startswith(creemos_key + "_"):
+                continue
+            p = cand_pre.get(key, 0)
+            e = cand_esc.get(key, 0)
+            if p == 0 and e == 0:
+                continue
+            nombre = nombre_candidato(key, candidatos_meta)
+            rows_creemos.append({
+                "Candidato": nombre,
+                "Preconteo": p,
+                "Escrutinio": e,
+                "Diff": e - p,
+            })
+
+        if rows_creemos:
+            df_creemos = pd.DataFrame(rows_creemos)
+            st.markdown("Preconteo (Top)")
+            st.dataframe(df_creemos.sort_values("Preconteo", ascending=False), use_container_width=True, hide_index=True)
+            st.markdown("Escrutinio (Top)")
+            st.dataframe(df_creemos.sort_values("Escrutinio", ascending=False), use_container_width=True, hide_index=True)
+        else:
+            st.info("No hay registros de CREEMOS en las mesas con escrutinio.")
+
+        st.markdown("**Diferencias por partido (lista + candidatos)**")
+        if party_map:
+            rows_party = []
+            for party, vals in party_map.items():
+                rows_party.append({
+                    "Partido": f"{nombre_partido(party, partidos)} ({party})",
+                    "Preconteo": vals["Preconteo"],
+                    "Escrutinio": vals["Escrutinio"],
+                    "Diferencia": vals["Escrutinio"] - vals["Preconteo"],
+                })
+            df_party = pd.DataFrame(rows_party).sort_values("Diferencia", key=abs, ascending=False)
+            st.dataframe(df_party, use_container_width=True, hide_index=True)
+        else:
+            st.info("No hay diferencias por partido.")
+
+        st.download_button(
+            "Descargar diferencias por mesa (German) (CSV)",
+            pd.DataFrame(rows_german).to_csv(index=False).encode("utf-8"),
+            "diferencias_mesas_german_escrutinio_vs_preconteo.csv",
+            "text/csv",
+        )
+        st.download_button(
+            "Descargar diferencias por candidato (CSV)",
+            pd.DataFrame(rows_cand).to_csv(index=False).encode("utf-8"),
+            "diferencias_candidatos_escrutinio_vs_preconteo.csv",
+            "text/csv",
+        )
+        st.download_button(
+            "Descargar diferencias por partido (CSV)",
+            pd.DataFrame([{**{"Partido": nombre_partido(p, partidos)}, **v, "Diferencia": v["Escrutinio"] - v["Preconteo"]} for p, v in party_map.items()]).to_csv(index=False).encode("utf-8"),
+            "diferencias_partidos_escrutinio_vs_preconteo.csv",
+            "text/csv",
+        )
+
+    # ═══════════════════════════════════════
+    # §5 — CURULES CAMARA ANTIOQUIA (ESCRUTINIO)
+    # ═══════════════════════════════════════
+    section("CURULES CAMARA ANTIOQUIA — ESCRUTINIO", "gavel")
+    st.caption(
+        "Base: Camara territorial Antioquia (circunscripcion 1, depto 01). "
+        "Votos validos por partido = lista + candidatos."
+    )
+
+    votos_partido_esc = _votos_partido_camara_antioquia_escrutinio(mmv_esc)
+    if not votos_partido_esc:
+        st.info("No hay votos validos de Camara Antioquia en escrutinio para calcular curules.")
+    else:
+        total_validos_esc = sum(votos_partido_esc.values())
+        cociente_electoral = (
+            total_validos_esc / CURULES_CAMARA_ANTIOQUIA if CURULES_CAMARA_ANTIOQUIA > 0 else 0
+        )
+        umbral = cociente_electoral * UMBRAL_FACTOR
+
+        partidos_habilitados = {cod: v for cod, v in votos_partido_esc.items() if v >= umbral}
+        partidos_excluidos = {cod: v for cod, v in votos_partido_esc.items() if v < umbral}
+
+        curules = {}
+        cocientes_all: list[dict] = []
+        if partidos_habilitados:
+            curules, cocientes_all = _reparto_dhondt(partidos_habilitados, CURULES_CAMARA_ANTIOQUIA)
+
+        curul_17 = cocientes_all[CURULES_CAMARA_ANTIOQUIA - 1] if len(cocientes_all) >= CURULES_CAMARA_ANTIOQUIA else None
+        curul_18 = cocientes_all[CURULES_CAMARA_ANTIOQUIA] if len(cocientes_all) > CURULES_CAMARA_ANTIOQUIA else None
+
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            kpi(
+                "Total votos validos",
+                fmt(total_validos_esc),
+                "Camara Antioquia (escrutinio)",
+                "#2563EB",
+            )
+        with c2:
+            kpi(
+                "Cociente electoral",
+                f"{cociente_electoral:,.2f}".replace(",", "."),
+                f"Total / {CURULES_CAMARA_ANTIOQUIA} curules",
+                "#059669",
+            )
+        with c3:
+            kpi(
+                "Umbral calculado",
+                f"{umbral:,.2f}".replace(",", "."),
+                "50% del cociente electoral",
+                "#D97706",
+            )
+        with c4:
+            kpi(
+                "Partidos habilitados",
+                fmt(len(partidos_habilitados)),
+                f"Excluidos por umbral: {fmt(len(partidos_excluidos))}",
+                "#DC2626",
+            )
+
+        section("CORTE DE ULTIMAS CURULES (ESCRUTINIO)", "rule")
+        r1, r2 = st.columns(2)
+        with r1:
+            if curul_17:
+                kpi(
+                    "Curul 17 (ultima asignada)",
+                    f"{curul_17['cociente']:.2f}",
+                    (
+                        f"{nombre_partido(curul_17['partido'], partidos)} "
+                        f"[{curul_17['partido']}] · divisor {curul_17['divisor']}"
+                    ),
+                    "#059669",
+                )
+            else:
+                kpi("Curul 17 (ultima asignada)", "Sin datos", "No hubo reparto", "#6B7280")
+        with r2:
+            if curul_18:
+                kpi(
+                    "Curul 18 (primera por fuera)",
+                    f"{curul_18['cociente']:.2f}",
+                    (
+                        f"{nombre_partido(curul_18['partido'], partidos)} "
+                        f"[{curul_18['partido']}] · divisor {curul_18['divisor']}"
+                    ),
+                    "#D97706",
+                )
+            else:
+                kpi("Curul 18 (primera por fuera)", "Sin datos", "No hay cociente 18", "#6B7280")
+
+        # Siguientes 3 partidos despues de la curul 17
+        if curul_17:
+            target_cociente = curul_17["cociente"]
+            siguientes = cocientes_all[CURULES_CAMARA_ANTIOQUIA:CURULES_CAMARA_ANTIOQUIA + 3]
+            if siguientes:
+                rows_next = []
+                for item in siguientes:
+                    party = item["partido"]
+                    divisor = item["divisor"]
+                    votos_partido = votos_partido_esc.get(party, 0)
+                    # Votos necesarios para alcanzar el cociente de la curul 17 con su divisor actual
+                    needed = max(0, math.ceil(target_cociente * divisor) - votos_partido)
+                    rows_next.append({
+                        "Partido": nombre_partido(party, partidos),
+                        "Codigo": party,
+                        "Divisor": divisor,
+                        "Cociente": round(item["cociente"], 6),
+                        "Votos partido": votos_partido,
+                        "Votos faltantes para curul 17": needed,
+                    })
+
+                st.markdown("**SIGUIENTES 3 PARTIDOS DESPUES DE CURUL 17**")
+                st.dataframe(pd.DataFrame(rows_next), use_container_width=True, hide_index=True)
+            else:
+                st.info("No hay suficientes cocientes para mostrar los siguientes 3 partidos.")
+        else:
+            st.info("No hay curul 17 asignada; no se puede calcular el ranking siguiente.")
+
+        section("RESULTADO DE ASIGNACION (ESCRUTINIO)", "how_to_vote")
+        if not partidos_habilitados:
+            st.warning("Ningun partido supera el umbral; no se pueden asignar curules.")
+        else:
+            rows_res = []
+            for cod, votos in partidos_habilitados.items():
+                rows_res.append({
+                    "Codigo": cod,
+                    "Partido": nombre_partido(cod, partidos),
+                    "Votos validos": votos,
+                    "% votos": pct(votos, total_validos_esc),
+                    "Curules": curules.get(cod, 0),
+                    "% curules": pct(curules.get(cod, 0), CURULES_CAMARA_ANTIOQUIA),
+                })
+            df_res = pd.DataFrame(rows_res).sort_values(
+                by=["Curules", "Votos validos"],
+                ascending=[False, False],
+            )
+
+            col_t, col_g = st.columns([2, 3])
+            with col_t:
+                st.dataframe(df_res, use_container_width=True, height=520)
+            with col_g:
+                df_plot = df_res.sort_values("Curules", ascending=True)
+                fig = px.bar(
+                    df_plot,
+                    x="Curules",
+                    y="Partido",
+                    orientation="h",
+                    color="Curules",
+                    color_continuous_scale=["#F3F4F6", "#2563EB"],
+                    hover_data=["Codigo", "Votos validos", "% votos"],
+                    title=f"Curules asignadas (total = {CURULES_CAMARA_ANTIOQUIA})",
+                )
+                fig.update_layout(coloraxis_showscale=False, height=520)
+                st.plotly_chart(plotly_defaults(fig), use_container_width=True)
+
+            st.caption(
+                f"Total curules asignadas: {fmt(sum(curules.values()))} de {fmt(CURULES_CAMARA_ANTIOQUIA)}."
+            )
+
+        section("PARTIDOS EXCLUIDOS POR UMBRAL (ESCRUTINIO)", "block")
+        if not partidos_excluidos:
+            st.success("No hay partidos excluidos por umbral.")
+        else:
+            rows_exc = [
+                {
+                    "Codigo": cod,
+                    "Partido": nombre_partido(cod, partidos),
+                    "Votos validos": votos,
+                    "% votos": pct(votos, total_validos_esc),
+                }
+                for cod, votos in sorted(partidos_excluidos.items(), key=lambda x: x[1], reverse=True)
+            ]
+            st.dataframe(pd.DataFrame(rows_exc), use_container_width=True, height=300)
+
+        with st.expander("Ver detalle de cocientes (ordenados)"):
+            rows_coc = []
+            for idx, item in enumerate(cocientes_all, start=1):
+                rows_coc.append({
+                    "Orden": idx,
+                    "Codigo": item["partido"],
+                    "Partido": nombre_partido(item["partido"], partidos),
+                    "Votos partido": item["votos_partido"],
+                    "Divisor": item["divisor"],
+                    "Cociente": round(item["cociente"], 6),
+                    "Entra curul": "SI" if idx <= CURULES_CAMARA_ANTIOQUIA else "NO",
+                })
+            st.dataframe(pd.DataFrame(rows_coc), use_container_width=True, height=420)
 
     # ═══════════════════════════════════════
     # DESCARGA CSV

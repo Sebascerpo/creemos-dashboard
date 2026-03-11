@@ -339,7 +339,8 @@ def render(datos: dict):
                     f"{pd_item['nom_puesto']}  —  "
                     f"{pd_item['sin']} / {pd_item['total']} sin votos"
                 )
-                with st.expander(puesto_label):
+                with st.container():
+                    st.markdown(f"**{puesto_label}**")
                     if pd_item["mesas_sin"]:
                         mesa_display = [
                             {"Mesa": f"Mesa {int(divipol_mesas[m]['num_mesa'])}"}
@@ -350,3 +351,4 @@ def render(datos: dict):
                             use_container_width=True,
                             height=min(200, 35 * len(mesa_display) + 38),
                         )
+                    st.divider()
