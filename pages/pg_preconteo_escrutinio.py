@@ -537,6 +537,10 @@ def render(datos: dict):
         german_total_diff = german_total_esc - german_total_pre
         sum_rows_diff = sum(r["Diferencia"] for r in rows_german)
 
+        def _fmt_diff(valor: int) -> str:
+            signo = "+" if valor > 0 else ""
+            return f"{signo}{fmt(valor)}"
+
         st.caption(
             f"Total German en mesas con escrutinio — "
             f"Preconteo: {fmt(german_total_pre)} · "
@@ -587,10 +591,6 @@ def render(datos: dict):
 
             st.markdown("---")
             st.markdown("**DRILL-DOWN POR MUNICIPIO**")
-            def _fmt_diff(valor: int) -> str:
-                signo = "+" if valor > 0 else ""
-                return f"{signo}{fmt(valor)}"
-
             muni_keys = sorted(
                 muni_data.keys(),
                 key=lambda k: (abs(muni_data[k]["diff"]), muni_data[k]["nombre"]),
@@ -644,6 +644,141 @@ def render(datos: dict):
                 )
         else:
             st.success("No hay diferencias por mesa para German en los datos actuales del escrutinio.")
+
+        st.markdown("**Diferencias por mesa — Jose Miguel Zuluaga (01067-108)**")
+        jose_pre = cargar_mesas_candidato(pre_path, "01067", "108", "1", "01")
+        jose_esc = cargar_mesas_candidato(esc_path, "01067", "108", "1", "01")
+        mesas_jose = sorted(set(jose_pre) | set(jose_esc))
+        rows_jose = []
+        for mesa_key in mesas_jose:
+            if mesa_key not in mesas_esc:
+                continue
+            p = jose_pre.get(mesa_key, 0)
+            e = jose_esc.get(mesa_key, 0)
+            if p == e:
+                continue
+            depto, muni, zona, puesto, mesa = mesa_key.split("_")
+            muni_key = f"{depto}_{muni}"
+            puesto_key = f"{depto}_{muni}_{zona}_{puesto}"
+            rows_jose.append({
+                "MesaKey": mesa_key,
+                "MunicipioKey": muni_key,
+                "PuestoKey": puesto_key,
+                "MesaNum": mesa,
+                "Mesa": formatear_mesa_completa(mesa_key, divipol),
+                "Preconteo": p,
+                "Escrutinio": e,
+                "Diferencia": e - p,
+            })
+
+        jose_total_pre = sum(jose_pre.get(m, 0) for m in mesas_esc)
+        jose_total_esc = sum(jose_esc.get(m, 0) for m in mesas_esc)
+        jose_total_diff = jose_total_esc - jose_total_pre
+        sum_rows_diff = sum(r["Diferencia"] for r in rows_jose)
+
+        st.caption(
+            f"Total Jose Miguel en mesas con escrutinio — "
+            f"Preconteo: {fmt(jose_total_pre)} · "
+            f"Escrutinio: {fmt(jose_total_esc)} · "
+            f"Diferencia: {fmt(jose_total_diff)}"
+        )
+        if sum_rows_diff != jose_total_diff:
+            st.warning(
+                "La suma de diferencias por mesa no coincide con el total. "
+                f"Suma mesas: {fmt(sum_rows_diff)} · Total: {fmt(jose_total_diff)}"
+            )
+
+        if rows_jose:
+            # Drill-down por municipio -> puesto -> mesa
+            muni_data = {}
+            for row in rows_jose:
+                muni_key = row["MunicipioKey"]
+                puesto_key = row["PuestoKey"]
+                muni_info = divipol.get("por_muni", {}).get(muni_key, {})
+                puesto_info = divipol.get("por_puesto", {}).get(puesto_key, {})
+                muni_name = muni_info.get("nombre_municipio", muni_key)
+                puesto_name = puesto_info.get("nombre_puesto", puesto_key)
+
+                m = muni_data.setdefault(
+                    muni_key,
+                    {"nombre": muni_name, "total": 0, "diff": 0, "puestos": {}},
+                )
+                m["total"] += 1
+                m["diff"] += row["Diferencia"]
+                pmap = m["puestos"].setdefault(
+                    puesto_key,
+                    {"nombre": puesto_name, "total": 0, "diff": 0, "mesas": []},
+                )
+                pmap["total"] += 1
+                pmap["diff"] += row["Diferencia"]
+                mesa_num = row.get("MesaNum", "")
+                if str(mesa_num).isdigit():
+                    mesa_label = f"Mesa {int(mesa_num)}"
+                else:
+                    mesa_label = f"Mesa {mesa_num}".strip()
+                pmap["mesas"].append({
+                    "MesaKey": row["MesaKey"],
+                    "Mesa": mesa_label,
+                    "Preconteo": row["Preconteo"],
+                    "Escrutinio": row["Escrutinio"],
+                    "Diferencia": row["Diferencia"],
+                })
+
+            st.markdown("---")
+            st.markdown("**DRILL-DOWN POR MUNICIPIO (Jose Miguel)**")
+            muni_keys = sorted(
+                muni_data.keys(),
+                key=lambda k: (abs(muni_data[k]["diff"]), muni_data[k]["nombre"]),
+                reverse=True,
+            )
+            sel_muni = st.selectbox(
+                "Municipio",
+                muni_keys,
+                format_func=lambda k: f"{muni_data[k]['nombre']} ({_fmt_diff(muni_data[k]['diff'])})",
+                key="jose_muni",
+            )
+            puestos = muni_data[sel_muni]["puestos"] if sel_muni else {}
+            puesto_keys = sorted(
+                puestos.keys(),
+                key=lambda k: (abs(puestos[k]["diff"]), puestos[k]["nombre"]),
+                reverse=True,
+            )
+            sel_puesto = st.selectbox(
+                "Puesto de votación",
+                puesto_keys,
+                format_func=lambda k: f"{puestos[k]['nombre']} ({_fmt_diff(puestos[k]['diff'])})",
+                key="jose_puesto",
+            )
+            mesas = puestos[sel_puesto]["mesas"] if sel_puesto else []
+            mesa_map = {m["MesaKey"]: m for m in mesas}
+            mesa_keys = sorted(
+                mesa_map.keys(),
+                key=lambda k: (abs(mesa_map[k]["Diferencia"]), mesa_map[k]["Mesa"]),
+                reverse=True,
+            )
+            sel_mesa = st.selectbox(
+                "Mesa",
+                mesa_keys,
+                format_func=lambda k: f"{mesa_map[k]['Mesa']} ({_fmt_diff(mesa_map[k]['Diferencia'])})",
+                key="jose_mesa",
+            )
+
+            if sel_mesa:
+                row = mesa_map[sel_mesa]
+                st.dataframe(
+                    pd.DataFrame(
+                        [{
+                            "Mesa": row["Mesa"],
+                            "Preconteo": row["Preconteo"],
+                            "Escrutinio": row["Escrutinio"],
+                            "Diferencia": row["Diferencia"],
+                        }]
+                    ),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+        else:
+            st.success("No hay diferencias por mesa para Jose Miguel en los datos actuales del escrutinio.")
 
         # Candidate/party differences
         all_keys = set(cand_pre) | set(cand_esc)
