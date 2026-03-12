@@ -218,6 +218,50 @@ def _cached_compare_preconteo_escrutinio(
     }
 
 
+@st.cache_data(show_spinner=False, ttl=3600)
+def _cached_puestos_candidato(
+    path_str: str,
+    cod_partido: str,
+    cod_candidato: str,
+    circ: str,
+    depto: str,
+    _mtime: float,
+) -> dict[str, int]:
+    out: dict[str, int] = {}
+    with open(path_str, encoding="latin-1") as f:
+        for line in f:
+            if not line.strip() or len(line) < 38:
+                continue
+            if line[0:2] != depto:
+                continue
+            if line[21:22] != circ:
+                continue
+            if line[22:27] != cod_partido:
+                continue
+            if line[27:30] != cod_candidato:
+                continue
+            votos_str = line[30:38].strip()
+            if not votos_str.isdigit():
+                continue
+            votos = int(votos_str)
+            if votos <= 0:
+                continue
+            puesto_key = f"{line[0:2]}_{line[2:5]}_{line[5:7]}_{line[7:9]}"
+            out[puesto_key] = out.get(puesto_key, 0) + votos
+    return out
+
+
+def cargar_puestos_candidato(path: Path, cod_partido: str, cod_candidato: str, circ: str, depto: str) -> dict[str, int]:
+    return _cached_puestos_candidato(
+        str(path),
+        cod_partido,
+        cod_candidato,
+        circ,
+        depto,
+        _get_mtime(str(path)),
+    )
+
+
 
 CURULES_CAMARA_ANTIOQUIA = 17
 CIRC_CAMARA_TERRITORIAL = "1"
@@ -1155,4 +1199,93 @@ def render(datos: dict):
         df_csv.to_csv(index=False).encode("utf-8"),
         "preconteo_vs_escrutinio.csv",
         "text/csv",
+    )
+
+    # ═══════════════════════════════════════
+    # §6 — ESCRUTINIO POR PUESTO (CANDIDATOS)
+    # ═══════════════════════════════════════
+    section("ESCRUTINIO POR PUESTO — CANDIDATOS", "map")
+    st.caption("Votos de escrutinio por puesto de votacion (Camara Antioquia).")
+
+    def _render_puestos_candidato(titulo: str, cod_partido: str, cod_candidato: str, key_prefix: str) -> None:
+        st.markdown(f"**{titulo}**")
+        votos_puesto = cargar_puestos_candidato(esc_path, cod_partido, cod_candidato, "1", "01")
+        if not votos_puesto:
+            st.info("No hay votos de escrutinio para este candidato.")
+            return
+
+        muni_data: dict[str, dict] = {}
+        for puesto_key, votos in votos_puesto.items():
+            parts = puesto_key.split("_")
+            muni_key = "_".join(parts[:2])
+            muni_info = divipol.get("por_muni", {}).get(muni_key, {})
+            puesto_info = divipol.get("por_puesto", {}).get(puesto_key, {})
+            muni_name = muni_info.get("nombre_municipio", muni_key)
+            puesto_name = puesto_info.get("nombre_puesto", puesto_key)
+
+            m = muni_data.setdefault(muni_key, {"nombre": muni_name, "votos": 0, "puestos": {}})
+            m["votos"] += votos
+            m["puestos"][puesto_key] = {
+                "nombre": puesto_name,
+                "votos": votos,
+            }
+
+        muni_keys = sorted(muni_data.keys(), key=lambda k: muni_data[k]["votos"], reverse=True)
+        sel_muni = st.selectbox(
+            "Municipio",
+            muni_keys,
+            format_func=lambda k: f"{muni_data[k]['nombre']} ({fmt(muni_data[k]['votos'])})",
+            key=f"{key_prefix}_muni",
+        )
+
+        puestos = muni_data[sel_muni]["puestos"] if sel_muni else {}
+        df_puestos = (
+            pd.DataFrame(
+                [
+                    {
+                        "Puesto": p["nombre"],
+                        "Votos": p["votos"],
+                    }
+                    for p in puestos.values()
+                ]
+            )
+            .sort_values("Votos", ascending=False)
+        )
+        st.dataframe(df_puestos, use_container_width=True, hide_index=True)
+
+        puesto_keys = sorted(puestos.keys(), key=lambda k: puestos[k]["votos"], reverse=True)
+        sel_puesto = st.selectbox(
+            "Puesto de votación",
+            puesto_keys,
+            format_func=lambda k: f"{puestos[k]['nombre']} ({fmt(puestos[k]['votos'])})",
+            key=f"{key_prefix}_puesto",
+        )
+        if sel_puesto:
+            st.caption(f"Votos en puesto seleccionado: {fmt(puestos[sel_puesto]['votos'])}")
+
+        st.divider()
+
+    _render_puestos_candidato(
+        "German Dario Hoyos (01067-117)",
+        "01067",
+        "117",
+        "german_puesto",
+    )
+    _render_puestos_candidato(
+        "Jose Miguel Zuluaga (01067-108)",
+        "01067",
+        "108",
+        "jose_puesto",
+    )
+    _render_puestos_candidato(
+        "Luis Guillermo Patiño (01067-101)",
+        "01067",
+        "101",
+        "luis_puesto",
+    )
+    _render_puestos_candidato(
+        "Simon Molina Gomez (01067-102)",
+        "01067",
+        "102",
+        "simon_puesto",
     )
